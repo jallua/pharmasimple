@@ -1,0 +1,133 @@
+---
+// MrnaVaccine.astro — schematic, self-contained SVG + CSS animation of how a
+// COVID-19 mRNA vaccine (e.g. elasomeran / tozinameran) delivers an mRNA
+// "blueprint" into a cell, the cell's protein factory reads it and displays a
+// harmless spike-protein fragment, and the immune system recognises that
+// fragment and builds antibodies for protection (需求 4, 13). SCHEMATIC
+// labelled shapes, inline SVG + scoped CSS, NO JavaScript. Five storyboard steps
+// cycle on a shared 15s timeline (3s each). Under prefers-reduced-motion all
+// motion stops and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 mRNA 疫苗把刺突蛋白图纸送进细胞,细胞照着造出刺突蛋白片段,免疫系统据此产生抗体、获得保护。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '疫苗把刺突蛋白"图纸"(mRNA)送进细胞',
+  '细胞的"工厂"照图纸造出刺突蛋白片段',
+  '免疫系统发现这个"外来零件"',
+  '免疫系统据此造出抗体、记住病毒',
+  '真病毒来袭,身体能更快识别清除',
+];
+---
+
+<div class="mrna">
+  <svg class="mrna__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="mrna__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="mrna__t mrna__t--organ" x="36" y="196" text-anchor="start">肌肉 / 免疫细胞</text>
+    <rect class="mrna__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="mrna__t mrna__t--small" x="208" y="126" text-anchor="middle">核糖体 · 蛋白质工厂</text>
+
+    <g class="mrna__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="mrna__t mrna__t--inflam" x="208" y="66" text-anchor="middle">刺突蛋白片段</text>
+    </g>
+
+    <g class="mrna__dots">
+      <circle class="mrna__lig" cx="70" cy="52" r="10" />
+      <circle class="mrna__lig" cx="118" cy="36" r="10" />
+      <circle class="mrna__lig" cx="96" cy="82" r="10" />
+      <text class="mrna__t mrna__t--small" x="96" y="16" text-anchor="middle">mRNA 图纸</text>
+    </g>
+
+    <circle class="mrna__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="mrna__drug">
+      <circle class="mrna__lnp" cx="208" cy="150" r="14" />
+      <path class="mrna__strand" d="M200 150 q4 -6 8 0 q4 6 8 0" />
+      <text class="mrna__t mrna__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '新冠 mRNA 疫苗'}</text>
+    </g>
+
+    <g class="mrna__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="mrna__t mrna__t--shield" x="208" y="150" text-anchor="middle">免疫识别</text>
+    </g>
+
+    <g class="mrna__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="mrna__t mrna__t--resolved" x="275" y="50" text-anchor="middle">产生抗体 · 获得保护</text>
+    </g>
+  </svg>
+
+  <ol class="mrna__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="mrna__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .mrna {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .mrna__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .mrna__cell { fill: #eef2ff; stroke: #a5b4fc; stroke-width: 2; }
+  .mrna__receptor { fill: #64748b; }
+  .mrna__t { fill: #1e293b; font-size: 13px; }
+  .mrna__t--organ { fill: #475569; font-size: 12px; }
+  .mrna__t--small { font-size: 11px; fill: #475569; }
+  .mrna__t--inflam { fill: #4338ca; font-size: 11px; font-weight: 700; }
+  .mrna__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .mrna__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .mrna__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .mrna__lig { fill: #a5b4fc; stroke: #4f46e5; stroke-width: 1.5; }
+  .mrna__dots { animation: mrna-drift var(--dur) infinite; }
+  .mrna__inflam polygon { fill: #c7d2fe; stroke: #6366f1; stroke-width: 1.5; }
+  .mrna__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: mrna-inflame var(--dur) infinite; }
+  .mrna__dock-dot { fill: #a5b4fc; stroke: #4f46e5; stroke-width: 1.5; opacity: 0; animation: mrna-dock var(--dur) infinite; }
+  .mrna__lnp { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .mrna__strand { fill: none; stroke: #0f766e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .mrna__drug { opacity: 0; animation: mrna-bind var(--dur) infinite; }
+  .mrna__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .mrna__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: mrna-pop var(--dur) infinite; }
+  .mrna__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .mrna__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: mrna-pop-late var(--dur) infinite; }
+  .mrna__steps { counter-reset: mrnastep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .mrna__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: mrna-step var(--dur) infinite; }
+  .mrna__step::before { counter-increment: mrnastep; content: counter(mrnastep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: mrna-badge var(--dur) infinite; }
+  .mrna__step:nth-child(1), .mrna__step:nth-child(1)::before { animation-delay: 0s; }
+  .mrna__step:nth-child(2), .mrna__step:nth-child(2)::before { animation-delay: 3s; }
+  .mrna__step:nth-child(3), .mrna__step:nth-child(3)::before { animation-delay: 6s; }
+  .mrna__step:nth-child(4), .mrna__step:nth-child(4)::before { animation-delay: 9s; }
+  .mrna__step:nth-child(5), .mrna__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes mrna-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes mrna-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes mrna-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes mrna-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes mrna-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes mrna-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes mrna-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes mrna-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .mrna *, .mrna__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .mrna__step, .mrna__step::before { animation: none !important; transform: none !important; }
+    .mrna__step { opacity: 1 !important; }
+    .mrna__drug { opacity: 1 !important; }
+    .mrna__shield { opacity: 1 !important; }
+    .mrna__resolved { opacity: 1 !important; }
+    .mrna__inflam { opacity: 0 !important; }
+    .mrna__dock-dot { opacity: 0 !important; }
+  }
+</style>

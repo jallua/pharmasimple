@@ -1,0 +1,357 @@
+---
+// Her2Antibody.astro — schematic, self-contained SVG + CSS animation of how an
+// anti-HER2 antibody (e.g. 曲妥珠单抗 / trastuzumab) works: HER2-positive cancer
+// cells carry too many HER2 "growth antennae" that keep shouting "grow!"; the
+// antibody sticks onto HER2 so that signal is blocked, and it also recruits an
+// immune cell to clear the cancer (需求 4, 13).
+//
+// Same design rules as the other animations: SCHEMATIC labelled shapes, inline
+// SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s
+// timeline (3s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on a coherent end-state (antibodies bound, growth blocked, immune cell
+// recruited) and the five captions read as a static list (需求 13).
+//
+// Accessibility: `role="img"` + `<title>` from `alt` gives assistive tech a
+// description standalone; inside MechanismMedia the <figure> also labels it.
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the antibody shape. The mechanism/steps are
+   * class-level and stay fixed; only this name is parameterized so the SAME
+   * component can be reused across anti-HER2 antibodies. Falls back to the class
+   * default when omitted.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示抗 HER2 抗体贴住癌细胞表面的 HER2,挡住“快生长”信号,并招募免疫细胞清除癌细胞。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps. Each becomes a caption line.
+const steps = [
+  '癌细胞表面 HER2“生长天线”过多',
+  'HER2 不停发出“快生长”信号',
+  '药物(抗体)贴住 HER2',
+  '“快生长”信号被挡住',
+  '并招募免疫细胞清除癌细胞',
+];
+---
+
+<div class="her2">
+  <svg class="her2__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* cancer cell */}
+    <circle class="her2__cell" cx="120" cy="150" r="72" />
+    <text class="her2__t her2__t--cell" x="120" y="176" text-anchor="middle">癌细胞</text>
+    <text class="her2__t her2__t--drug" x="120" y="132" text-anchor="middle">{subject ?? '抗 HER2 抗体'}</text>
+
+    {/* HER2 "growth antennae" on the cell surface (too many) */}
+    <g class="her2__antennas">
+      <line x1="86" y1="96" x2="80" y2="66" /><circle cx="80" cy="62" r="6" />
+      <line x1="120" y1="78" x2="120" y2="52" /><circle cx="120" cy="48" r="6" />
+      <line x1="154" y1="96" x2="160" y2="66" /><circle cx="160" cy="62" r="6" />
+    </g>
+    <text class="her2__t her2__t--small" x="212" y="60" text-anchor="middle">HER2 天线(过多)</text>
+
+    {/* step 1 — highlight rings on the antennae ("too many") */}
+    <g class="her2__s1">
+      <circle cx="80" cy="62" r="12" /><circle cx="120" cy="48" r="12" /><circle cx="160" cy="62" r="12" />
+    </g>
+
+    {/* step 2 — "grow!" arrows shooting up from the antennae */}
+    <g class="her2__growth">
+      <line x1="80" y1="56" x2="80" y2="34" /><polygon points="80,28 74,40 86,40" />
+      <line x1="120" y1="42" x2="120" y2="20" /><polygon points="120,14 114,26 126,26" />
+      <line x1="160" y1="56" x2="160" y2="34" /><polygon points="160,28 154,40 166,40" />
+      <text class="her2__t her2__t--grow" x="212" y="30" text-anchor="middle">快生长!</text>
+    </g>
+
+    {/* step 3 — antibodies stick onto each HER2 knob */}
+    <g class="her2__drug">
+      <path class="her2__ab" d="M80 62 L72 46 M80 62 L88 46" />
+      <path class="her2__ab" d="M120 48 L112 32 M120 48 L128 32" />
+      <path class="her2__ab" d="M160 62 L152 46 M160 62 L168 46" />
+    </g>
+
+    {/* step 4 — the "grow!" signal is blocked (red crosses) */}
+    <g class="her2__block">
+      <line x1="72" y1="30" x2="88" y2="46" /><line x1="88" y1="30" x2="72" y2="46" />
+      <line x1="112" y1="16" x2="128" y2="32" /><line x1="128" y1="16" x2="112" y2="32" />
+      <line x1="152" y1="30" x2="168" y2="46" /><line x1="168" y1="30" x2="152" y2="46" />
+    </g>
+
+    {/* step 5 — an immune cell is recruited and moves in to attack */}
+    <g class="her2__immune">
+      <circle cx="300" cy="168" r="40" />
+      <text class="her2__t her2__t--immune" x="300" y="172" text-anchor="middle">免疫细胞</text>
+      <line class="her2__attack" x1="262" y1="158" x2="196" y2="150" />
+      <polygon class="her2__attack-head" points="190,150 202,144 202,156" />
+    </g>
+  </svg>
+
+  <ol class="her2__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="her2__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .her2 {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .her2__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .her2__cell {
+    fill: #f3e8ff;
+    stroke: #a855f7;
+    stroke-width: 2;
+  }
+  .her2__antennas line {
+    stroke: #7e22ce;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .her2__antennas circle {
+    fill: #7e22ce;
+  }
+  .her2__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .her2__t--cell {
+    fill: #6b21a8;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .her2__t--drug {
+    fill: #0f766e;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .her2__t--small {
+    font-size: 11px;
+    fill: #475569;
+  }
+  .her2__t--grow {
+    fill: #b91c1c;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .her2__t--immune {
+    fill: #075985;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* --- animated layers --------------------------------------------------- */
+  .her2__s1 circle {
+    fill: none;
+    stroke: #ef4444;
+    stroke-width: 2.5;
+  }
+  .her2__s1 {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: her2-pulse var(--dur) infinite;
+  }
+  .her2__growth line {
+    stroke: #16a34a;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .her2__growth polygon {
+    fill: #16a34a;
+  }
+  /* the "grow!" arrows appear at step 2, then dim once blocked (step 4) */
+  .her2__growth {
+    opacity: 0;
+    animation: her2-growth var(--dur) infinite;
+  }
+  .her2__ab {
+    fill: none;
+    stroke: #0f766e;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .her2__drug {
+    opacity: 0;
+    animation: her2-bind var(--dur) infinite;
+  }
+  .her2__block line {
+    stroke: #ef4444;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .her2__block {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: her2-pop var(--dur) infinite;
+  }
+  .her2__immune circle {
+    fill: #e0f2fe;
+    stroke: #0284c7;
+    stroke-width: 2;
+  }
+  .her2__attack {
+    stroke: #dc2626;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .her2__attack-head {
+    fill: #dc2626;
+  }
+  .her2__immune {
+    opacity: 0;
+    animation: her2-immune var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .her2__steps {
+    counter-reset: her2step;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .her2__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    animation: her2-step var(--dur) infinite;
+  }
+  .her2__step::before {
+    counter-increment: her2step;
+    content: counter(her2step);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: her2-badge var(--dur) infinite;
+  }
+  .her2__step:nth-child(1),
+  .her2__step:nth-child(1)::before { animation-delay: 0s; }
+  .her2__step:nth-child(2),
+  .her2__step:nth-child(2)::before { animation-delay: 3s; }
+  .her2__step:nth-child(3),
+  .her2__step:nth-child(3)::before { animation-delay: 6s; }
+  .her2__step:nth-child(4),
+  .her2__step:nth-child(4)::before { animation-delay: 9s; }
+  .her2__step:nth-child(5),
+  .her2__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* step 1 — the antenna highlight rings pulse ("too many") */
+  @keyframes her2-pulse {
+    0% { opacity: 0; transform: scale(0.6); }
+    5% { opacity: 1; transform: scale(1); }
+    12% { opacity: 0.7; transform: scale(1.4); }
+    18% { opacity: 1; transform: scale(1); }
+    22% { opacity: 0; transform: scale(1.5); }
+    100% { opacity: 0; }
+  }
+  /* step 2 — "grow!" arrows appear, stay through step 3, dim at step 4 */
+  @keyframes her2-growth {
+    0%, 18% { opacity: 0; }
+    24% { opacity: 1; }
+    56% { opacity: 1; }
+    62%, 100% { opacity: 0.12; }
+  }
+  /* step 3 — antibodies drop onto the HER2 knobs and stay */
+  @keyframes her2-bind {
+    0%, 36% { opacity: 0; transform: translateY(-16px); }
+    44% { opacity: 1; transform: translateY(3px); }
+    50%, 100% { opacity: 1; transform: translateY(0); }
+  }
+  /* step 4 — the red crosses over the blocked signal pop in */
+  @keyframes her2-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    66% { opacity: 1; transform: scale(1.25); }
+    71%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* step 5 — the immune cell moves in from the right */
+  @keyframes her2-immune {
+    0%, 76% { opacity: 0; transform: translateX(46px); }
+    84% { opacity: 1; transform: translateX(-4px); }
+    89%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes her2-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  @keyframes her2-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .her2 *,
+    .her2__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .her2__step,
+    .her2__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .her2__step { opacity: 1 !important; }
+    /* coherent static end-state: antibodies bound, growth blocked, immune cell in */
+    .her2__drug { opacity: 1 !important; }
+    .her2__block { opacity: 1 !important; }
+    .her2__immune { opacity: 1 !important; }
+    .her2__growth { opacity: 0.12 !important; }
+    /* hide the transient step-1 pulse to avoid a cluttered frame */
+    .her2__s1 { opacity: 0 !important; }
+  }
+</style>

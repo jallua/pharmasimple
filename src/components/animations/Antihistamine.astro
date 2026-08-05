@@ -1,0 +1,130 @@
+---
+// Antihistamine.astro — schematic, self-contained SVG + CSS animation of how an
+// H1 antihistamine (e.g. 奥洛他定 / olopatadine, the antihistamine component of
+// Ryaltris) pre-emptively blocks the histamine H1 receptor on the nasal mucosa,
+// so histamine can no longer dock and the sneezing, runny nose and itch of
+// allergic rhinitis ease (需求 4, 13). SCHEMATIC labelled shapes, inline SVG +
+// scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s timeline
+// (3s each). Under prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示抗组胺药抢先挡住鼻黏膜上的组胺 H1 受体,使组胺接不上受体,打喷嚏、流涕、鼻痒等过敏症状减轻。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '接触过敏原,肥大细胞释放大量组胺',
+  '组胺接上 H1 受体,引起打喷嚏、流涕、鼻痒',
+  '抗组胺药抢先挡住 H1 受体',
+  '组胺接不上受体,信号发不出',
+  '打喷嚏、流涕、鼻痒等过敏症状减轻',
+];
+---
+
+<div class="ah">
+  <svg class="ah__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="ah__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="ah__t ah__t--organ" x="36" y="196" text-anchor="start">鼻黏膜</text>
+    <rect class="ah__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="ah__t ah__t--small" x="208" y="126" text-anchor="middle">组胺 H1 受体</text>
+
+    <g class="ah__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="ah__t ah__t--harm" x="208" y="66" text-anchor="middle">打喷嚏 · 流涕 · 鼻痒</text>
+    </g>
+
+    <g class="ah__dots">
+      <circle class="ah__hist" cx="70" cy="52" r="10" />
+      <circle class="ah__hist" cx="118" cy="36" r="10" />
+      <circle class="ah__hist" cx="96" cy="82" r="10" />
+      <text class="ah__t ah__t--small" x="96" y="16" text-anchor="middle">组胺</text>
+    </g>
+
+    <circle class="ah__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="ah__drug">
+      <rect class="ah__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="ah__t ah__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '抗组胺药'}</text>
+    </g>
+
+    <g class="ah__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="ah__t ah__t--shield" x="208" y="150" text-anchor="middle">挡住</text>
+    </g>
+
+    <g class="ah__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="ah__t ah__t--resolved" x="275" y="50" text-anchor="middle">过敏症状减轻</text>
+    </g>
+  </svg>
+
+  <ol class="ah__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="ah__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .ah {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .ah__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .ah__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .ah__receptor { fill: #64748b; }
+  .ah__t { fill: #1e293b; font-size: 13px; }
+  .ah__t--organ { fill: #475569; font-size: 12px; }
+  .ah__t--small { font-size: 11px; fill: #475569; }
+  .ah__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .ah__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .ah__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .ah__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .ah__hist { fill: #f9a8d4; stroke: #be185d; stroke-width: 1.5; }
+  .ah__dots { animation: ah-drift var(--dur) infinite; }
+  .ah__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .ah__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ah-inflame var(--dur) infinite; }
+  .ah__dock-dot { fill: #f9a8d4; stroke: #be185d; stroke-width: 1.5; opacity: 0; animation: ah-dock var(--dur) infinite; }
+  .ah__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .ah__drug { opacity: 0; animation: ah-bind var(--dur) infinite; }
+  .ah__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .ah__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ah-pop var(--dur) infinite; }
+  .ah__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .ah__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ah-pop-late var(--dur) infinite; }
+  .ah__steps { counter-reset: ahstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .ah__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: ah-step var(--dur) infinite; }
+  .ah__step::before { counter-increment: ahstep; content: counter(ahstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: ah-badge var(--dur) infinite; }
+  .ah__step:nth-child(1), .ah__step:nth-child(1)::before { animation-delay: 0s; }
+  .ah__step:nth-child(2), .ah__step:nth-child(2)::before { animation-delay: 3s; }
+  .ah__step:nth-child(3), .ah__step:nth-child(3)::before { animation-delay: 6s; }
+  .ah__step:nth-child(4), .ah__step:nth-child(4)::before { animation-delay: 9s; }
+  .ah__step:nth-child(5), .ah__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes ah-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes ah-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes ah-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes ah-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes ah-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes ah-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes ah-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes ah-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .ah *, .ah__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .ah__step, .ah__step::before { animation: none !important; transform: none !important; }
+    .ah__step { opacity: 1 !important; }
+    .ah__drug { opacity: 1 !important; }
+    .ah__shield { opacity: 1 !important; }
+    .ah__resolved { opacity: 1 !important; }
+    .ah__harm { opacity: 0 !important; }
+    .ah__dock-dot { opacity: 0 !important; }
+  }
+</style>

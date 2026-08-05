@@ -1,0 +1,130 @@
+---
+// Beta2Agonist.astro — schematic, self-contained SVG + CSS animation of how a
+// β2-adrenergic agonist (e.g. 沙丁胺醇 / salbutamol, 福莫特罗 / formoterol) activates
+// the β2 receptors on airway smooth muscle, so the constricted bronchus relaxes
+// and widens and breathing eases again (需求 4, 13). SCHEMATIC labelled shapes,
+// inline SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a
+// shared 15s timeline (3s each). Under prefers-reduced-motion all motion stops
+// and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 β2 受体激动剂激活气道平滑肌的 β2 受体,痉挛的支气管放松扩张,呼吸恢复顺畅。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '哮喘 / 慢阻肺发作,气道平滑肌收缩变窄',
+  '气流受阻,喘息、气促、胸闷',
+  'β2 受体激动剂激活气道 β2 受体',
+  '平滑肌放松,支气管扩张',
+  '气道变宽,呼吸重新顺畅',
+];
+---
+
+<div class="b2a">
+  <svg class="b2a__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="b2a__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="b2a__t b2a__t--organ" x="36" y="196" text-anchor="start">气道平滑肌</text>
+    <rect class="b2a__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="b2a__t b2a__t--small" x="208" y="126" text-anchor="middle">β2 受体</text>
+
+    <g class="b2a__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="b2a__t b2a__t--inflam" x="208" y="66" text-anchor="middle">支气管收缩 · 喘不上气</text>
+    </g>
+
+    <g class="b2a__dots">
+      <circle class="b2a__lig" cx="70" cy="52" r="10" />
+      <circle class="b2a__lig" cx="118" cy="36" r="10" />
+      <circle class="b2a__lig" cx="96" cy="82" r="10" />
+      <text class="b2a__t b2a__t--small" x="96" y="16" text-anchor="middle">空气</text>
+    </g>
+
+    <circle class="b2a__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="b2a__drug">
+      <rect class="b2a__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="b2a__t b2a__t--drug" x="208" y="232" text-anchor="middle">{subject ?? 'β2 受体激动剂'}</text>
+    </g>
+
+    <g class="b2a__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="b2a__t b2a__t--shield" x="208" y="150" text-anchor="middle">平滑肌放松</text>
+    </g>
+
+    <g class="b2a__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="b2a__t b2a__t--resolved" x="275" y="50" text-anchor="middle">支气管扩张 · 呼吸顺畅</text>
+    </g>
+  </svg>
+
+  <ol class="b2a__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="b2a__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .b2a {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .b2a__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .b2a__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .b2a__receptor { fill: #64748b; }
+  .b2a__t { fill: #1e293b; font-size: 13px; }
+  .b2a__t--organ { fill: #475569; font-size: 12px; }
+  .b2a__t--small { font-size: 11px; fill: #475569; }
+  .b2a__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .b2a__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .b2a__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .b2a__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .b2a__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .b2a__dots { animation: b2a-drift var(--dur) infinite; }
+  .b2a__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .b2a__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: b2a-inflame var(--dur) infinite; }
+  .b2a__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: b2a-dock var(--dur) infinite; }
+  .b2a__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .b2a__drug { opacity: 0; animation: b2a-bind var(--dur) infinite; }
+  .b2a__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .b2a__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: b2a-pop var(--dur) infinite; }
+  .b2a__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .b2a__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: b2a-pop-late var(--dur) infinite; }
+  .b2a__steps { counter-reset: b2astep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .b2a__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: b2a-step var(--dur) infinite; }
+  .b2a__step::before { counter-increment: b2astep; content: counter(b2astep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: b2a-badge var(--dur) infinite; }
+  .b2a__step:nth-child(1), .b2a__step:nth-child(1)::before { animation-delay: 0s; }
+  .b2a__step:nth-child(2), .b2a__step:nth-child(2)::before { animation-delay: 3s; }
+  .b2a__step:nth-child(3), .b2a__step:nth-child(3)::before { animation-delay: 6s; }
+  .b2a__step:nth-child(4), .b2a__step:nth-child(4)::before { animation-delay: 9s; }
+  .b2a__step:nth-child(5), .b2a__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes b2a-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes b2a-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes b2a-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes b2a-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes b2a-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes b2a-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes b2a-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes b2a-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .b2a *, .b2a__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .b2a__step, .b2a__step::before { animation: none !important; transform: none !important; }
+    .b2a__step { opacity: 1 !important; }
+    .b2a__drug { opacity: 1 !important; }
+    .b2a__shield { opacity: 1 !important; }
+    .b2a__resolved { opacity: 1 !important; }
+    .b2a__inflam { opacity: 0 !important; }
+    .b2a__dock-dot { opacity: 0 !important; }
+  }
+</style>

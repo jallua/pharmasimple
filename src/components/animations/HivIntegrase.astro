@@ -1,0 +1,131 @@
+---
+// HivIntegrase.astro — schematic, self-contained SVG + CSS animation of how an
+// HIV integrase strand-transfer inhibitor (INSTI, e.g. 比克替拉韦 / bictegravir)
+// jams HIV integrase so the viral genes can no longer be spliced into the host
+// cell's DNA, and the virus cannot replicate (需求 4, 13). SCHEMATIC labelled
+// shapes, inline SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on
+// a shared 15s timeline (3s each). Under prefers-reduced-motion all motion stops
+// and the diagram freezes on a coherent end-state (drug capping integrase, viral
+// genes blocked, virus unable to replicate).
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 HIV 整合酶抑制剂卡住病毒的整合酶,使病毒基因无法整合进人体细胞的 DNA,病毒因而无法复制。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  'HIV 想在细胞里大量复制',
+  '病毒用"整合酶"把自己的基因插进人体 DNA',
+  '这个药卡住整合酶',
+  '病毒基因插不进去了',
+  '病毒无法复制,数量被压低',
+];
+---
+
+<div class="hiv">
+  <svg class="hiv__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="hiv__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="hiv__t hiv__t--organ" x="36" y="196" text-anchor="start">人体细胞 · DNA</text>
+    <rect class="hiv__enzyme" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="hiv__t hiv__t--small" x="208" y="126" text-anchor="middle">整合酶</text>
+
+    <g class="hiv__insert">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="hiv__t hiv__t--insert" x="208" y="66" text-anchor="middle">把病毒基因插入 DNA</text>
+    </g>
+
+    <g class="hiv__dots">
+      <circle class="hiv__gene" cx="70" cy="52" r="10" />
+      <circle class="hiv__gene" cx="118" cy="36" r="10" />
+      <circle class="hiv__gene" cx="96" cy="82" r="10" />
+      <text class="hiv__t hiv__t--small" x="96" y="16" text-anchor="middle">HIV 病毒基因</text>
+    </g>
+
+    <circle class="hiv__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="hiv__drug">
+      <rect class="hiv__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="hiv__t hiv__t--drug" x="208" y="232" text-anchor="middle">{subject ?? 'HIV 整合酶抑制剂'}</text>
+    </g>
+
+    <g class="hiv__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="hiv__t hiv__t--shield" x="208" y="150" text-anchor="middle">卡住</text>
+    </g>
+
+    <g class="hiv__resolved">
+      <rect x="222" y="30" width="122" height="30" rx="15" />
+      <text class="hiv__t hiv__t--resolved" x="283" y="50" text-anchor="middle">病毒无法复制</text>
+    </g>
+  </svg>
+
+  <ol class="hiv__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="hiv__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .hiv {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .hiv__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .hiv__cell { fill: #eef2ff; stroke: #a5b4fc; stroke-width: 2; }
+  .hiv__enzyme { fill: #64748b; }
+  .hiv__t { fill: #1e293b; font-size: 13px; }
+  .hiv__t--organ { fill: #475569; font-size: 12px; }
+  .hiv__t--small { font-size: 11px; fill: #475569; }
+  .hiv__t--insert { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .hiv__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .hiv__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .hiv__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .hiv__gene { fill: #a78bfa; stroke: #7c3aed; stroke-width: 1.5; }
+  .hiv__dots { animation: hiv-drift var(--dur) infinite; }
+  .hiv__insert polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .hiv__insert { opacity: 0; transform-box: fill-box; transform-origin: center; animation: hiv-inflame var(--dur) infinite; }
+  .hiv__dock-dot { fill: #a78bfa; stroke: #7c3aed; stroke-width: 1.5; opacity: 0; animation: hiv-dock var(--dur) infinite; }
+  .hiv__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .hiv__drug { opacity: 0; animation: hiv-bind var(--dur) infinite; }
+  .hiv__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .hiv__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: hiv-pop var(--dur) infinite; }
+  .hiv__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .hiv__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: hiv-pop-late var(--dur) infinite; }
+  .hiv__steps { counter-reset: hivstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .hiv__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: hiv-step var(--dur) infinite; }
+  .hiv__step::before { counter-increment: hivstep; content: counter(hivstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: hiv-badge var(--dur) infinite; }
+  .hiv__step:nth-child(1), .hiv__step:nth-child(1)::before { animation-delay: 0s; }
+  .hiv__step:nth-child(2), .hiv__step:nth-child(2)::before { animation-delay: 3s; }
+  .hiv__step:nth-child(3), .hiv__step:nth-child(3)::before { animation-delay: 6s; }
+  .hiv__step:nth-child(4), .hiv__step:nth-child(4)::before { animation-delay: 9s; }
+  .hiv__step:nth-child(5), .hiv__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes hiv-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes hiv-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes hiv-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes hiv-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes hiv-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes hiv-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes hiv-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes hiv-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .hiv *, .hiv__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .hiv__step, .hiv__step::before { animation: none !important; transform: none !important; }
+    .hiv__step { opacity: 1 !important; }
+    .hiv__drug { opacity: 1 !important; }
+    .hiv__shield { opacity: 1 !important; }
+    .hiv__resolved { opacity: 1 !important; }
+    .hiv__insert { opacity: 0 !important; }
+    .hiv__dock-dot { opacity: 0 !important; }
+  }
+</style>

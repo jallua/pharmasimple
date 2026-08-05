@@ -1,0 +1,154 @@
+---
+// Pd1CheckpointFcSilent.astro — schematic SVG + CSS animation of an Fc-engineered
+// anti-PD-1 antibody (e.g. 替雷利珠单抗 / tislelizumab, 派安普利单抗 / penpulimab). Like a
+// standard anti-PD-1 it releases the PD-1 "brake" so a T cell attacks the tumour
+// again; ADDITIONALLY its Fc tail is engineered so a macrophage's FcγR cannot grab
+// it — avoiding macrophage-mediated clearance of the very T cells it reactivates
+// (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO JavaScript.
+// Five storyboard steps cycle on a shared 15s timeline (3s each). Under
+// prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 Fc 改造的抗 PD-1 抗体既挡住 PD-1 刹车、让 T 细胞重新攻击癌细胞,其改造过的 Fc 又让巨噬细胞抓不住它,避免起效的 T 细胞被误清除。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '免疫卫兵(T 细胞)发现癌细胞',
+  '癌细胞伸出 PD-L1,踩住 PD-1"刹车"',
+  '卫兵被踩了刹车,停手不打',
+  '抗体挡住刹车;它的 Fc 经过改造,巨噬细胞也抓不住',
+  '卫兵重新清醒、持续攻击(起效的 T 细胞不被误清除)',
+];
+---
+
+<div class="pd1fc">
+  <svg class="pd1fc__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <g class="pd1fc__tcell">
+      <circle class="pd1fc__tcell-body" cx="92" cy="128" r="72" />
+      <text class="pd1fc__t pd1fc__t--cell" x="92" y="132" text-anchor="middle">T 细胞</text>
+    </g>
+
+    <circle class="pd1fc__tumor" cx="300" cy="128" r="60" />
+    <text class="pd1fc__t pd1fc__t--tumor" x="300" y="132" text-anchor="middle">肿瘤细胞</text>
+
+    <rect class="pd1fc__pd1" x="158" y="116" width="18" height="24" rx="3" />
+    <text class="pd1fc__t pd1fc__t--small" x="150" y="104" text-anchor="middle">PD-1</text>
+
+    <rect class="pd1fc__pdl1" x="240" y="120" width="20" height="16" rx="3" />
+    <text class="pd1fc__t pd1fc__t--small" x="250" y="104" text-anchor="middle">PD-L1</text>
+
+    <g class="pd1fc__s1">
+      <line x1="176" y1="90" x2="240" y2="90" />
+      <circle cx="208" cy="90" r="7" />
+    </g>
+
+    <g class="pd1fc__brake">
+      <line class="pd1fc__link" x1="176" y1="128" x2="240" y2="128" />
+      <rect x="150" y="150" width="80" height="24" rx="12" />
+      <text class="pd1fc__t pd1fc__t--brake" x="190" y="167" text-anchor="middle">刹车 · 抑制</text>
+    </g>
+    <circle class="pd1fc__inhibited" cx="92" cy="128" r="72" />
+
+    <g class="pd1fc__drug">
+      <path class="pd1fc__ab" d="M150 210 L150 168 M150 168 L138 150 M150 168 L162 150" />
+      <text class="pd1fc__t pd1fc__t--drug" x="150" y="228" text-anchor="middle">{subject ?? 'Fc 改造抗 PD-1 抗体'}</text>
+    </g>
+
+    <g class="pd1fc__macro">
+      <circle class="pd1fc__macro-body" cx="34" cy="214" r="16" />
+      <text class="pd1fc__t pd1fc__t--macro" x="34" y="218" text-anchor="middle">巨噬</text>
+      <line class="pd1fc__reach" x1="50" y1="208" x2="132" y2="196" />
+      <g class="pd1fc__nograb">
+        <line x1="112" y1="192" x2="124" y2="204" />
+        <line x1="124" y1="192" x2="112" y2="204" />
+      </g>
+    </g>
+
+    <g class="pd1fc__attack">
+      <line x1="176" y1="112" x2="238" y2="98" />
+      <line x1="176" y1="128" x2="240" y2="128" />
+      <line x1="176" y1="144" x2="238" y2="158" />
+      <polygon points="248,128 232,120 234,136" />
+    </g>
+  </svg>
+
+  <ol class="pd1fc__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="pd1fc__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .pd1fc {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .pd1fc__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .pd1fc__tcell-body { fill: #dbeafe; stroke: #3b82f6; stroke-width: 2; }
+  .pd1fc__tumor { fill: #f3e8ff; stroke: #a855f7; stroke-width: 2; }
+  .pd1fc__pd1 { fill: #1d4ed8; }
+  .pd1fc__pdl1 { fill: #9333ea; }
+  .pd1fc__t { fill: #1e293b; font-size: 13px; }
+  .pd1fc__t--cell { fill: #1e3a8a; font-weight: 700; font-size: 15px; }
+  .pd1fc__t--tumor { fill: #6b21a8; font-weight: 700; font-size: 14px; }
+  .pd1fc__t--small { font-size: 11px; fill: #475569; }
+  .pd1fc__s1 line { stroke: #f59e0b; stroke-width: 2.5; stroke-dasharray: 5 4; }
+  .pd1fc__s1 circle { fill: none; stroke: #f59e0b; stroke-width: 2.5; transform-box: fill-box; transform-origin: center; animation: pd1fc-ping var(--dur) infinite; }
+  .pd1fc__s1 { opacity: 0; animation: pd1fc-flash var(--dur) infinite; }
+  .pd1fc__link { stroke: #9333ea; stroke-width: 4; stroke-linecap: round; }
+  .pd1fc__brake rect { fill: #fee2e2; stroke: #ef4444; stroke-width: 1.5; }
+  .pd1fc__t--brake { fill: #b91c1c; font-size: 12px; font-weight: 700; }
+  .pd1fc__brake { opacity: 0; animation: pd1fc-brake var(--dur) infinite; }
+  .pd1fc__inhibited { fill: #64748b; opacity: 0; animation: pd1fc-inhibited var(--dur) infinite; }
+  .pd1fc__ab { fill: none; stroke: #0f766e; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .pd1fc__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .pd1fc__drug { opacity: 0; animation: pd1fc-bind var(--dur) infinite; }
+  .pd1fc__macro-body { fill: #e2e8f0; stroke: #64748b; stroke-width: 2; }
+  .pd1fc__t--macro { fill: #475569; font-size: 10px; }
+  .pd1fc__reach { stroke: #94a3b8; stroke-width: 2; stroke-dasharray: 4 3; }
+  .pd1fc__nograb line { stroke: #dc2626; stroke-width: 2.5; stroke-linecap: round; }
+  .pd1fc__macro { opacity: 0; animation: pd1fc-macro var(--dur) infinite; }
+  .pd1fc__attack line { stroke: #dc2626; stroke-width: 3; stroke-linecap: round; }
+  .pd1fc__attack polygon { fill: #dc2626; }
+  .pd1fc__attack { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pd1fc-pop-late var(--dur) infinite; }
+  .pd1fc__steps { counter-reset: pd1fcstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .pd1fc__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: pd1fc-step var(--dur) infinite; }
+  .pd1fc__step::before { counter-increment: pd1fcstep; content: counter(pd1fcstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: pd1fc-badge var(--dur) infinite; }
+  .pd1fc__step:nth-child(1), .pd1fc__step:nth-child(1)::before { animation-delay: 0s; }
+  .pd1fc__step:nth-child(2), .pd1fc__step:nth-child(2)::before { animation-delay: 3s; }
+  .pd1fc__step:nth-child(3), .pd1fc__step:nth-child(3)::before { animation-delay: 6s; }
+  .pd1fc__step:nth-child(4), .pd1fc__step:nth-child(4)::before { animation-delay: 9s; }
+  .pd1fc__step:nth-child(5), .pd1fc__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes pd1fc-flash { 0% { opacity: 0; } 4% { opacity: 1; } 16% { opacity: 1; } 20% { opacity: 0; } 100% { opacity: 0; } }
+  @keyframes pd1fc-ping { 0%, 20%, 100% { transform: scale(1); } 7% { transform: scale(1.8); } 13% { transform: scale(1); } }
+  @keyframes pd1fc-brake { 0%, 16% { opacity: 0; } 22%, 56% { opacity: 1; } 62%, 100% { opacity: 0; } }
+  @keyframes pd1fc-inhibited { 0%, 16% { opacity: 0; } 22%, 56% { opacity: 0.55; } 62%, 100% { opacity: 0; } }
+  @keyframes pd1fc-bind { 0%, 56% { opacity: 0; transform: translateY(28px); } 63% { opacity: 1; transform: translateY(-4px); } 68%, 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes pd1fc-macro { 0%, 56% { opacity: 0; } 64% { opacity: 1; } 100% { opacity: 1; } }
+  @keyframes pd1fc-pop-late { 0%, 76% { opacity: 0; transform: scale(0.2); } 82% { opacity: 1; transform: scale(1.25); } 87%, 100% { opacity: 1; transform: scale(1); } }
+  @keyframes pd1fc-step { 0%, 17% { opacity: 1; color: #0f766e; font-weight: 700; background: #f0fdfa; transform: scale(1.02); } 20%, 100% { opacity: 0.5; color: #334155; font-weight: 400; background: transparent; transform: scale(1); } }
+  @keyframes pd1fc-badge { 0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); } 20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) {
+    .pd1fc *, .pd1fc__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .pd1fc__step, .pd1fc__step::before { animation: none !important; transform: none !important; }
+    .pd1fc__step { opacity: 1 !important; }
+    .pd1fc__drug { opacity: 1 !important; }
+    .pd1fc__macro { opacity: 1 !important; }
+    .pd1fc__attack { opacity: 1 !important; }
+    .pd1fc__brake { opacity: 0 !important; }
+    .pd1fc__inhibited { opacity: 0 !important; }
+    .pd1fc__s1 { opacity: 0 !important; }
+  }
+</style>

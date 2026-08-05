@@ -1,0 +1,370 @@
+---
+// FactorXaInhibitor.astro — schematic, self-contained SVG + CSS animation of how
+// a factor Xa inhibitor (e.g. 阿哌沙班 / apixaban) blocks one key step of the
+// clotting cascade: factor Xa normally makes thrombin, which turns blood into a
+// clot. The drug jams the Xa step, so less thrombin is made and harmful clots
+// are less likely to form (需求 4, 13).
+//
+// Same design rules as the other animations: SCHEMATIC labelled shapes, inline
+// SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s
+// timeline (3s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on a coherent end-state (drug on Xa, that step blocked, clot not
+// forming) and the five captions read as a static list (需求 13).
+//
+// Accessibility: `role="img"` + `<title>` from `alt` gives assistive tech a
+// description standalone; inside MechanismMedia the <figure> also labels it.
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the drug shape. The mechanism/steps are class-level
+   * and stay fixed; only this name is parameterized so the SAME component can be
+   * reused across factor Xa inhibitors. Falls back to the class default when omitted.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 Ⅹa 因子抑制剂卡住 Ⅹa 因子这一步,减少凝血酶生成,使有害血栓不易形成。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps. Each becomes a caption line.
+const steps = [
+  '血管受损,启动凝血连锁反应',
+  'Ⅹa 因子生成凝血酶',
+  '凝血酶把血液凝成血栓',
+  '药物卡住 Ⅹa 因子这一步',
+  '凝血酶减少,不易形成有害血栓',
+];
+---
+
+<div class="fxa">
+  <svg class="fxa__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* start of the cascade: vessel injury */}
+    <rect class="fxa__box" x="16" y="22" width="112" height="34" rx="8" />
+    <text class="fxa__t fxa__t--box" x="72" y="44" text-anchor="middle">血管受损</text>
+
+    {/* cascade connector into the Xa node (a pulse travels along it at step 1) */}
+    <line class="fxa__wire" x1="120" y1="52" x2="150" y2="86" />
+    <circle class="fxa__pulse" cx="120" cy="52" r="5" />
+
+    {/* factor Xa node (the step the drug blocks) */}
+    <rect class="fxa__xa" x="140" y="86" width="88" height="40" rx="9" />
+    <text class="fxa__t fxa__t--xa" x="184" y="111" text-anchor="middle">Ⅹa 因子</text>
+
+    {/* Xa -> thrombin arrow (this is the step that gets blocked) */}
+    <g class="fxa__arrow-xa">
+      <line x1="184" y1="126" x2="184" y2="146" />
+      <polygon points="184,150 178,140 190,140" />
+    </g>
+
+    {/* thrombin node */}
+    <rect class="fxa__thrombin" x="132" y="150" width="104" height="32" rx="8" />
+    <text class="fxa__t" x="184" y="171" text-anchor="middle">凝血酶</text>
+
+    {/* thrombin -> clot arrow */}
+    <line class="fxa__wire" x1="184" y1="182" x2="184" y2="198" />
+
+    {/* the clot — forms at step 3, then fades once the Xa step is blocked */}
+    <g class="fxa__clot">
+      <path d="M170 214 q-14 -14 2 -22 q6 -12 20 -4 q16 -4 14 14 q6 12 -10 16 q-12 10 -22 -2 z" />
+      <text class="fxa__t fxa__t--small" x="150" y="220" text-anchor="end">血栓</text>
+    </g>
+
+    {/* the drug: slides in from the left and jams the Xa node at step 4 */}
+    <g class="fxa__drug">
+      <rect class="fxa__pill" x="8" y="92" width="106" height="34" rx="10" />
+      <text class="fxa__t fxa__t--drug" x="61" y="113" text-anchor="middle">{subject ?? 'Ⅹa 因子抑制剂'}</text>
+      <line class="fxa__dock" x1="114" y1="108" x2="140" y2="106" />
+    </g>
+
+    {/* step 4 — a red cross over the Xa -> thrombin step (blocked) */}
+    <g class="fxa__block">
+      <line x1="174" y1="128" x2="194" y2="148" />
+      <line x1="194" y1="128" x2="174" y2="148" />
+    </g>
+
+    {/* step 5 — "clot unlikely" badge */}
+    <g class="fxa__safe">
+      <rect x="228" y="150" width="120" height="30" rx="15" />
+      <text class="fxa__t fxa__t--safe" x="288" y="170" text-anchor="middle">不易形成血栓</text>
+    </g>
+  </svg>
+
+  <ol class="fxa__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="fxa__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .fxa {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .fxa__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .fxa__box {
+    fill: #fee2e2;
+    stroke: #ef4444;
+    stroke-width: 1.5;
+  }
+  .fxa__xa {
+    fill: #ffedd5;
+    stroke: #f97316;
+    stroke-width: 2;
+  }
+  .fxa__thrombin {
+    fill: #e0e7ff;
+    stroke: #6366f1;
+    stroke-width: 1.5;
+  }
+  .fxa__wire {
+    stroke: #94a3b8;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  .fxa__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .fxa__t--box {
+    fill: #b91c1c;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .fxa__t--xa {
+    fill: #9a3412;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .fxa__t--small {
+    font-size: 11px;
+    fill: #475569;
+  }
+  .fxa__t--drug {
+    fill: #5b21b6;
+    font-size: 10px;
+  }
+  .fxa__t--safe {
+    fill: #15803d;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* --- animated layers --------------------------------------------------- */
+  .fxa__pulse {
+    fill: #ef4444;
+    opacity: 0;
+    animation: fxa-pulse var(--dur) infinite;
+  }
+  .fxa__arrow-xa line {
+    stroke: #6366f1;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .fxa__arrow-xa polygon {
+    fill: #6366f1;
+  }
+  /* the Xa -> thrombin arrow dims once the drug blocks the step (step 4) */
+  .fxa__arrow-xa {
+    animation: fxa-onoff var(--dur) infinite;
+  }
+  .fxa__clot path {
+    fill: #7f1d1d;
+    stroke: #450a0a;
+    stroke-width: 1.5;
+  }
+  .fxa__clot {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fxa-clot var(--dur) infinite;
+  }
+  .fxa__pill {
+    fill: #ede9fe;
+    stroke: #7c3aed;
+    stroke-width: 2;
+  }
+  .fxa__dock {
+    stroke: #7c3aed;
+    stroke-width: 2;
+    stroke-dasharray: 3 3;
+  }
+  .fxa__drug {
+    opacity: 0;
+    animation: fxa-bind var(--dur) infinite;
+  }
+  .fxa__block line {
+    stroke: #ef4444;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+  }
+  .fxa__block {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fxa-pop var(--dur) infinite;
+  }
+  .fxa__safe rect {
+    fill: #dcfce7;
+    stroke: #22c55e;
+    stroke-width: 2;
+  }
+  .fxa__safe {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fxa-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .fxa__steps {
+    counter-reset: fxastep;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .fxa__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    animation: fxa-step var(--dur) infinite;
+  }
+  .fxa__step::before {
+    counter-increment: fxastep;
+    content: counter(fxastep);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: fxa-badge var(--dur) infinite;
+  }
+  .fxa__step:nth-child(1),
+  .fxa__step:nth-child(1)::before { animation-delay: 0s; }
+  .fxa__step:nth-child(2),
+  .fxa__step:nth-child(2)::before { animation-delay: 3s; }
+  .fxa__step:nth-child(3),
+  .fxa__step:nth-child(3)::before { animation-delay: 6s; }
+  .fxa__step:nth-child(4),
+  .fxa__step:nth-child(4)::before { animation-delay: 9s; }
+  .fxa__step:nth-child(5),
+  .fxa__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* step 1 — a pulse travels along the cascade connector into the Xa node */
+  @keyframes fxa-pulse {
+    0% { opacity: 0; transform: translate(0, 0); }
+    4% { opacity: 1; }
+    16% { opacity: 1; transform: translate(30px, 34px); }
+    20% { opacity: 0; transform: translate(30px, 34px); }
+    100% { opacity: 0; }
+  }
+  /* the Xa -> thrombin arrow is "on" through step 3, dims at step 4 */
+  @keyframes fxa-onoff {
+    0%, 56% { opacity: 1; }
+    62%, 100% { opacity: 0.12; }
+  }
+  /* step 3 — the clot forms (pops in), then fades once the step is blocked */
+  @keyframes fxa-clot {
+    0%, 40% { opacity: 0; transform: scale(0.2); }
+    50% { opacity: 1; transform: scale(1.1); }
+    56%, 74% { opacity: 1; transform: scale(1); }
+    84%, 100% { opacity: 0.12; transform: scale(0.7); }
+  }
+  /* step 4 — the drug slides in from the left and jams the Xa node */
+  @keyframes fxa-bind {
+    0%, 56% { opacity: 0; transform: translateX(-40px); }
+    64% { opacity: 1; transform: translateX(6px); }
+    69%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* step 4 — the red cross over the blocked step pops in */
+  @keyframes fxa-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    66% { opacity: 1; transform: scale(1.3); }
+    71%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* step 5 — the "clot unlikely" badge pops in last */
+  @keyframes fxa-pop-late {
+    0%, 78% { opacity: 0; transform: scale(0); }
+    84% { opacity: 1; transform: scale(1.2); }
+    89%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes fxa-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  @keyframes fxa-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .fxa *,
+    .fxa__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .fxa__step,
+    .fxa__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .fxa__step { opacity: 1 !important; }
+    /* coherent static end-state: drug on Xa, that step blocked, clot prevented */
+    .fxa__drug { opacity: 1 !important; }
+    .fxa__block { opacity: 1 !important; }
+    .fxa__safe { opacity: 1 !important; }
+    .fxa__arrow-xa { opacity: 0.18 !important; }
+    .fxa__clot { opacity: 0.12 !important; }
+    /* hide the transient step-1 pulse to avoid a cluttered frame */
+    .fxa__pulse { opacity: 0 !important; }
+  }
+</style>

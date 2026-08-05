@@ -1,0 +1,86 @@
+{
+  "site": {
+    "title": "药知道",
+    "tagline": "用通俗的比喻和原创动画,讲清药物如何在体内起作用。"
+  },
+  "nav": {
+    "label": "主导航",
+    "home": "首页",
+    "drugs": "药物",
+    "companies": "公司",
+    "search": "搜索",
+    "about": "关于"
+  },
+  "disclaimer": {
+    "title": "免责声明",
+    "body": "本站为科普内容,不构成医疗建议,如有用药与诊疗需求请咨询专业医疗人员。"
+  },
+  "search": {
+    "placeholder": "搜索药品、公司或适应症",
+    "noResults": "未找到相关内容",
+    "label": "站内搜索"
+  },
+  "a11y": {
+    "skipToContent": "跳到主要内容"
+  },
+  "home": {
+    "browseTitle": "开始浏览",
+    "companiesEntry": "按公司浏览药品",
+    "aboutEntry": "了解内容方法与免责声明",
+    "searchHint": "搜索功能即将上线。",
+    "featuredTitle": "示例药物",
+    "featuredLead": "从这些已发布的药物机制开始了解:",
+    "popularTitle": "热门药物",
+    "popularLead": "从这些常用药物直接了解它们怎么起作用:",
+    "byClassTitle": "按作用机制浏览",
+    "viewMechanism": "查看作用机制"
+  },
+  "about": {
+    "title": "关于本站",
+    "methodologyTitle": "内容方法",
+    "methodologyBody": "本站按“公司 → 药品 → 作用机制”组织内容,用通俗比喻与原创示意图/动画分层讲解药物如何在体内起作用。所有机制配图与动画均为原创。内容采用固定的自动审核机制:系统在核对权威来源、通过全部一致性与范围检查后才自动发布,不满足则保持草稿。",
+    "sourcesTitle": "来源与准确性",
+    "sourcesBody": "每个已发布药品机制条目在发布前至少核对两条相互独立的权威来源(监管机构、官方说明书、政府或权威机构、药企官方网站,其中至少一条为监管机构或政府/权威机构),且构建时以代码强制校验;各地区获批适应症以当地最新官方说明书为准。本站尽力保证准确,但科普不能替代专业医疗建议。"
+  },
+  "mechanism": {
+    "heading": "作用机制",
+    "analogy": "一句话比喻",
+    "simple": "通俗版",
+    "advanced": "进阶版"
+  },
+  "citations": {
+    "heading": "参考来源"
+  },
+  "drug": {
+    "indications": "适应症",
+    "indicationsByRegion": "适应症(按获批地区)",
+    "indicationsNote": "各地区获批适应症以当地最新官方说明书为准;本页为科普性归纳,不代表在所有地区均可获得。",
+    "asOf": "截至",
+    "target": "作用靶点",
+    "drugClass": "药物类别",
+    "company": "所属公司",
+    "updated": "更新于"
+  },
+  "drugs": {
+    "indexTitle": "全部药物",
+    "indexLead": "按作用机制分类浏览所有已收录的药物。",
+    "empty": "暂无已发布的药物内容,敬请期待。"
+  },
+  "targetType": {
+    "receptor": "受体",
+    "enzyme": "酶",
+    "ion-channel": "离子通道",
+    "pathway": "信号通路",
+    "protein": "蛋白",
+    "other": "其他"
+  },
+  "company": {
+    "backToIndex": "返回公司索引",
+    "relatedDrugs": "相关药品",
+    "empty": "暂无已发布的公司内容,敬请期待。"
+  },
+  "language": {
+    "label": "语言",
+    "name": "中文"
+  }
+}

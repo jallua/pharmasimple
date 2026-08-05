@@ -1,0 +1,130 @@
+---
+// Il13Inhibitor.astro — schematic SVG + CSS animation of how a selective anti-IL-13
+// antibody (e.g. 曲罗芦单抗 / tralokinumab, 来瑞组单抗 / lebrikizumab) neutralises the
+// IL-13 cytokine itself so it can no longer reach its receptor, calming the type-2
+// skin inflammation of atopic dermatitis — narrower than blocking the shared IL-4Rα
+// receptor (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO
+// JavaScript. Five storyboard steps cycle on a shared 15s timeline (3s each). Under
+// prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示抗 IL-13 抗体牢牢抓住 IL-13 炎症信号,使其接不上受体,特应性皮炎的红斑、瘙痒随之缓解。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '特应性皮炎(湿疹)里,IL-13 这个炎症信号过多',
+  'IL-13 接上受体,放大 2 型炎症(红、痒、屏障受损)',
+  '这个抗体牢牢抓住 IL-13',
+  'IL-13 到不了受体,发不出"发炎"命令',
+  '红斑、瘙痒缓解,皮肤屏障修复',
+];
+---
+
+<div class="il13">
+  <svg class="il13__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="il13__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="il13__t il13__t--organ" x="36" y="196" text-anchor="start">皮肤 / 免疫细胞</text>
+    <rect class="il13__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="il13__t il13__t--small" x="208" y="126" text-anchor="middle">IL-13 受体</text>
+
+    <g class="il13__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="il13__t il13__t--harm" x="208" y="66" text-anchor="middle">湿疹 · 红痒 · 屏障受损</text>
+    </g>
+
+    <g class="il13__dots">
+      <circle class="il13__lig" cx="70" cy="52" r="10" />
+      <circle class="il13__lig" cx="118" cy="36" r="10" />
+      <circle class="il13__lig" cx="96" cy="82" r="10" />
+      <text class="il13__t il13__t--small" x="96" y="16" text-anchor="middle">IL-13 信号</text>
+    </g>
+
+    <circle class="il13__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="il13__drug">
+      <path class="il13__ab" d="M208 214 L208 166 M208 166 L192 142 M208 166 L224 142" />
+      <text class="il13__t il13__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '抗 IL-13 抗体'}</text>
+    </g>
+
+    <g class="il13__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="il13__t il13__t--shield" x="208" y="150" text-anchor="middle">抓住 IL-13</text>
+    </g>
+
+    <g class="il13__resolved">
+      <rect x="222" y="30" width="122" height="30" rx="15" />
+      <text class="il13__t il13__t--resolved" x="283" y="50" text-anchor="middle">红痒缓解</text>
+    </g>
+  </svg>
+
+  <ol class="il13__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="il13__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .il13 {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .il13__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .il13__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .il13__receptor { fill: #64748b; }
+  .il13__t { fill: #1e293b; font-size: 13px; }
+  .il13__t--organ { fill: #475569; font-size: 12px; }
+  .il13__t--small { font-size: 11px; fill: #475569; }
+  .il13__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .il13__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .il13__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .il13__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .il13__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .il13__dots { animation: il13-drift var(--dur) infinite; }
+  .il13__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .il13__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: il13-inflame var(--dur) infinite; }
+  .il13__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: il13-dock var(--dur) infinite; }
+  .il13__ab { fill: none; stroke: #0f766e; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .il13__drug { opacity: 0; animation: il13-bind var(--dur) infinite; }
+  .il13__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .il13__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: il13-pop var(--dur) infinite; }
+  .il13__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .il13__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: il13-pop-late var(--dur) infinite; }
+  .il13__steps { counter-reset: il13step; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .il13__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: il13-step var(--dur) infinite; }
+  .il13__step::before { counter-increment: il13step; content: counter(il13step); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: il13-badge var(--dur) infinite; }
+  .il13__step:nth-child(1), .il13__step:nth-child(1)::before { animation-delay: 0s; }
+  .il13__step:nth-child(2), .il13__step:nth-child(2)::before { animation-delay: 3s; }
+  .il13__step:nth-child(3), .il13__step:nth-child(3)::before { animation-delay: 6s; }
+  .il13__step:nth-child(4), .il13__step:nth-child(4)::before { animation-delay: 9s; }
+  .il13__step:nth-child(5), .il13__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes il13-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes il13-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes il13-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes il13-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes il13-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes il13-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes il13-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes il13-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .il13 *, .il13__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .il13__step, .il13__step::before { animation: none !important; transform: none !important; }
+    .il13__step { opacity: 1 !important; }
+    .il13__drug { opacity: 1 !important; }
+    .il13__shield { opacity: 1 !important; }
+    .il13__resolved { opacity: 1 !important; }
+    .il13__harm { opacity: 0 !important; }
+    .il13__dock-dot { opacity: 0 !important; }
+  }
+</style>

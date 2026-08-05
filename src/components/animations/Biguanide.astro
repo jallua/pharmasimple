@@ -1,0 +1,130 @@
+---
+// Biguanide.astro — schematic, self-contained SVG + CSS animation of how a
+// biguanide (e.g. 二甲双胍 / metformin) mainly reins in the liver's excess
+// glucose production (gluconeogenesis) and improves the body's insulin
+// sensitivity, so blood glucose settles down (需求 4, 13). SCHEMATIC labelled
+// shapes, inline SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on
+// a shared 15s timeline (3s each). Under prefers-reduced-motion all motion stops
+// and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示二甲双胍抑制肝脏过度产糖、并提高胰岛素敏感性,血糖平稳下降。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '2 型糖尿病时,肝脏不停"额外造糖",血糖偏高',
+  '身体对胰岛素不够敏感,糖也难被利用',
+  '二甲双胍主要抑制肝脏"造糖"(糖异生)',
+  '同时提高组织对胰岛素的敏感性',
+  '肝脏少造糖、组织多用糖,血糖平稳下降',
+];
+---
+
+<div class="big">
+  <svg class="big__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="big__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="big__t big__t--organ" x="36" y="196" text-anchor="start">肝细胞</text>
+    <rect class="big__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="big__t big__t--small" x="208" y="126" text-anchor="middle">肝脏产糖(糖异生)</text>
+
+    <g class="big__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="big__t big__t--inflam" x="208" y="66" text-anchor="middle">肝脏产糖过多 · 血糖高</text>
+    </g>
+
+    <g class="big__dots">
+      <circle class="big__lig" cx="70" cy="52" r="10" />
+      <circle class="big__lig" cx="118" cy="36" r="10" />
+      <circle class="big__lig" cx="96" cy="82" r="10" />
+      <text class="big__t big__t--small" x="96" y="16" text-anchor="middle">葡萄糖</text>
+    </g>
+
+    <circle class="big__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="big__drug">
+      <rect class="big__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="big__t big__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '二甲双胍'}</text>
+    </g>
+
+    <g class="big__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="big__t big__t--shield" x="208" y="150" text-anchor="middle">抑制肝脏产糖</text>
+    </g>
+
+    <g class="big__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="big__t big__t--resolved" x="275" y="50" text-anchor="middle">血糖下降 · 胰岛素更敏感</text>
+    </g>
+  </svg>
+
+  <ol class="big__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="big__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .big {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .big__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .big__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .big__receptor { fill: #64748b; }
+  .big__t { fill: #1e293b; font-size: 13px; }
+  .big__t--organ { fill: #475569; font-size: 12px; }
+  .big__t--small { font-size: 11px; fill: #475569; }
+  .big__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .big__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .big__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .big__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .big__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .big__dots { animation: big-drift var(--dur) infinite; }
+  .big__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .big__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: big-inflame var(--dur) infinite; }
+  .big__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: big-dock var(--dur) infinite; }
+  .big__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .big__drug { opacity: 0; animation: big-bind var(--dur) infinite; }
+  .big__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .big__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: big-pop var(--dur) infinite; }
+  .big__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .big__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: big-pop-late var(--dur) infinite; }
+  .big__steps { counter-reset: bigstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .big__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: big-step var(--dur) infinite; }
+  .big__step::before { counter-increment: bigstep; content: counter(bigstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: big-badge var(--dur) infinite; }
+  .big__step:nth-child(1), .big__step:nth-child(1)::before { animation-delay: 0s; }
+  .big__step:nth-child(2), .big__step:nth-child(2)::before { animation-delay: 3s; }
+  .big__step:nth-child(3), .big__step:nth-child(3)::before { animation-delay: 6s; }
+  .big__step:nth-child(4), .big__step:nth-child(4)::before { animation-delay: 9s; }
+  .big__step:nth-child(5), .big__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes big-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes big-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes big-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes big-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes big-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes big-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes big-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes big-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .big *, .big__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .big__step, .big__step::before { animation: none !important; transform: none !important; }
+    .big__step { opacity: 1 !important; }
+    .big__drug { opacity: 1 !important; }
+    .big__shield { opacity: 1 !important; }
+    .big__resolved { opacity: 1 !important; }
+    .big__inflam { opacity: 0 !important; }
+    .big__dock-dot { opacity: 0 !important; }
+  }
+</style>

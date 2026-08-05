@@ -1,0 +1,131 @@
+---
+// CftrModulator.astro — schematic, self-contained SVG + CSS animation of how a
+// CFTR modulator combination (corrector + potentiator, e.g. elexacaftor /
+// tezacaftor / ivacaftor) rescues a misfolded CFTR chloride channel: correctors
+// deliver the channel to the cell surface and the potentiator holds the gate
+// open, so chloride and water flow again and the thick sticky mucus thins
+// (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO
+// JavaScript. Five storyboard steps cycle on a shared 15s timeline (3s each).
+// Under prefers-reduced-motion all motion stops and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 CFTR 校正剂把折叠出错的通道蛋白送到细胞表面,增效剂把通道打开,氯离子和水流出,黏液变稀。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '基因突变让 CFTR 通道折叠出错、到不了表面',
+  '黏液又稠又黏,堵住气道',
+  '"校正剂"把通道正确送到细胞表面',
+  '"增效剂"把通道打开,氯离子和水流出',
+  '黏液变稀,气道逐渐通畅',
+];
+---
+
+<div class="cftr">
+  <svg class="cftr__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="cftr__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="cftr__t cftr__t--organ" x="36" y="196" text-anchor="start">气道上皮细胞</text>
+    <rect class="cftr__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="cftr__t cftr__t--small" x="208" y="126" text-anchor="middle">CFTR 氯离子通道</text>
+
+    <g class="cftr__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="cftr__t cftr__t--inflam" x="208" y="66" text-anchor="middle">又稠又黏的黏液</text>
+    </g>
+
+    <g class="cftr__dots">
+      <circle class="cftr__lig" cx="70" cy="52" r="10" />
+      <circle class="cftr__lig" cx="118" cy="36" r="10" />
+      <circle class="cftr__lig" cx="96" cy="82" r="10" />
+      <text class="cftr__t cftr__t--small" x="96" y="16" text-anchor="middle">氯离子 / 水</text>
+    </g>
+
+    <circle class="cftr__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="cftr__drug">
+      <rect class="cftr__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="cftr__t cftr__t--drug" x="208" y="232" text-anchor="middle">{subject ?? 'CFTR 调节剂'}</text>
+    </g>
+
+    <g class="cftr__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="cftr__t cftr__t--shield" x="208" y="150" text-anchor="middle">通道打开</text>
+    </g>
+
+    <g class="cftr__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="cftr__t cftr__t--resolved" x="275" y="50" text-anchor="middle">黏液变稀 · 气道通畅</text>
+    </g>
+  </svg>
+
+  <ol class="cftr__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="cftr__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .cftr {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .cftr__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .cftr__cell { fill: #ecfeff; stroke: #67e8f9; stroke-width: 2; }
+  .cftr__receptor { fill: #64748b; }
+  .cftr__t { fill: #1e293b; font-size: 13px; }
+  .cftr__t--organ { fill: #475569; font-size: 12px; }
+  .cftr__t--small { font-size: 11px; fill: #475569; }
+  .cftr__t--inflam { fill: #a16207; font-size: 11px; font-weight: 700; }
+  .cftr__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .cftr__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .cftr__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .cftr__lig { fill: #7dd3fc; stroke: #0284c7; stroke-width: 1.5; }
+  .cftr__dots { animation: cftr-drift var(--dur) infinite; }
+  .cftr__inflam polygon { fill: #fde68a; stroke: #ca8a04; stroke-width: 1.5; }
+  .cftr__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: cftr-inflame var(--dur) infinite; }
+  .cftr__dock-dot { fill: #7dd3fc; stroke: #0284c7; stroke-width: 1.5; opacity: 0; animation: cftr-dock var(--dur) infinite; }
+  .cftr__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .cftr__drug { opacity: 0; animation: cftr-bind var(--dur) infinite; }
+  .cftr__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .cftr__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: cftr-pop var(--dur) infinite; }
+  .cftr__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .cftr__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: cftr-pop-late var(--dur) infinite; }
+  .cftr__steps { counter-reset: cftrstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .cftr__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: cftr-step var(--dur) infinite; }
+  .cftr__step::before { counter-increment: cftrstep; content: counter(cftrstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: cftr-badge var(--dur) infinite; }
+  .cftr__step:nth-child(1), .cftr__step:nth-child(1)::before { animation-delay: 0s; }
+  .cftr__step:nth-child(2), .cftr__step:nth-child(2)::before { animation-delay: 3s; }
+  .cftr__step:nth-child(3), .cftr__step:nth-child(3)::before { animation-delay: 6s; }
+  .cftr__step:nth-child(4), .cftr__step:nth-child(4)::before { animation-delay: 9s; }
+  .cftr__step:nth-child(5), .cftr__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes cftr-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes cftr-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes cftr-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes cftr-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes cftr-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes cftr-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes cftr-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes cftr-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .cftr *, .cftr__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .cftr__step, .cftr__step::before { animation: none !important; transform: none !important; }
+    .cftr__step { opacity: 1 !important; }
+    .cftr__drug { opacity: 1 !important; }
+    .cftr__shield { opacity: 1 !important; }
+    .cftr__resolved { opacity: 1 !important; }
+    .cftr__inflam { opacity: 0 !important; }
+    .cftr__dock-dot { opacity: 0 !important; }
+  }
+</style>

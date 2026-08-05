@@ -1,0 +1,131 @@
+---
+// AntisenseOligo.astro — schematic, self-contained SVG + CSS animation of how an
+// antisense oligonucleotide (ASO, e.g. 诺西那生 / nusinersen) corrects SMN2 splicing:
+// in SMA the motor neuron lacks the SMN "survival protein" because the backup
+// gene SMN2 skips exon seven, so the ASO sticks to the SMN2 pre-mRNA, keeps exon
+// seven in, and full-length functional SMN protein is made to help the neuron
+// survive (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO
+// JavaScript. Five storyboard steps cycle on a shared 15s timeline (3s each).
+// Under prefers-reduced-motion all motion stops and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示反义寡核苷酸结合 SMN2 前体 mRNA、纠正剪接,留住第七号外显子,造出完整的 SMN 蛋白帮助运动神经元存活。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  'SMN1 基因缺陷,神经元缺"存活蛋白"',
+  '备用基因 SMN2 漏掉第七号外显子',
+  '这段反义寡核苷酸贴住 SMN2 图纸',
+  '纠正剪接,把第七号外显子留下来',
+  '造出完整 SMN 蛋白,帮神经元存活',
+];
+---
+
+<div class="aso">
+  <svg class="aso__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="aso__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="aso__t aso__t--organ" x="36" y="196" text-anchor="start">运动神经元</text>
+    <rect class="aso__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="aso__t aso__t--small" x="208" y="126" text-anchor="middle">SMN2 前体 mRNA</text>
+
+    <g class="aso__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="aso__t aso__t--inflam" x="208" y="66" text-anchor="middle">缺 SMN · 神经元受损</text>
+    </g>
+
+    <g class="aso__dots">
+      <circle class="aso__lig" cx="70" cy="52" r="10" />
+      <circle class="aso__lig" cx="118" cy="36" r="10" />
+      <circle class="aso__lig" cx="96" cy="82" r="10" />
+      <text class="aso__t aso__t--small" x="96" y="16" text-anchor="middle">SMN 蛋白(偏少)</text>
+    </g>
+
+    <circle class="aso__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="aso__drug">
+      <rect class="aso__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="aso__t aso__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '反义寡核苷酸(ASO)'}</text>
+    </g>
+
+    <g class="aso__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="aso__t aso__t--shield" x="208" y="150" text-anchor="middle">纠正剪接</text>
+    </g>
+
+    <g class="aso__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="aso__t aso__t--resolved" x="275" y="50" text-anchor="middle">造出完整 SMN · 神经元存活</text>
+    </g>
+  </svg>
+
+  <ol class="aso__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="aso__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .aso {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .aso__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .aso__cell { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+  .aso__receptor { fill: #64748b; }
+  .aso__t { fill: #1e293b; font-size: 13px; }
+  .aso__t--organ { fill: #475569; font-size: 12px; }
+  .aso__t--small { font-size: 11px; fill: #475569; }
+  .aso__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .aso__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .aso__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .aso__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .aso__lig { fill: #60a5fa; stroke: #2563eb; stroke-width: 1.5; }
+  .aso__dots { animation: aso-drift var(--dur) infinite; }
+  .aso__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .aso__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: aso-inflame var(--dur) infinite; }
+  .aso__dock-dot { fill: #60a5fa; stroke: #2563eb; stroke-width: 1.5; opacity: 0; animation: aso-dock var(--dur) infinite; }
+  .aso__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .aso__drug { opacity: 0; animation: aso-bind var(--dur) infinite; }
+  .aso__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .aso__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: aso-pop var(--dur) infinite; }
+  .aso__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .aso__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: aso-pop-late var(--dur) infinite; }
+  .aso__steps { counter-reset: asostep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .aso__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: aso-step var(--dur) infinite; }
+  .aso__step::before { counter-increment: asostep; content: counter(asostep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: aso-badge var(--dur) infinite; }
+  .aso__step:nth-child(1), .aso__step:nth-child(1)::before { animation-delay: 0s; }
+  .aso__step:nth-child(2), .aso__step:nth-child(2)::before { animation-delay: 3s; }
+  .aso__step:nth-child(3), .aso__step:nth-child(3)::before { animation-delay: 6s; }
+  .aso__step:nth-child(4), .aso__step:nth-child(4)::before { animation-delay: 9s; }
+  .aso__step:nth-child(5), .aso__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes aso-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes aso-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes aso-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes aso-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes aso-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes aso-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes aso-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes aso-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .aso *, .aso__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .aso__step, .aso__step::before { animation: none !important; transform: none !important; }
+    .aso__step { opacity: 1 !important; }
+    .aso__drug { opacity: 1 !important; }
+    .aso__shield { opacity: 1 !important; }
+    .aso__resolved { opacity: 1 !important; }
+    .aso__inflam { opacity: 0 !important; }
+    .aso__dock-dot { opacity: 0 !important; }
+  }
+</style>

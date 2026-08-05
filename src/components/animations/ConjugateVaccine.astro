@@ -1,0 +1,130 @@
+---
+// ConjugateVaccine.astro — schematic, self-contained SVG + CSS animation of how a
+// pneumococcal polysaccharide conjugate vaccine (e.g. PCV13 / 沃安欣) links the
+// bacterium's sugar coat (polysaccharide) to a carrier protein, recruiting T-cell
+// help so even infants build a strong, lasting immune memory that guards against
+// pneumococcal disease (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped
+// CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s timeline
+// (3s each). Under prefers-reduced-motion all motion stops and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示结合疫苗把细菌糖衣拴到载体蛋白上,调动 T 细胞辅助,产生强而持久的免疫记忆。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '肺炎链球菌外面裹着一层"糖衣"(多糖)',
+  '单给糖衣,婴幼儿免疫系统记不牢',
+  '结合疫苗把糖衣拴到"载体蛋白"上',
+  '调动 T 细胞辅助,产生强而持久的记忆',
+  '日后遇到真细菌,快速拦截、预防感染',
+];
+---
+
+<div class="pcv">
+  <svg class="pcv__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="pcv__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="pcv__t pcv__t--organ" x="36" y="196" text-anchor="start">免疫系统</text>
+    <rect class="pcv__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="pcv__t pcv__t--small" x="208" y="126" text-anchor="middle">T 细胞辅助</text>
+
+    <g class="pcv__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="pcv__t pcv__t--inflam" x="208" y="66" text-anchor="middle">肺炎球菌感染</text>
+    </g>
+
+    <g class="pcv__dots">
+      <circle class="pcv__lig" cx="70" cy="52" r="10" />
+      <circle class="pcv__lig" cx="118" cy="36" r="10" />
+      <circle class="pcv__lig" cx="96" cy="82" r="10" />
+      <text class="pcv__t pcv__t--small" x="96" y="16" text-anchor="middle">细菌糖衣(多糖)</text>
+    </g>
+
+    <circle class="pcv__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="pcv__drug">
+      <rect class="pcv__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="pcv__t pcv__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '肺炎球菌结合疫苗'}</text>
+    </g>
+
+    <g class="pcv__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="pcv__t pcv__t--shield" x="208" y="150" text-anchor="middle">产生强记忆</text>
+    </g>
+
+    <g class="pcv__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="pcv__t pcv__t--resolved" x="275" y="50" text-anchor="middle">持久免疫 · 预防肺炎球菌病</text>
+    </g>
+  </svg>
+
+  <ol class="pcv__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="pcv__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .pcv {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .pcv__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .pcv__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .pcv__receptor { fill: #64748b; }
+  .pcv__t { fill: #1e293b; font-size: 13px; }
+  .pcv__t--organ { fill: #475569; font-size: 12px; }
+  .pcv__t--small { font-size: 11px; fill: #475569; }
+  .pcv__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .pcv__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .pcv__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .pcv__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .pcv__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .pcv__dots { animation: pcv-drift var(--dur) infinite; }
+  .pcv__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .pcv__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pcv-inflame var(--dur) infinite; }
+  .pcv__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: pcv-dock var(--dur) infinite; }
+  .pcv__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .pcv__drug { opacity: 0; animation: pcv-bind var(--dur) infinite; }
+  .pcv__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .pcv__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pcv-pop var(--dur) infinite; }
+  .pcv__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .pcv__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pcv-pop-late var(--dur) infinite; }
+  .pcv__steps { counter-reset: pcvstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .pcv__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: pcv-step var(--dur) infinite; }
+  .pcv__step::before { counter-increment: pcvstep; content: counter(pcvstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: pcv-badge var(--dur) infinite; }
+  .pcv__step:nth-child(1), .pcv__step:nth-child(1)::before { animation-delay: 0s; }
+  .pcv__step:nth-child(2), .pcv__step:nth-child(2)::before { animation-delay: 3s; }
+  .pcv__step:nth-child(3), .pcv__step:nth-child(3)::before { animation-delay: 6s; }
+  .pcv__step:nth-child(4), .pcv__step:nth-child(4)::before { animation-delay: 9s; }
+  .pcv__step:nth-child(5), .pcv__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes pcv-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes pcv-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes pcv-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes pcv-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes pcv-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes pcv-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes pcv-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes pcv-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .pcv *, .pcv__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .pcv__step, .pcv__step::before { animation: none !important; transform: none !important; }
+    .pcv__step { opacity: 1 !important; }
+    .pcv__drug { opacity: 1 !important; }
+    .pcv__shield { opacity: 1 !important; }
+    .pcv__resolved { opacity: 1 !important; }
+    .pcv__inflam { opacity: 0 !important; }
+    .pcv__dock-dot { opacity: 0 !important; }
+  }
+</style>

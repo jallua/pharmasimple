@@ -1,0 +1,130 @@
+---
+// Progestin.astro — schematic, self-contained SVG + CSS animation of how a
+// progestin contraceptive (e.g. 依托孕烯 / etonogestrel, a subdermal implant)
+// releases progestin that binds progesterone receptors, suppresses the ovulation
+// trigger (the LH surge) and thickens cervical mucus, so ovulation is blocked and
+// pregnancy is prevented (需求 4, 13). SCHEMATIC labelled shapes, inline SVG +
+// scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s timeline
+// (3s each). Under prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示皮下埋植持续释放的孕激素结合孕激素受体,压制排卵信号并使宫颈黏液变稠,从而长期避孕。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '正常时,激素周期会触发排卵',
+  '排卵加上通畅的宫颈黏液,才可能怀孕',
+  '埋植持续释放的孕激素结合孕激素受体',
+  '压住排卵信号(LH 峰),宫颈黏液变稠',
+  '不排卵 · 精子难通过,避免怀孕',
+];
+---
+
+<div class="pgn">
+  <svg class="pgn__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="pgn__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="pgn__t pgn__t--organ" x="36" y="196" text-anchor="start">下丘脑 · 垂体</text>
+    <rect class="pgn__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="pgn__t pgn__t--small" x="208" y="126" text-anchor="middle">孕激素受体</text>
+
+    <g class="pgn__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="pgn__t pgn__t--harm" x="208" y="66" text-anchor="middle">排卵信号(LH 峰)</text>
+    </g>
+
+    <g class="pgn__dots">
+      <circle class="pgn__horm" cx="70" cy="52" r="10" />
+      <circle class="pgn__horm" cx="118" cy="36" r="10" />
+      <circle class="pgn__horm" cx="96" cy="82" r="10" />
+      <text class="pgn__t pgn__t--small" x="96" y="16" text-anchor="middle">孕激素(缓释)</text>
+    </g>
+
+    <circle class="pgn__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="pgn__drug">
+      <rect class="pgn__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="pgn__t pgn__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '孕激素'}</text>
+    </g>
+
+    <g class="pgn__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="pgn__t pgn__t--shield" x="208" y="150" text-anchor="middle">压制排卵</text>
+    </g>
+
+    <g class="pgn__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="pgn__t pgn__t--resolved" x="275" y="50" text-anchor="middle">不排卵 · 避免怀孕</text>
+    </g>
+  </svg>
+
+  <ol class="pgn__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="pgn__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .pgn {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .pgn__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .pgn__cell { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+  .pgn__receptor { fill: #64748b; }
+  .pgn__t { fill: #1e293b; font-size: 13px; }
+  .pgn__t--organ { fill: #475569; font-size: 12px; }
+  .pgn__t--small { font-size: 11px; fill: #475569; }
+  .pgn__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .pgn__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .pgn__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .pgn__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .pgn__horm { fill: #f9a8d4; stroke: #be185d; stroke-width: 1.5; }
+  .pgn__dots { animation: pgn-drift var(--dur) infinite; }
+  .pgn__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .pgn__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pgn-inflame var(--dur) infinite; }
+  .pgn__dock-dot { fill: #f9a8d4; stroke: #be185d; stroke-width: 1.5; opacity: 0; animation: pgn-dock var(--dur) infinite; }
+  .pgn__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .pgn__drug { opacity: 0; animation: pgn-bind var(--dur) infinite; }
+  .pgn__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .pgn__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pgn-pop var(--dur) infinite; }
+  .pgn__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .pgn__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pgn-pop-late var(--dur) infinite; }
+  .pgn__steps { counter-reset: pgnstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .pgn__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: pgn-step var(--dur) infinite; }
+  .pgn__step::before { counter-increment: pgnstep; content: counter(pgnstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: pgn-badge var(--dur) infinite; }
+  .pgn__step:nth-child(1), .pgn__step:nth-child(1)::before { animation-delay: 0s; }
+  .pgn__step:nth-child(2), .pgn__step:nth-child(2)::before { animation-delay: 3s; }
+  .pgn__step:nth-child(3), .pgn__step:nth-child(3)::before { animation-delay: 6s; }
+  .pgn__step:nth-child(4), .pgn__step:nth-child(4)::before { animation-delay: 9s; }
+  .pgn__step:nth-child(5), .pgn__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes pgn-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes pgn-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes pgn-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes pgn-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes pgn-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes pgn-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes pgn-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes pgn-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .pgn *, .pgn__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .pgn__step, .pgn__step::before { animation: none !important; transform: none !important; }
+    .pgn__step { opacity: 1 !important; }
+    .pgn__drug { opacity: 1 !important; }
+    .pgn__shield { opacity: 1 !important; }
+    .pgn__resolved { opacity: 1 !important; }
+    .pgn__harm { opacity: 0 !important; }
+    .pgn__dock-dot { opacity: 0 !important; }
+  }
+</style>

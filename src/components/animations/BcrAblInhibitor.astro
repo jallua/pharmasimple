@@ -1,0 +1,430 @@
+---
+// BcrAblInhibitor.astro — schematic, self-contained SVG + CSS animation of how a
+// BCR-ABL inhibitor (e.g. 伊马替尼 / imatinib) works: an abnormal gene builds a
+// BCR-ABL enzyme that is stuck "ON", constantly ordering leukaemia cells to
+// multiply. The drug slots in like a key and switches the enzyme off, the
+// "multiply!" command is cut, and the leukaemia cells stop proliferating
+// (需求 4, 13).
+//
+// Same design rules as the other animations: SCHEMATIC labelled shapes, inline
+// SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s
+// timeline (3s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on a coherent end-state (drug inserted, enzyme off, command cut, cells
+// stopped) and the five captions read as a static list (需求 13).
+//
+// Accessibility: `role="img"` + `<title>` from `alt` gives assistive tech a
+// description standalone; inside MechanismMedia the <figure> also labels it.
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the drug shape. The mechanism/steps are class-level
+   * and stay fixed; only this name is parameterized so the SAME component can be
+   * reused across BCR-ABL inhibitors. Falls back to the class default when omitted.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 BCR-ABL 抑制剂像钥匙一样插入并关停“常开”的 BCR-ABL 酶,切断“快繁殖”命令,使白血病细胞停止增殖。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps. Each becomes a caption line.
+const steps = [
+  '异常基因造出“常开”的 BCR-ABL 酶',
+  '它不停发出“快繁殖”命令',
+  '药物像钥匙插入并关停这台酶',
+  '“快繁殖”命令被切断',
+  '白血病细胞停止增殖',
+];
+---
+
+<div class="bcrabl">
+  <svg class="bcrabl__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* abnormal gene (top) feeding the enzyme */}
+    <rect class="bcrabl__gene" x="16" y="20" width="100" height="30" rx="8" />
+    <text class="bcrabl__t bcrabl__t--gene" x="66" y="40" text-anchor="middle">异常基因</text>
+    <line class="bcrabl__wire" x1="66" y1="50" x2="66" y2="88" />
+    <circle class="bcrabl__gene-pulse" cx="66" cy="52" r="5" />
+
+    {/* the BCR-ABL enzyme "machine" */}
+    <rect class="bcrabl__machine" x="28" y="88" width="132" height="84" rx="12" />
+    <text class="bcrabl__t bcrabl__t--machine" x="94" y="110" text-anchor="middle">BCR-ABL 酶</text>
+
+    {/* enzyme state: stuck ON (green) until the drug switches it OFF (red) */}
+    <g class="bcrabl__state-on">
+      <circle cx="60" cy="140" r="8" />
+      <text class="bcrabl__t bcrabl__t--on" x="108" y="144" text-anchor="middle">常开 ON</text>
+    </g>
+    <g class="bcrabl__state-off">
+      <circle cx="60" cy="140" r="8" />
+      <text class="bcrabl__t bcrabl__t--off" x="108" y="144" text-anchor="middle">关停 OFF</text>
+    </g>
+
+    {/* the drug "key": slides in from the left and switches the enzyme off */}
+    <g class="bcrabl__drug">
+      <circle class="bcrabl__key-handle" cx="8" cy="140" r="8" />
+      <rect class="bcrabl__key-blade" x="14" y="136" width="18" height="8" rx="2" />
+      <text class="bcrabl__t bcrabl__t--drug" x="94" y="190" text-anchor="middle">{subject ?? 'BCR-ABL 抑制剂'}</text>
+    </g>
+
+    {/* "multiply!" command shooting toward the leukaemia cells */}
+    <g class="bcrabl__signal">
+      <line x1="160" y1="120" x2="234" y2="120" />
+      <polygon points="240,120 228,114 228,126" />
+      <text class="bcrabl__t bcrabl__t--cmd" x="198" y="106" text-anchor="middle">快繁殖!</text>
+    </g>
+    <circle class="bcrabl__signal-pulse" cx="164" cy="120" r="5" />
+
+    {/* leukaemia cells (right): a base cluster + extra cells that multiply */}
+    <g class="bcrabl__cells-base">
+      <circle cx="284" cy="122" r="11" /><circle cx="308" cy="140" r="11" /><circle cx="278" cy="150" r="11" />
+    </g>
+    <text class="bcrabl__t bcrabl__t--small" x="292" y="98" text-anchor="middle">白血病细胞</text>
+    <g class="bcrabl__cells-extra">
+      <circle cx="314" cy="114" r="9" /><circle cx="256" cy="134" r="9" /><circle cx="302" cy="168" r="9" /><circle cx="270" cy="174" r="9" />
+    </g>
+
+    {/* step 4 — the "multiply!" command is cut (red cross) */}
+    <g class="bcrabl__block">
+      <line x1="190" y1="110" x2="208" y2="130" /><line x1="208" y1="110" x2="190" y2="130" />
+    </g>
+
+    {/* step 5 — "cells stop proliferating" badge */}
+    <g class="bcrabl__stop">
+      <rect x="232" y="198" width="118" height="30" rx="15" />
+      <text class="bcrabl__t bcrabl__t--stop" x="291" y="218" text-anchor="middle">停止增殖</text>
+    </g>
+  </svg>
+
+  <ol class="bcrabl__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="bcrabl__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .bcrabl {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .bcrabl__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .bcrabl__gene {
+    fill: #ede9fe;
+    stroke: #7c3aed;
+    stroke-width: 1.5;
+  }
+  .bcrabl__machine {
+    fill: #e2e8f0;
+    stroke: #475569;
+    stroke-width: 2;
+  }
+  .bcrabl__wire {
+    stroke: #94a3b8;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  .bcrabl__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .bcrabl__t--gene {
+    fill: #5b21b6;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .bcrabl__t--machine {
+    fill: #0f172a;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .bcrabl__t--on {
+    fill: #15803d;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .bcrabl__t--off {
+    fill: #b91c1c;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .bcrabl__t--drug {
+    fill: #5b21b6;
+    font-size: 11px;
+  }
+  .bcrabl__t--cmd {
+    fill: #b91c1c;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .bcrabl__t--small {
+    font-size: 11px;
+    fill: #475569;
+  }
+  .bcrabl__t--stop {
+    fill: #15803d;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* --- animated layers --------------------------------------------------- */
+  .bcrabl__gene-pulse {
+    fill: #7c3aed;
+    opacity: 0;
+    animation: bcrabl-pulse var(--dur) infinite;
+  }
+  .bcrabl__state-on circle {
+    fill: #22c55e;
+  }
+  .bcrabl__state-on {
+    animation: bcrabl-on var(--dur) infinite;
+  }
+  .bcrabl__state-off circle {
+    fill: #ef4444;
+  }
+  .bcrabl__state-off {
+    opacity: 0;
+    animation: bcrabl-off var(--dur) infinite;
+  }
+  .bcrabl__key-handle {
+    fill: none;
+    stroke: #7c3aed;
+    stroke-width: 3.5;
+  }
+  .bcrabl__key-blade {
+    fill: #7c3aed;
+  }
+  .bcrabl__drug {
+    opacity: 0;
+    animation: bcrabl-bind var(--dur) infinite;
+  }
+  .bcrabl__signal line {
+    stroke: #16a34a;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .bcrabl__signal polygon {
+    fill: #16a34a;
+  }
+  /* the "multiply!" command appears at step 2, then dims once cut (step 4) */
+  .bcrabl__signal {
+    opacity: 0;
+    animation: bcrabl-signal var(--dur) infinite;
+  }
+  .bcrabl__signal-pulse {
+    fill: #16a34a;
+    opacity: 0;
+    animation: bcrabl-travel var(--dur) infinite;
+  }
+  .bcrabl__cells-base circle {
+    fill: #fca5a5;
+    stroke: #dc2626;
+    stroke-width: 1.5;
+  }
+  .bcrabl__cells-extra circle {
+    fill: #fca5a5;
+    stroke: #dc2626;
+    stroke-width: 1.5;
+  }
+  /* extra cells multiply at step 2, then dim once proliferation stops (step 5) */
+  .bcrabl__cells-extra {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bcrabl-extra var(--dur) infinite;
+  }
+  .bcrabl__block line {
+    stroke: #ef4444;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+  }
+  .bcrabl__block {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bcrabl-pop var(--dur) infinite;
+  }
+  .bcrabl__stop rect {
+    fill: #dcfce7;
+    stroke: #22c55e;
+    stroke-width: 2;
+  }
+  .bcrabl__stop {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bcrabl-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .bcrabl__steps {
+    counter-reset: bcrablstep;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .bcrabl__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    animation: bcrabl-step var(--dur) infinite;
+  }
+  .bcrabl__step::before {
+    counter-increment: bcrablstep;
+    content: counter(bcrablstep);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: bcrabl-badge var(--dur) infinite;
+  }
+  .bcrabl__step:nth-child(1),
+  .bcrabl__step:nth-child(1)::before { animation-delay: 0s; }
+  .bcrabl__step:nth-child(2),
+  .bcrabl__step:nth-child(2)::before { animation-delay: 3s; }
+  .bcrabl__step:nth-child(3),
+  .bcrabl__step:nth-child(3)::before { animation-delay: 6s; }
+  .bcrabl__step:nth-child(4),
+  .bcrabl__step:nth-child(4)::before { animation-delay: 9s; }
+  .bcrabl__step:nth-child(5),
+  .bcrabl__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* step 1 — a pulse travels from the gene down into the enzyme */
+  @keyframes bcrabl-pulse {
+    0% { opacity: 0; transform: translateY(0); }
+    4% { opacity: 1; }
+    16% { opacity: 1; transform: translateY(34px); }
+    20% { opacity: 0; transform: translateY(34px); }
+    100% { opacity: 0; }
+  }
+  /* enzyme stuck ON until the drug switches it off (step 3, ~50%) */
+  @keyframes bcrabl-on {
+    0%, 44% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes bcrabl-off {
+    0%, 44% { opacity: 0; }
+    50%, 100% { opacity: 1; }
+  }
+  /* step 2 — the "multiply!" command appears, stays, then dims at step 4 */
+  @keyframes bcrabl-signal {
+    0%, 18% { opacity: 0; }
+    24% { opacity: 1; }
+    56% { opacity: 1; }
+    62%, 100% { opacity: 0.12; }
+  }
+  /* step 2 — a pulse travels along the command toward the cells */
+  @keyframes bcrabl-travel {
+    0%, 20% { opacity: 0; transform: translateX(0); }
+    26% { opacity: 1; }
+    38% { opacity: 1; transform: translateX(68px); }
+    42%, 100% { opacity: 0; transform: translateX(72px); }
+  }
+  /* step 3 — the drug key slides in from the left and stays inserted */
+  @keyframes bcrabl-bind {
+    0%, 36% { opacity: 0; transform: translateX(-40px); }
+    44% { opacity: 1; transform: translateX(5px); }
+    50%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* extra leukaemia cells multiply at step 2, then dim once stopped (step 5) */
+  @keyframes bcrabl-extra {
+    0%, 18% { opacity: 0; transform: scale(0.4); }
+    26% { opacity: 1; transform: scale(1); }
+    74% { opacity: 1; transform: scale(1); }
+    84%, 100% { opacity: 0.12; transform: scale(0.7); }
+  }
+  /* step 4 — the red cross over the cut command pops in */
+  @keyframes bcrabl-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    66% { opacity: 1; transform: scale(1.3); }
+    71%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* step 5 — the "stop proliferating" badge pops in last */
+  @keyframes bcrabl-pop-late {
+    0%, 78% { opacity: 0; transform: scale(0); }
+    84% { opacity: 1; transform: scale(1.2); }
+    89%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes bcrabl-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  @keyframes bcrabl-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .bcrabl *,
+    .bcrabl__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .bcrabl__step,
+    .bcrabl__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .bcrabl__step { opacity: 1 !important; }
+    /* coherent static end-state: key inserted, enzyme OFF, command cut, cells stopped */
+    .bcrabl__drug { opacity: 1 !important; }
+    .bcrabl__state-off { opacity: 1 !important; }
+    .bcrabl__state-on { opacity: 0 !important; }
+    .bcrabl__block { opacity: 1 !important; }
+    .bcrabl__stop { opacity: 1 !important; }
+    .bcrabl__signal { opacity: 0.12 !important; }
+    .bcrabl__cells-extra { opacity: 0.12 !important; }
+    /* hide the transient pulses to avoid a cluttered frame */
+    .bcrabl__gene-pulse,
+    .bcrabl__signal-pulse { opacity: 0 !important; }
+  }
+</style>

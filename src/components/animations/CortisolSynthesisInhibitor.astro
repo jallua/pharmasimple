@@ -1,0 +1,130 @@
+---
+// CortisolSynthesisInhibitor.astro — schematic, self-contained SVG + CSS animation
+// of how a cortisol-synthesis inhibitor (e.g. 奥西洛司他 / osilodrostat) blocks the
+// adrenal enzyme 11β-hydroxylase (CYP11B1) that catalyses the final step of
+// cortisol biosynthesis, so the adrenal gland makes less cortisol and the excess
+// cortisol of Cushing's syndrome falls (需求 4, 13). SCHEMATIC labelled shapes,
+// inline SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared
+// 15s timeline (3s each). Under prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示皮质醇合成抑制剂卡住肾上腺里的 11β-羟化酶,减少皮质醇合成,过高的皮质醇随之下降。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '肾上腺用 11β-羟化酶这台“机器”合成皮质醇',
+  '皮质醇造得过多,引发库欣综合征',
+  '奥西洛司他卡住这台机器',
+  '皮质醇合成的最后一步被拦下',
+  '血里的皮质醇随之下降',
+];
+---
+
+<div class="csi">
+  <svg class="csi__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="csi__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="csi__t csi__t--organ" x="36" y="196" text-anchor="start">肾上腺</text>
+    <rect class="csi__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="csi__t csi__t--small" x="208" y="126" text-anchor="middle">11β-羟化酶</text>
+
+    <g class="csi__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="csi__t csi__t--harm" x="208" y="66" text-anchor="middle">皮质醇过多 · 库欣</text>
+    </g>
+
+    <g class="csi__dots">
+      <circle class="csi__cort" cx="70" cy="52" r="10" />
+      <circle class="csi__cort" cx="118" cy="36" r="10" />
+      <circle class="csi__cort" cx="96" cy="82" r="10" />
+      <text class="csi__t csi__t--small" x="96" y="16" text-anchor="middle">皮质醇</text>
+    </g>
+
+    <circle class="csi__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="csi__drug">
+      <rect class="csi__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="csi__t csi__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '皮质醇合成抑制剂'}</text>
+    </g>
+
+    <g class="csi__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="csi__t csi__t--shield" x="208" y="150" text-anchor="middle">停工</text>
+    </g>
+
+    <g class="csi__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="csi__t csi__t--resolved" x="275" y="50" text-anchor="middle">皮质醇下降</text>
+    </g>
+  </svg>
+
+  <ol class="csi__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="csi__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .csi {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .csi__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .csi__cell { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+  .csi__receptor { fill: #64748b; }
+  .csi__t { fill: #1e293b; font-size: 13px; }
+  .csi__t--organ { fill: #475569; font-size: 12px; }
+  .csi__t--small { font-size: 11px; fill: #475569; }
+  .csi__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .csi__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .csi__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .csi__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .csi__cort { fill: #fbbf24; stroke: #b45309; stroke-width: 1.5; }
+  .csi__dots { animation: csi-drift var(--dur) infinite; }
+  .csi__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .csi__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: csi-inflame var(--dur) infinite; }
+  .csi__dock-dot { fill: #fbbf24; stroke: #b45309; stroke-width: 1.5; opacity: 0; animation: csi-dock var(--dur) infinite; }
+  .csi__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .csi__drug { opacity: 0; animation: csi-bind var(--dur) infinite; }
+  .csi__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .csi__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: csi-pop var(--dur) infinite; }
+  .csi__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .csi__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: csi-pop-late var(--dur) infinite; }
+  .csi__steps { counter-reset: csistep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .csi__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: csi-step var(--dur) infinite; }
+  .csi__step::before { counter-increment: csistep; content: counter(csistep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: csi-badge var(--dur) infinite; }
+  .csi__step:nth-child(1), .csi__step:nth-child(1)::before { animation-delay: 0s; }
+  .csi__step:nth-child(2), .csi__step:nth-child(2)::before { animation-delay: 3s; }
+  .csi__step:nth-child(3), .csi__step:nth-child(3)::before { animation-delay: 6s; }
+  .csi__step:nth-child(4), .csi__step:nth-child(4)::before { animation-delay: 9s; }
+  .csi__step:nth-child(5), .csi__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes csi-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes csi-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes csi-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes csi-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes csi-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes csi-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes csi-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes csi-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .csi *, .csi__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .csi__step, .csi__step::before { animation: none !important; transform: none !important; }
+    .csi__step { opacity: 1 !important; }
+    .csi__drug { opacity: 1 !important; }
+    .csi__shield { opacity: 1 !important; }
+    .csi__resolved { opacity: 1 !important; }
+    .csi__harm { opacity: 0 !important; }
+    .csi__dock-dot { opacity: 0 !important; }
+  }
+</style>

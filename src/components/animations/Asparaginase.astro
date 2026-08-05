@@ -1,0 +1,130 @@
+---
+// Asparaginase.astro — schematic, self-contained SVG + CSS animation of how
+// asparaginase (e.g. 门冬酰胺酶 / asparaginase erwinia) breaks down the asparagine
+// in the blood, so leukaemia lymphoblasts — which cannot make their own
+// asparagine and depend on the blood supply — are starved and undergo apoptosis
+// (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO JavaScript.
+// Five storyboard steps cycle on a shared 15s timeline (3s each). Under
+// prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示门冬酰胺酶把血里的天冬酰胺分解掉,依赖外来天冬酰胺的白血病细胞因此断粮、停止增殖并凋亡。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '白血病细胞几乎不能自己合成天冬酰胺',
+  '它们靠血里的天冬酰胺“讨饭”存活、增殖',
+  '门冬酰胺酶把血里的天冬酰胺分解掉',
+  '白血病细胞断了养料来源',
+  '缺养料的白血病细胞停止增殖、凋亡',
+];
+---
+
+<div class="asp">
+  <svg class="asp__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="asp__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="asp__t asp__t--organ" x="36" y="196" text-anchor="start">白血病细胞</text>
+    <rect class="asp__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="asp__t asp__t--small" x="208" y="126" text-anchor="middle">天冬酰胺合成酶(缺)</text>
+
+    <g class="asp__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="asp__t asp__t--harm" x="208" y="66" text-anchor="middle">白血病细胞增殖</text>
+    </g>
+
+    <g class="asp__dots">
+      <circle class="asp__nutri" cx="70" cy="52" r="10" />
+      <circle class="asp__nutri" cx="118" cy="36" r="10" />
+      <circle class="asp__nutri" cx="96" cy="82" r="10" />
+      <text class="asp__t asp__t--small" x="96" y="16" text-anchor="middle">天冬酰胺(养料)</text>
+    </g>
+
+    <circle class="asp__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="asp__drug">
+      <rect class="asp__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="asp__t asp__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '门冬酰胺酶'}</text>
+    </g>
+
+    <g class="asp__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="asp__t asp__t--shield" x="208" y="150" text-anchor="middle">断粮</text>
+    </g>
+
+    <g class="asp__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="asp__t asp__t--resolved" x="275" y="50" text-anchor="middle">白血病细胞凋亡</text>
+    </g>
+  </svg>
+
+  <ol class="asp__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="asp__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .asp {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .asp__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .asp__cell { fill: #faf5ff; stroke: #d8b4fe; stroke-width: 2; }
+  .asp__receptor { fill: #64748b; }
+  .asp__t { fill: #1e293b; font-size: 13px; }
+  .asp__t--organ { fill: #475569; font-size: 12px; }
+  .asp__t--small { font-size: 11px; fill: #475569; }
+  .asp__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .asp__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .asp__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .asp__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .asp__nutri { fill: #86efac; stroke: #16a34a; stroke-width: 1.5; }
+  .asp__dots { animation: asp-drift var(--dur) infinite; }
+  .asp__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .asp__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: asp-inflame var(--dur) infinite; }
+  .asp__dock-dot { fill: #86efac; stroke: #16a34a; stroke-width: 1.5; opacity: 0; animation: asp-dock var(--dur) infinite; }
+  .asp__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .asp__drug { opacity: 0; animation: asp-bind var(--dur) infinite; }
+  .asp__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .asp__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: asp-pop var(--dur) infinite; }
+  .asp__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .asp__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: asp-pop-late var(--dur) infinite; }
+  .asp__steps { counter-reset: aspstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .asp__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: asp-step var(--dur) infinite; }
+  .asp__step::before { counter-increment: aspstep; content: counter(aspstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: asp-badge var(--dur) infinite; }
+  .asp__step:nth-child(1), .asp__step:nth-child(1)::before { animation-delay: 0s; }
+  .asp__step:nth-child(2), .asp__step:nth-child(2)::before { animation-delay: 3s; }
+  .asp__step:nth-child(3), .asp__step:nth-child(3)::before { animation-delay: 6s; }
+  .asp__step:nth-child(4), .asp__step:nth-child(4)::before { animation-delay: 9s; }
+  .asp__step:nth-child(5), .asp__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes asp-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes asp-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes asp-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes asp-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes asp-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes asp-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes asp-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes asp-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .asp *, .asp__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .asp__step, .asp__step::before { animation: none !important; transform: none !important; }
+    .asp__step { opacity: 1 !important; }
+    .asp__drug { opacity: 1 !important; }
+    .asp__shield { opacity: 1 !important; }
+    .asp__resolved { opacity: 1 !important; }
+    .asp__harm { opacity: 0 !important; }
+    .asp__dock-dot { opacity: 0 !important; }
+  }
+</style>

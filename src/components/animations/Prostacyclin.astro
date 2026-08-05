@@ -1,0 +1,130 @@
+---
+// Prostacyclin.astro — schematic, self-contained SVG + CSS animation of how a
+// prostacyclin analogue (曲前列尼尔 / treprostinil) activates the pulmonary
+// artery's IP receptor, relaxing the smooth muscle and curbing overgrowth so the
+// pulmonary artery pressure falls (需求 4, 13). SCHEMATIC labelled shapes, inline
+// SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s
+// timeline (3s each). Under prefers-reduced-motion all motion stops and the
+// diagram freezes on a coherent end-state.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示前列环素类似物激活肺动脉的 IP 受体,肺动脉平滑肌舒张、抑制增生,肺动脉压下降。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '肺动脉高压时,肺里的小动脉收缩、增厚',
+  '右心要更用力泵血,负担加重',
+  '前列环素类似物激活血管的 IP 受体',
+  '肺动脉平滑肌舒张、抑制异常增生',
+  '肺动脉压下降,心脏负担减轻',
+];
+---
+
+<div class="pgi">
+  <svg class="pgi__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="pgi__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="pgi__t pgi__t--organ" x="36" y="196" text-anchor="start">肺动脉平滑肌</text>
+    <rect class="pgi__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="pgi__t pgi__t--small" x="208" y="126" text-anchor="middle">IP 受体(前列环素)</text>
+
+    <g class="pgi__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="pgi__t pgi__t--inflam" x="208" y="66" text-anchor="middle">肺动脉收缩 · 肺高压</text>
+    </g>
+
+    <g class="pgi__dots">
+      <circle class="pgi__lig" cx="70" cy="52" r="10" />
+      <circle class="pgi__lig" cx="118" cy="36" r="10" />
+      <circle class="pgi__lig" cx="96" cy="82" r="10" />
+      <text class="pgi__t pgi__t--small" x="96" y="16" text-anchor="middle">前列环素信号</text>
+    </g>
+
+    <circle class="pgi__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="pgi__drug">
+      <rect class="pgi__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="pgi__t pgi__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '前列环素类似物'}</text>
+    </g>
+
+    <g class="pgi__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="pgi__t pgi__t--shield" x="208" y="150" text-anchor="middle">血管舒张 · 抑制增生</text>
+    </g>
+
+    <g class="pgi__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="pgi__t pgi__t--resolved" x="275" y="50" text-anchor="middle">肺动脉压下降 · 供血改善</text>
+    </g>
+  </svg>
+
+  <ol class="pgi__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="pgi__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .pgi {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .pgi__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .pgi__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .pgi__receptor { fill: #64748b; }
+  .pgi__t { fill: #1e293b; font-size: 13px; }
+  .pgi__t--organ { fill: #475569; font-size: 12px; }
+  .pgi__t--small { font-size: 11px; fill: #475569; }
+  .pgi__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .pgi__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .pgi__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .pgi__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .pgi__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .pgi__dots { animation: pgi-drift var(--dur) infinite; }
+  .pgi__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .pgi__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pgi-inflame var(--dur) infinite; }
+  .pgi__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: pgi-dock var(--dur) infinite; }
+  .pgi__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .pgi__drug { opacity: 0; animation: pgi-bind var(--dur) infinite; }
+  .pgi__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .pgi__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pgi-pop var(--dur) infinite; }
+  .pgi__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .pgi__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pgi-pop-late var(--dur) infinite; }
+  .pgi__steps { counter-reset: pgistep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .pgi__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: pgi-step var(--dur) infinite; }
+  .pgi__step::before { counter-increment: pgistep; content: counter(pgistep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: pgi-badge var(--dur) infinite; }
+  .pgi__step:nth-child(1), .pgi__step:nth-child(1)::before { animation-delay: 0s; }
+  .pgi__step:nth-child(2), .pgi__step:nth-child(2)::before { animation-delay: 3s; }
+  .pgi__step:nth-child(3), .pgi__step:nth-child(3)::before { animation-delay: 6s; }
+  .pgi__step:nth-child(4), .pgi__step:nth-child(4)::before { animation-delay: 9s; }
+  .pgi__step:nth-child(5), .pgi__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes pgi-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes pgi-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes pgi-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes pgi-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes pgi-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes pgi-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes pgi-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes pgi-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .pgi *, .pgi__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .pgi__step, .pgi__step::before { animation: none !important; transform: none !important; }
+    .pgi__step { opacity: 1 !important; }
+    .pgi__drug { opacity: 1 !important; }
+    .pgi__shield { opacity: 1 !important; }
+    .pgi__resolved { opacity: 1 !important; }
+    .pgi__inflam { opacity: 0 !important; }
+    .pgi__dock-dot { opacity: 0 !important; }
+  }
+</style>

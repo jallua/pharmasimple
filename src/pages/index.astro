@@ -1,0 +1,94 @@
+---
+// Home (需求 9 / 1): hero + prominent search, then two drug-first browse
+// sections — "热门药物" (the most prominent published drugs, straight to their
+// mechanism pages) and "按作用机制浏览" (one chip per published drug class,
+// linking to the all-drugs index) — followed by the smaller company/about
+// entry cards. Popularity ordering + class grouping come from the pure
+// `sortByPopularity` / `groupByDrugClass` helpers (published-only, P1).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Search from '../components/Search.astro';
+import { getCollection } from 'astro:content';
+import { sortByPopularity, groupByDrugClass, slugOf, toDrugUrl } from '../lib/catalog';
+import { t } from '../lib/i18n';
+
+const locale = 'zh';
+
+const allDrugs = await getCollection('drugs');
+// Up to 8 most-prominent published drugs for the "热门药物" grid.
+const popular = sortByPopularity(allDrugs).slice(0, 8);
+// Distinct published drug classes (most-prominent class first), for browse chips.
+const drugClasses = groupByDrugClass(allDrugs)
+  .map((group) => group.drugClass)
+  .filter((drugClass) => drugClass.length > 0);
+---
+
+<BaseLayout title={t(locale, 'site.title')} locale={locale}>
+  <section class="hero">
+    <h1>{t(locale, 'site.title')}</h1>
+    <p class="hero__tagline">{t(locale, 'site.tagline')}</p>
+  </section>
+
+  <section id="search" class="home-search" aria-label={t(locale, 'nav.search')}>
+    <h2>{t(locale, 'nav.search')}</h2>
+    <Search locale={locale} />
+  </section>
+
+  {
+    popular.length > 0 && (
+      <section class="featured" aria-label={t(locale, 'home.popularTitle')}>
+        <h2>{t(locale, 'home.popularTitle')}</h2>
+        <p class="featured__lead">{t(locale, 'home.popularLead')}</p>
+        <ul class="featured__list">
+          {popular.map((drug) => (
+            <li>
+              <a class="card featured__card" href={toDrugUrl(slugOf(drug))}>
+                <span class="featured__name">{drug.data.genericName}</span>
+                {drug.data.brandName && (
+                  <span class="featured__brand">{drug.data.brandName}</span>
+                )}
+                {drug.data.drugClass && <span class="chip">{drug.data.drugClass}</span>}
+                {drug.data.summary && (
+                  <span class="featured__summary">{drug.data.summary}</span>
+                )}
+                <span class="featured__cta">{t(locale, 'home.viewMechanism')} &rarr;</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    drugClasses.length > 0 && (
+      <section class="by-class" aria-label={t(locale, 'home.byClassTitle')}>
+        <h2>{t(locale, 'home.byClassTitle')}</h2>
+        <ul class="by-class__list">
+          {drugClasses.map((drugClass) => (
+            <li>
+              <a class="chip by-class__chip" href="/drugs">{drugClass}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <nav class="home-entries" aria-label={t(locale, 'home.browseTitle')}>
+    <h2>{t(locale, 'home.browseTitle')}</h2>
+    <ul>
+      <li>
+        <a class="card" href="/companies">
+          <span class="home-entries__title">{t(locale, 'nav.companies')}</span>
+          <span class="home-entries__desc">{t(locale, 'home.companiesEntry')}</span>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="/about">
+          <span class="home-entries__title">{t(locale, 'nav.about')}</span>
+          <span class="home-entries__desc">{t(locale, 'home.aboutEntry')}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</BaseLayout>

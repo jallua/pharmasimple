@@ -1,0 +1,31 @@
+---
+// LanguageSwitcher.astro — renders language options only when the site actually
+// ships more than one locale (需求 10). With just 'zh' today, `hasMultipleLocales`
+// is false and this component renders nothing, keeping the switcher hidden.
+import { hasMultipleLocales, locales, t } from '../lib/i18n';
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = 'zh' } = Astro.props;
+
+/** Root-relative path for a locale (default locale lives at '/'). */
+const localeHref = (l: string): string => (l === 'zh' ? '/' : `/${l}/`);
+---
+
+{
+  hasMultipleLocales && (
+    <nav class="language-switcher" aria-label={t(locale, 'language.label')}>
+      <ul>
+        {locales.map((l) => (
+          <li>
+            <a href={localeHref(l)} hreflang={l} aria-current={l === locale ? 'true' : undefined}>
+              {t(l, 'language.name')}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

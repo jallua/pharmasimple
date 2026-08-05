@@ -1,0 +1,130 @@
+---
+// ClottingFactor.astro — schematic, self-contained SVG + CSS animation of how a
+// recombinant clotting-factor replacement (e.g. 重组凝血因子IX / albutrepenonacog
+// alfa) supplies the missing factor IX in haemophilia B, filling the gap in the
+// coagulation cascade so the clotting "relay" runs to completion and a clot forms
+// to stop bleeding (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped
+// CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s timeline
+// (3s each). Under prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示补充的重组凝血因子IX补上凝血级联中缺失的一环,让凝血接力重新接上,形成血凝块、止血。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '血管破了,靠“凝血级联”层层接力止血',
+  '血友病乙缺凝血因子IX,接力中断、出血不止',
+  '输入重组凝血因子IX,补上缺的那一环',
+  '凝血级联重新接上、继续往下传',
+  '形成血凝块,出血停止',
+];
+---
+
+<div class="clf">
+  <svg class="clf__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="clf__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="clf__t clf__t--organ" x="36" y="196" text-anchor="start">血管破损处</text>
+    <rect class="clf__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="clf__t clf__t--small" x="208" y="126" text-anchor="middle">凝血级联(缺 IX)</text>
+
+    <g class="clf__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="clf__t clf__t--harm" x="208" y="66" text-anchor="middle">缺因子IX · 出血不止</text>
+    </g>
+
+    <g class="clf__dots">
+      <circle class="clf__fac" cx="70" cy="52" r="10" />
+      <circle class="clf__fac" cx="118" cy="36" r="10" />
+      <circle class="clf__fac" cx="96" cy="82" r="10" />
+      <text class="clf__t clf__t--small" x="96" y="16" text-anchor="middle">凝血因子</text>
+    </g>
+
+    <circle class="clf__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="clf__drug">
+      <rect class="clf__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="clf__t clf__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '重组凝血因子IX'}</text>
+    </g>
+
+    <g class="clf__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="clf__t clf__t--shield" x="208" y="150" text-anchor="middle">补上IX</text>
+    </g>
+
+    <g class="clf__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="clf__t clf__t--resolved" x="275" y="50" text-anchor="middle">血液凝固 · 止血</text>
+    </g>
+  </svg>
+
+  <ol class="clf__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="clf__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .clf {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .clf__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .clf__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .clf__receptor { fill: #64748b; }
+  .clf__t { fill: #1e293b; font-size: 13px; }
+  .clf__t--organ { fill: #475569; font-size: 12px; }
+  .clf__t--small { font-size: 11px; fill: #475569; }
+  .clf__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .clf__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .clf__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .clf__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .clf__fac { fill: #a78bfa; stroke: #6d28d9; stroke-width: 1.5; }
+  .clf__dots { animation: clf-drift var(--dur) infinite; }
+  .clf__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .clf__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: clf-inflame var(--dur) infinite; }
+  .clf__dock-dot { fill: #a78bfa; stroke: #6d28d9; stroke-width: 1.5; opacity: 0; animation: clf-dock var(--dur) infinite; }
+  .clf__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .clf__drug { opacity: 0; animation: clf-bind var(--dur) infinite; }
+  .clf__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .clf__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: clf-pop var(--dur) infinite; }
+  .clf__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .clf__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: clf-pop-late var(--dur) infinite; }
+  .clf__steps { counter-reset: clfstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .clf__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: clf-step var(--dur) infinite; }
+  .clf__step::before { counter-increment: clfstep; content: counter(clfstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: clf-badge var(--dur) infinite; }
+  .clf__step:nth-child(1), .clf__step:nth-child(1)::before { animation-delay: 0s; }
+  .clf__step:nth-child(2), .clf__step:nth-child(2)::before { animation-delay: 3s; }
+  .clf__step:nth-child(3), .clf__step:nth-child(3)::before { animation-delay: 6s; }
+  .clf__step:nth-child(4), .clf__step:nth-child(4)::before { animation-delay: 9s; }
+  .clf__step:nth-child(5), .clf__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes clf-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes clf-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes clf-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes clf-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes clf-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes clf-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes clf-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes clf-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .clf *, .clf__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .clf__step, .clf__step::before { animation: none !important; transform: none !important; }
+    .clf__step { opacity: 1 !important; }
+    .clf__drug { opacity: 1 !important; }
+    .clf__shield { opacity: 1 !important; }
+    .clf__resolved { opacity: 1 !important; }
+    .clf__harm { opacity: 0 !important; }
+    .clf__dock-dot { opacity: 0 !important; }
+  }
+</style>

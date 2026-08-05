@@ -1,0 +1,129 @@
+---
+// AspirinCox.astro — schematic, self-contained SVG + CSS animation of how aspirin
+// (乙酰水杨酸 / acetylsalicylic acid) irreversibly switches off platelet COX, so
+// thromboxane falls, platelets aggregate less, and clot (heart-attack / stroke)
+// risk drops (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS,
+// NO JavaScript. Five storyboard steps cycle on a shared 15s timeline (3s each).
+// Under prefers-reduced-motion all motion stops and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示阿司匹林不可逆地关闭血小板的 COX 酶,血栓素减少、血小板不易聚集,血栓风险下降。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '血小板靠 COX 酶生成"血栓素"',
+  '血栓素让血小板抱团,易形成血栓',
+  '阿司匹林不可逆地关闭 COX 酶',
+  '血栓素减少,血小板不易聚集',
+  '血栓风险下降,预防心梗、中风',
+];
+---
+
+<div class="asa">
+  <svg class="asa__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="asa__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="asa__t asa__t--organ" x="36" y="196" text-anchor="start">血小板</text>
+    <rect class="asa__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="asa__t asa__t--small" x="208" y="126" text-anchor="middle">环氧合酶(COX)</text>
+
+    <g class="asa__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="asa__t asa__t--inflam" x="208" y="66" text-anchor="middle">血栓素 · 血小板聚集</text>
+    </g>
+
+    <g class="asa__dots">
+      <circle class="asa__lig" cx="70" cy="52" r="10" />
+      <circle class="asa__lig" cx="118" cy="36" r="10" />
+      <circle class="asa__lig" cx="96" cy="82" r="10" />
+      <text class="asa__t asa__t--small" x="96" y="16" text-anchor="middle">花生四烯酸</text>
+    </g>
+
+    <circle class="asa__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="asa__drug">
+      <rect class="asa__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="asa__t asa__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '阿司匹林'}</text>
+    </g>
+
+    <g class="asa__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="asa__t asa__t--shield" x="208" y="150" text-anchor="middle">COX 被关闭</text>
+    </g>
+
+    <g class="asa__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="asa__t asa__t--resolved" x="275" y="50" text-anchor="middle">血小板不易聚集 · 少血栓</text>
+    </g>
+  </svg>
+
+  <ol class="asa__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="asa__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .asa {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .asa__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .asa__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .asa__receptor { fill: #64748b; }
+  .asa__t { fill: #1e293b; font-size: 13px; }
+  .asa__t--organ { fill: #475569; font-size: 12px; }
+  .asa__t--small { font-size: 11px; fill: #475569; }
+  .asa__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .asa__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .asa__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .asa__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .asa__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .asa__dots { animation: asa-drift var(--dur) infinite; }
+  .asa__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .asa__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: asa-inflame var(--dur) infinite; }
+  .asa__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: asa-dock var(--dur) infinite; }
+  .asa__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .asa__drug { opacity: 0; animation: asa-bind var(--dur) infinite; }
+  .asa__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .asa__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: asa-pop var(--dur) infinite; }
+  .asa__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .asa__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: asa-pop-late var(--dur) infinite; }
+  .asa__steps { counter-reset: asastep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .asa__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: asa-step var(--dur) infinite; }
+  .asa__step::before { counter-increment: asastep; content: counter(asastep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: asa-badge var(--dur) infinite; }
+  .asa__step:nth-child(1), .asa__step:nth-child(1)::before { animation-delay: 0s; }
+  .asa__step:nth-child(2), .asa__step:nth-child(2)::before { animation-delay: 3s; }
+  .asa__step:nth-child(3), .asa__step:nth-child(3)::before { animation-delay: 6s; }
+  .asa__step:nth-child(4), .asa__step:nth-child(4)::before { animation-delay: 9s; }
+  .asa__step:nth-child(5), .asa__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes asa-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes asa-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes asa-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes asa-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes asa-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes asa-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes asa-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes asa-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .asa *, .asa__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .asa__step, .asa__step::before { animation: none !important; transform: none !important; }
+    .asa__step { opacity: 1 !important; }
+    .asa__drug { opacity: 1 !important; }
+    .asa__shield { opacity: 1 !important; }
+    .asa__resolved { opacity: 1 !important; }
+    .asa__inflam { opacity: 0 !important; }
+    .asa__dock-dot { opacity: 0 !important; }
+  }
+</style>

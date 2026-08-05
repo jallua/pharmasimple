@@ -1,0 +1,130 @@
+---
+// Serd.astro — schematic, self-contained SVG + CSS animation of how a selective
+// estrogen receptor degrader (SERD, e.g. 艾拉司群 / elacestrant) binds the estrogen
+// receptor (ER), not only blocking it but driving its degradation, so the
+// estrogen signal that fuels ER-positive breast cancer is cut off and tumour
+// proliferation is suppressed (需求 4, 13). SCHEMATIC labelled shapes, inline SVG +
+// scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s timeline
+// (3s each). Under prefers-reduced-motion all motion stops and the diagram freezes.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 SERD 结合雌激素受体并促其降解,切断雌激素信号,ER 阳性乳腺癌细胞增殖受到抑制。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  'ER 阳性乳腺癌靠雌激素经 ER 发出"增殖"信号',
+  '即使内分泌治疗后,突变 ER 仍驱动生长',
+  'SERD 结合雌激素受体(ER)',
+  '不仅阻断,还促使 ER 被降解、数量减少',
+  '雌激素信号被切断,癌细胞增殖受抑',
+];
+---
+
+<div class="serd">
+  <svg class="serd__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="serd__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="serd__t serd__t--organ" x="36" y="196" text-anchor="start">ER 阳性乳腺癌细胞</text>
+    <rect class="serd__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="serd__t serd__t--small" x="208" y="126" text-anchor="middle">雌激素受体(ER)</text>
+
+    <g class="serd__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="serd__t serd__t--inflam" x="208" y="66" text-anchor="middle">雌激素信号 · 增殖</text>
+    </g>
+
+    <g class="serd__dots">
+      <circle class="serd__lig" cx="70" cy="52" r="10" />
+      <circle class="serd__lig" cx="118" cy="36" r="10" />
+      <circle class="serd__lig" cx="96" cy="82" r="10" />
+      <text class="serd__t serd__t--small" x="96" y="16" text-anchor="middle">雌激素</text>
+    </g>
+
+    <circle class="serd__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="serd__drug">
+      <rect class="serd__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="serd__t serd__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '雌激素受体降解剂(SERD)'}</text>
+    </g>
+
+    <g class="serd__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="serd__t serd__t--shield" x="208" y="150" text-anchor="middle">结合并降解 ER</text>
+    </g>
+
+    <g class="serd__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="serd__t serd__t--resolved" x="275" y="50" text-anchor="middle">信号切断 · 增殖受抑</text>
+    </g>
+  </svg>
+
+  <ol class="serd__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="serd__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .serd {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .serd__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .serd__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .serd__receptor { fill: #64748b; }
+  .serd__t { fill: #1e293b; font-size: 13px; }
+  .serd__t--organ { fill: #475569; font-size: 12px; }
+  .serd__t--small { font-size: 11px; fill: #475569; }
+  .serd__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .serd__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .serd__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .serd__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .serd__lig { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .serd__dots { animation: serd-drift var(--dur) infinite; }
+  .serd__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .serd__inflam { opacity: 0; transform-box: fill-box; transform-origin: center; animation: serd-inflame var(--dur) infinite; }
+  .serd__dock-dot { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; opacity: 0; animation: serd-dock var(--dur) infinite; }
+  .serd__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .serd__drug { opacity: 0; animation: serd-bind var(--dur) infinite; }
+  .serd__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .serd__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: serd-pop var(--dur) infinite; }
+  .serd__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .serd__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: serd-pop-late var(--dur) infinite; }
+  .serd__steps { counter-reset: serdstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .serd__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: serd-step var(--dur) infinite; }
+  .serd__step::before { counter-increment: serdstep; content: counter(serdstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: serd-badge var(--dur) infinite; }
+  .serd__step:nth-child(1), .serd__step:nth-child(1)::before { animation-delay: 0s; }
+  .serd__step:nth-child(2), .serd__step:nth-child(2)::before { animation-delay: 3s; }
+  .serd__step:nth-child(3), .serd__step:nth-child(3)::before { animation-delay: 6s; }
+  .serd__step:nth-child(4), .serd__step:nth-child(4)::before { animation-delay: 9s; }
+  .serd__step:nth-child(5), .serd__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes serd-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes serd-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes serd-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes serd-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes serd-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes serd-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes serd-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes serd-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .serd *, .serd__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .serd__step, .serd__step::before { animation: none !important; transform: none !important; }
+    .serd__step { opacity: 1 !important; }
+    .serd__drug { opacity: 1 !important; }
+    .serd__shield { opacity: 1 !important; }
+    .serd__resolved { opacity: 1 !important; }
+    .serd__inflam { opacity: 0 !important; }
+    .serd__dock-dot { opacity: 0 !important; }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+// Citations.astro — renders a list of sources (需求 6 / P2 display side).
+//
+// Each source shows its title; when a `url` is present the title becomes a
+// clickable link. When there are no (usable) citations, the component renders
+// nothing at all — no empty heading, no empty list.
+import type { Citation } from '../lib/catalog';
+import { citationsToViewModel } from '../lib/citations';
+import { t } from '../lib/i18n';
+
+interface Props {
+  citations?: Citation[];
+  locale?: string;
+  heading?: string;
+}
+
+const { citations = [], locale = 'zh', heading } = Astro.props;
+const items = citationsToViewModel(citations);
+const headingText = heading ?? t(locale, 'citations.heading');
+---
+
+{
+  items.length > 0 && (
+    <section class="citations" aria-label={headingText}>
+      <h2 class="citations__heading">{headingText}</h2>
+      <ol class="citations__list">
+        {items.map((c) => (
+          <li class="citations__item">
+            {c.hasLink ? (
+              <a href={c.url} rel="noopener noreferrer" target="_blank">
+                {c.title}
+              </a>
+            ) : (
+              <span>{c.title}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}

@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+import Disclaimer from '../components/Disclaimer.astro';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import { defaultLocale, t } from '../lib/i18n';
+
+interface Props {
+  title?: string;
+  locale?: string;
+}
+
+const { title, locale = defaultLocale } = Astro.props;
+const resolvedTitle = title ?? t(locale, 'site.title');
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{resolvedTitle}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{t(locale, 'a11y.skipToContent')}</a>
+    <header>
+      <nav aria-label={t(locale, 'nav.label')}>
+        <a href="/" class="site-title">{t(locale, 'site.title')}</a>
+        <ul>
+          <li><a href="/drugs">{t(locale, 'nav.drugs')}</a></li>
+          <li><a href="/companies">{t(locale, 'nav.companies')}</a></li>
+          <li><a href="/#search">{t(locale, 'nav.search')}</a></li>
+          <li><a href="/about">{t(locale, 'nav.about')}</a></li>
+        </ul>
+        <LanguageSwitcher locale={locale} />
+      </nav>
+    </header>
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <footer>
+      <Disclaimer locale={locale} variant="footer" />
+    </footer>
+  </body>
+</html>

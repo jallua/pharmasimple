@@ -1,0 +1,130 @@
+---
+// Immunoglobulin.astro — schematic, self-contained SVG + CSS animation of how a
+// pooled human immunoglobulin (IgG) replacement (e.g. 人免疫球蛋白 / Gamunex-C)
+// supplies the antibodies a person with primary immunodeficiency cannot make, so
+// the transfused antibodies recognise and clear pathogens and infections fall
+// (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO JavaScript.
+// Five storyboard steps cycle on a shared 15s timeline (3s each). Under
+// prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示输入的混合免疫球蛋白(抗体)识别并结合病原体,将其中和清除,免疫缺陷患者的感染随之减少。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '免疫缺陷患者自身抗体太少',
+  '抵抗力弱,反复、严重感染',
+  '输入健康血浆提纯的混合免疫球蛋白(抗体)',
+  '这些抗体识别并结合病原体',
+  '病原体被中和清除,感染减少',
+];
+---
+
+<div class="ivig">
+  <svg class="ivig__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="ivig__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="ivig__t ivig__t--organ" x="36" y="196" text-anchor="start">血液 / 免疫系统</text>
+    <rect class="ivig__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="ivig__t ivig__t--small" x="208" y="126" text-anchor="middle">病原体(抗原)</text>
+
+    <g class="ivig__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="ivig__t ivig__t--harm" x="208" y="66" text-anchor="middle">抗体不足 · 反复感染</text>
+    </g>
+
+    <g class="ivig__dots">
+      <circle class="ivig__germ" cx="70" cy="52" r="10" />
+      <circle class="ivig__germ" cx="118" cy="36" r="10" />
+      <circle class="ivig__germ" cx="96" cy="82" r="10" />
+      <text class="ivig__t ivig__t--small" x="96" y="16" text-anchor="middle">病原体</text>
+    </g>
+
+    <circle class="ivig__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="ivig__drug">
+      <path class="ivig__ab" d="M208 214 L208 166 M208 166 L192 142 M208 166 L224 142" />
+      <text class="ivig__t ivig__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '免疫球蛋白(IgG)'}</text>
+    </g>
+
+    <g class="ivig__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="ivig__t ivig__t--shield" x="208" y="150" text-anchor="middle">中和</text>
+    </g>
+
+    <g class="ivig__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="ivig__t ivig__t--resolved" x="275" y="50" text-anchor="middle">感染减少</text>
+    </g>
+  </svg>
+
+  <ol class="ivig__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="ivig__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .ivig {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .ivig__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .ivig__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .ivig__receptor { fill: #64748b; }
+  .ivig__t { fill: #1e293b; font-size: 13px; }
+  .ivig__t--organ { fill: #475569; font-size: 12px; }
+  .ivig__t--small { font-size: 11px; fill: #475569; }
+  .ivig__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .ivig__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .ivig__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .ivig__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .ivig__germ { fill: #fb923c; stroke: #c2410c; stroke-width: 1.5; }
+  .ivig__dots { animation: ivig-drift var(--dur) infinite; }
+  .ivig__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .ivig__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ivig-inflame var(--dur) infinite; }
+  .ivig__dock-dot { fill: #fb923c; stroke: #c2410c; stroke-width: 1.5; opacity: 0; animation: ivig-dock var(--dur) infinite; }
+  .ivig__ab { fill: none; stroke: #0f766e; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .ivig__drug { opacity: 0; animation: ivig-bind var(--dur) infinite; }
+  .ivig__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .ivig__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ivig-pop var(--dur) infinite; }
+  .ivig__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .ivig__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ivig-pop-late var(--dur) infinite; }
+  .ivig__steps { counter-reset: ivigstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .ivig__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: ivig-step var(--dur) infinite; }
+  .ivig__step::before { counter-increment: ivigstep; content: counter(ivigstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: ivig-badge var(--dur) infinite; }
+  .ivig__step:nth-child(1), .ivig__step:nth-child(1)::before { animation-delay: 0s; }
+  .ivig__step:nth-child(2), .ivig__step:nth-child(2)::before { animation-delay: 3s; }
+  .ivig__step:nth-child(3), .ivig__step:nth-child(3)::before { animation-delay: 6s; }
+  .ivig__step:nth-child(4), .ivig__step:nth-child(4)::before { animation-delay: 9s; }
+  .ivig__step:nth-child(5), .ivig__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes ivig-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes ivig-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes ivig-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes ivig-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes ivig-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes ivig-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes ivig-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes ivig-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .ivig *, .ivig__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .ivig__step, .ivig__step::before { animation: none !important; transform: none !important; }
+    .ivig__step { opacity: 1 !important; }
+    .ivig__drug { opacity: 1 !important; }
+    .ivig__shield { opacity: 1 !important; }
+    .ivig__resolved { opacity: 1 !important; }
+    .ivig__harm { opacity: 0 !important; }
+    .ivig__dock-dot { opacity: 0 !important; }
+  }
+</style>

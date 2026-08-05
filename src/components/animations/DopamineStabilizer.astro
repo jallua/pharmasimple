@@ -1,0 +1,131 @@
+---
+// DopamineStabilizer.astro — schematic, self-contained SVG + CSS animation of how
+// a dopamine D2 partial agonist ("dopamine system stabilizer", e.g. 阿立哌唑 /
+// aripiprazole) occupies the D2 receptor and reins in excessive dopamine
+// signaling (linked to hallucinations/delusions), bringing it toward a stable
+// mid-level (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO
+// JavaScript. Five storyboard steps cycle on a shared 15s timeline (3s each).
+// Under prefers-reduced-motion all motion stops and the diagram freezes on a
+// coherent end-state (drug occupying D2, excess signal calmed/stabilized).
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示阿立哌唑占住多巴胺 D2 受体,把过强的多巴胺信号调节到适中稳定的水平。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '多巴胺信号过强,易出现幻觉、妄想',
+  '多巴胺不停激活 D2 受体',
+  '这个药占住 D2 受体(部分激动)',
+  '过强的多巴胺信号被调稳',
+  '症状趋于稳定',
+];
+---
+
+<div class="dopa">
+  <svg class="dopa__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="dopa__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="dopa__t dopa__t--organ" x="36" y="196" text-anchor="start">脑神经细胞</text>
+    <rect class="dopa__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="dopa__t dopa__t--small" x="208" y="126" text-anchor="middle">多巴胺 D2 受体</text>
+
+    <g class="dopa__over">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="dopa__t dopa__t--over" x="208" y="66" text-anchor="middle">信号过强 · 幻觉妄想</text>
+    </g>
+
+    <g class="dopa__dots">
+      <circle class="dopa__da" cx="70" cy="52" r="10" />
+      <circle class="dopa__da" cx="118" cy="36" r="10" />
+      <circle class="dopa__da" cx="96" cy="82" r="10" />
+      <text class="dopa__t dopa__t--small" x="96" y="16" text-anchor="middle">多巴胺</text>
+    </g>
+
+    <circle class="dopa__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="dopa__drug">
+      <rect class="dopa__pill" x="192" y="138" width="32" height="16" rx="8" />
+      <text class="dopa__t dopa__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '多巴胺 D2 部分激动剂'}</text>
+    </g>
+
+    <g class="dopa__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="dopa__t dopa__t--shield" x="208" y="150" text-anchor="middle">调稳</text>
+    </g>
+
+    <g class="dopa__resolved">
+      <rect x="222" y="30" width="122" height="30" rx="15" />
+      <text class="dopa__t dopa__t--resolved" x="283" y="50" text-anchor="middle">信号趋于稳定</text>
+    </g>
+  </svg>
+
+  <ol class="dopa__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="dopa__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .dopa {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .dopa__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .dopa__cell { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+  .dopa__receptor { fill: #64748b; }
+  .dopa__t { fill: #1e293b; font-size: 13px; }
+  .dopa__t--organ { fill: #475569; font-size: 12px; }
+  .dopa__t--small { font-size: 11px; fill: #475569; }
+  .dopa__t--over { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .dopa__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .dopa__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .dopa__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .dopa__da { fill: #a78bfa; stroke: #7c3aed; stroke-width: 1.5; }
+  .dopa__dots { animation: dopa-drift var(--dur) infinite; }
+  .dopa__over polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .dopa__over { opacity: 0; transform-box: fill-box; transform-origin: center; animation: dopa-inflame var(--dur) infinite; }
+  .dopa__dock-dot { fill: #a78bfa; stroke: #7c3aed; stroke-width: 1.5; opacity: 0; animation: dopa-dock var(--dur) infinite; }
+  .dopa__pill { fill: #99f6e4; stroke: #0f766e; stroke-width: 2.5; }
+  .dopa__drug { opacity: 0; animation: dopa-bind var(--dur) infinite; }
+  .dopa__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .dopa__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: dopa-pop var(--dur) infinite; }
+  .dopa__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .dopa__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: dopa-pop-late var(--dur) infinite; }
+  .dopa__steps { counter-reset: dopastep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .dopa__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: dopa-step var(--dur) infinite; }
+  .dopa__step::before { counter-increment: dopastep; content: counter(dopastep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: dopa-badge var(--dur) infinite; }
+  .dopa__step:nth-child(1), .dopa__step:nth-child(1)::before { animation-delay: 0s; }
+  .dopa__step:nth-child(2), .dopa__step:nth-child(2)::before { animation-delay: 3s; }
+  .dopa__step:nth-child(3), .dopa__step:nth-child(3)::before { animation-delay: 6s; }
+  .dopa__step:nth-child(4), .dopa__step:nth-child(4)::before { animation-delay: 9s; }
+  .dopa__step:nth-child(5), .dopa__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes dopa-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes dopa-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes dopa-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes dopa-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes dopa-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes dopa-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes dopa-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes dopa-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .dopa *, .dopa__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .dopa__step, .dopa__step::before { animation: none !important; transform: none !important; }
+    .dopa__step { opacity: 1 !important; }
+    .dopa__drug { opacity: 1 !important; }
+    .dopa__shield { opacity: 1 !important; }
+    .dopa__resolved { opacity: 1 !important; }
+    .dopa__over { opacity: 0 !important; }
+    .dopa__dock-dot { opacity: 0 !important; }
+  }
+</style>

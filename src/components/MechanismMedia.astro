@@ -1,0 +1,73 @@
+---
+// MechanismMedia.astro — mechanism figures/animations (Task 6.2 / 需求 4, 13).
+//
+// Media is OPTIONAL. This component renders ONLY code-verified, ready content:
+//   - a registered animation: `type: 'animation'`, not `in-progress`, AND whose
+//     `animationKey` resolves in the registry (correctness property P6 — a
+//     mismatched/unknown animation is never rendered), or
+//   - an image: `type: 'image'` with a `src`.
+// Anything else (no media at all, an unresolved animation key, an in-progress or
+// bare placeholder entry) renders NOTHING — there is no "in preparation" /
+// "动画制作中" placeholder. Every rendered item still exposes its `alt` text
+// (需求 4.3 / 13.1 / P5): the <figure> carries `aria-label={alt}` and images set
+// `alt`.
+import type { Media } from '../lib/catalog';
+import { getAnimation } from './animations';
+import { t } from '../lib/i18n';
+
+interface Props {
+  media?: Media[];
+  locale?: string;
+  heading?: string;
+  /**
+   * Optional subject label forwarded to the animation component as `subject`
+   * (typically the drug's genericName). Lets one class-level animation be reused
+   * across drugs while showing the correct drug name; when omitted the animation
+   * falls back to its class default.
+   */
+  subjectLabel?: string;
+}
+
+const { media = [], locale = 'zh', heading, subjectLabel } = Astro.props;
+const headingText = heading ?? t(locale, 'mechanism.heading');
+
+/** A ready animation renders only when its key resolves in the registry (P6). */
+const resolveAnimation = (item: Media) =>
+  item.type === 'animation' && item.status !== 'in-progress'
+    ? getAnimation(item.animationKey)
+    : undefined;
+
+const isImage = (item: Media): boolean => item.type === 'image' && !!item.src;
+
+// Only render the section when at least one item is real, ready content.
+const hasRenderable = media.some((item) => resolveAnimation(item) || isImage(item));
+---
+
+{
+  hasRenderable && (
+    <section class="mechanism-media" aria-label={headingText}>
+      {media.map((item) => {
+        const AnimationComponent = resolveAnimation(item);
+        if (!AnimationComponent && !isImage(item)) return null;
+        return (
+          <figure class="mechanism-media__item" aria-label={item.alt}>
+            {AnimationComponent ? (
+              <AnimationComponent alt={item.alt} caption={item.caption} subject={subjectLabel} />
+            ) : (
+              <img
+                class="mechanism-media__image"
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+            {item.caption && (
+              <figcaption class="mechanism-media__caption">{item.caption}</figcaption>
+            )}
+          </figure>
+        );
+      })}
+    </section>
+  )
+}

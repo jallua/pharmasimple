@@ -1,0 +1,131 @@
+---
+// CgrpInhibitor.astro — schematic, self-contained SVG + CSS animation of how an
+// anti-CGRP antibody (e.g. 瑞玛奈珠单抗 / fremanezumab) binds and neutralizes the
+// CGRP signaling peptide so it can no longer activate its receptor and trigger a
+// migraine (需求 4, 13). SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO
+// JavaScript. Five storyboard steps cycle on a shared 15s timeline (3s each).
+// Under prefers-reduced-motion all motion stops and the diagram freezes on a
+// coherent end-state (antibody guarding the receptor, CGRP blocked, migraine
+// prevented).
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示抗 CGRP 抗体把 CGRP 信号分子拦下、使其无法激活受体,从而预防偏头痛。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  'CGRP 信号增多,引发偏头痛',
+  'CGRP 接上神经/血管的受体,放大疼痛、扩张血管',
+  '这个抗体把 CGRP 拦下',
+  'CGRP 到不了受体',
+  '偏头痛被预防,发作减少',
+];
+---
+
+<div class="cgrp">
+  <svg class="cgrp__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="cgrp__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="cgrp__t cgrp__t--organ" x="36" y="196" text-anchor="start">神经末梢 / 脑血管</text>
+    <rect class="cgrp__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="cgrp__t cgrp__t--small" x="208" y="126" text-anchor="middle">CGRP 受体</text>
+
+    <g class="cgrp__pain">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="cgrp__t cgrp__t--pain" x="208" y="66" text-anchor="middle">偏头痛发作</text>
+    </g>
+
+    <g class="cgrp__dots">
+      <circle class="cgrp__lig" cx="70" cy="52" r="10" />
+      <circle class="cgrp__lig" cx="118" cy="36" r="10" />
+      <circle class="cgrp__lig" cx="96" cy="82" r="10" />
+      <text class="cgrp__t cgrp__t--small" x="96" y="16" text-anchor="middle">CGRP 信号</text>
+    </g>
+
+    <circle class="cgrp__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="cgrp__drug">
+      <path class="cgrp__ab" d="M208 214 L208 166 M208 166 L192 142 M208 166 L224 142" />
+      <text class="cgrp__t cgrp__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '抗 CGRP 抗体'}</text>
+    </g>
+
+    <g class="cgrp__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="cgrp__t cgrp__t--shield" x="208" y="150" text-anchor="middle">拦下</text>
+    </g>
+
+    <g class="cgrp__resolved">
+      <rect x="222" y="30" width="122" height="30" rx="15" />
+      <text class="cgrp__t cgrp__t--resolved" x="283" y="50" text-anchor="middle">偏头痛被预防</text>
+    </g>
+  </svg>
+
+  <ol class="cgrp__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="cgrp__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .cgrp {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .cgrp__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .cgrp__cell { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+  .cgrp__receptor { fill: #64748b; }
+  .cgrp__t { fill: #1e293b; font-size: 13px; }
+  .cgrp__t--organ { fill: #475569; font-size: 12px; }
+  .cgrp__t--small { font-size: 11px; fill: #475569; }
+  .cgrp__t--pain { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .cgrp__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .cgrp__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .cgrp__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .cgrp__lig { fill: #f472b6; stroke: #be185d; stroke-width: 1.5; }
+  .cgrp__dots { animation: cgrp-drift var(--dur) infinite; }
+  .cgrp__pain polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .cgrp__pain { opacity: 0; transform-box: fill-box; transform-origin: center; animation: cgrp-inflame var(--dur) infinite; }
+  .cgrp__dock-dot { fill: #f472b6; stroke: #be185d; stroke-width: 1.5; opacity: 0; animation: cgrp-dock var(--dur) infinite; }
+  .cgrp__ab { fill: none; stroke: #0f766e; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .cgrp__drug { opacity: 0; animation: cgrp-bind var(--dur) infinite; }
+  .cgrp__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .cgrp__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: cgrp-pop var(--dur) infinite; }
+  .cgrp__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .cgrp__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: cgrp-pop-late var(--dur) infinite; }
+  .cgrp__steps { counter-reset: cgrpstep; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .cgrp__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: cgrp-step var(--dur) infinite; }
+  .cgrp__step::before { counter-increment: cgrpstep; content: counter(cgrpstep); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: cgrp-badge var(--dur) infinite; }
+  .cgrp__step:nth-child(1), .cgrp__step:nth-child(1)::before { animation-delay: 0s; }
+  .cgrp__step:nth-child(2), .cgrp__step:nth-child(2)::before { animation-delay: 3s; }
+  .cgrp__step:nth-child(3), .cgrp__step:nth-child(3)::before { animation-delay: 6s; }
+  .cgrp__step:nth-child(4), .cgrp__step:nth-child(4)::before { animation-delay: 9s; }
+  .cgrp__step:nth-child(5), .cgrp__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes cgrp-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes cgrp-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes cgrp-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes cgrp-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes cgrp-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes cgrp-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes cgrp-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes cgrp-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .cgrp *, .cgrp__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .cgrp__step, .cgrp__step::before { animation: none !important; transform: none !important; }
+    .cgrp__step { opacity: 1 !important; }
+    .cgrp__drug { opacity: 1 !important; }
+    .cgrp__shield { opacity: 1 !important; }
+    .cgrp__resolved { opacity: 1 !important; }
+    .cgrp__pain { opacity: 0 !important; }
+    .cgrp__dock-dot { opacity: 0 !important; }
+  }
+</style>

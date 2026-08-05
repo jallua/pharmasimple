@@ -1,0 +1,365 @@
+---
+// Glp1Agonist.astro — schematic, self-contained SVG + CSS animation of how a
+// GLP-1 receptor agonist (e.g. 司美格鲁肽 / semaglutide) mimics the gut hormone
+// GLP-1: it activates the GLP-1 receptor on the pancreas, which releases insulin
+// to lower blood sugar, and acts on the brain to reduce appetite so weight falls
+// too (需求 4, 13).
+//
+// Same design rules as BtkInhibitor/Pd1Checkpoint: SCHEMATIC labelled shapes,
+// inline SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a
+// shared 15s timeline (3s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on a coherent end-state (drug bound, insulin released, blood sugar &
+// weight down) and the five captions read as a static list (需求 13).
+//
+// Accessibility: the SVG carries `role="img"` + a `<title>` built from `alt`, so
+// assistive tech gets a description even when rendered standalone; inside
+// MechanismMedia the wrapping <figure> also labels it.
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the drug shape. The mechanism/steps are class-level
+   * and stay fixed; only this name is parameterized so the SAME component can be
+   * reused across GLP-1 agonists. Falls back to the class default when omitted.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 GLP-1 类药物激活 GLP-1 受体,促进胰岛素分泌降血糖,并降低食欲、使体重下降。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps. Each becomes a caption line.
+const steps = [
+  '吃饭后血糖升高',
+  '药物模拟 GLP-1,激活 GLP-1 受体',
+  '提醒胰腺分泌胰岛素,帮助降血糖',
+  '让大脑产生“饱腹感”,食欲下降',
+  '血糖下降,体重也随之下降',
+];
+---
+
+<div class="glp1">
+  <svg class="glp1__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* brain (top-right) — lights up "饱" at step 4 */}
+    <ellipse class="glp1__brain" cx="292" cy="46" rx="42" ry="30" />
+    <text class="glp1__t glp1__t--small" x="292" y="18" text-anchor="middle">大脑</text>
+    <g class="glp1__full">
+      <circle cx="292" cy="46" r="19" />
+      <text class="glp1__t glp1__t--full" x="292" y="52" text-anchor="middle">饱</text>
+    </g>
+
+    {/* pancreas / β cell (left) */}
+    <ellipse class="glp1__pancreas" cx="88" cy="150" rx="72" ry="52" />
+    <text class="glp1__t glp1__t--organ" x="88" y="150" text-anchor="middle">胰腺 · β 细胞</text>
+
+    {/* GLP-1 receptor (a notch on the pancreas' top edge) */}
+    <rect class="glp1__receptor" x="79" y="94" width="18" height="22" rx="3" />
+    <text class="glp1__t glp1__t--small" x="126" y="92" text-anchor="middle">GLP-1 受体</text>
+
+    {/* blood-sugar bar (right) — its fill drops once insulin is released */}
+    <rect class="glp1__bar-frame" x="300" y="96" width="30" height="120" rx="5" />
+    <rect class="glp1__bar-fill" x="303" y="99" width="24" height="114" rx="3" />
+    <text class="glp1__t glp1__t--small" x="315" y="232" text-anchor="middle">血糖</text>
+
+    {/* the drug pill: slides into the receptor at step 2, then stays bound */}
+    <g class="glp1__drug">
+      <polygon class="glp1__pill" points="18,54 60,54 72,71 60,88 18,88 6,71" />
+      <text class="glp1__t glp1__t--drug" x="39" y="75" text-anchor="middle">{subject ?? 'GLP-1 类药物'}</text>
+      <line class="glp1__dock" x1="72" y1="86" x2="86" y2="104" />
+    </g>
+
+    {/* step 1 — blood sugar rises (up arrow near the bar) */}
+    <g class="glp1__s1">
+      <line x1="315" y1="150" x2="315" y2="112" />
+      <polygon points="315,104 308,118 322,118" />
+    </g>
+
+    {/* step 3 — insulin dots travel from pancreas toward the blood-sugar bar */}
+    <g class="glp1__insulin">
+      <circle cx="176" cy="150" r="6" />
+      <circle cx="216" cy="150" r="6" />
+      <circle cx="256" cy="150" r="6" />
+      <text class="glp1__t glp1__t--small" x="216" y="132" text-anchor="middle">胰岛素</text>
+    </g>
+
+    {/* step 5 — blood sugar & weight fall (downward arrow badge) */}
+    <g class="glp1__down">
+      <rect x="150" y="210" width="120" height="30" rx="15" />
+      <text class="glp1__t glp1__t--down" x="200" y="230" text-anchor="middle">血糖 · 体重 ↓</text>
+    </g>
+  </svg>
+
+  <ol class="glp1__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="glp1__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .glp1 {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .glp1__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .glp1__pancreas {
+    fill: #fef3c7;
+    stroke: #f59e0b;
+    stroke-width: 2;
+  }
+  .glp1__brain {
+    fill: #ede9fe;
+    stroke: #8b5cf6;
+    stroke-width: 2;
+  }
+  .glp1__receptor {
+    fill: #f59e0b;
+  }
+  .glp1__bar-frame {
+    fill: #ffffff;
+    stroke: #94a3b8;
+    stroke-width: 2;
+  }
+  .glp1__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .glp1__t--organ {
+    fill: #92400e;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .glp1__t--small {
+    font-size: 11px;
+    fill: #475569;
+  }
+  .glp1__t--drug {
+    fill: #5b21b6;
+    font-size: 11px;
+  }
+  .glp1__t--full {
+    fill: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .glp1__t--down {
+    fill: #b91c1c;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* --- animated layers (base state before their step) -------------------- */
+  /* blood-sugar fill: high through steps 1-2, drops during step 3, stays low */
+  .glp1__bar-fill {
+    fill: #ef4444;
+    transform-box: fill-box;
+    transform-origin: bottom;
+    animation: glp1-sugar var(--dur) infinite;
+  }
+  .glp1__s1 line {
+    stroke: #ef4444;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .glp1__s1 polygon {
+    fill: #ef4444;
+  }
+  .glp1__s1 {
+    opacity: 0;
+    animation: glp1-rise var(--dur) infinite;
+  }
+  .glp1__drug {
+    opacity: 0;
+    animation: glp1-bind var(--dur) infinite;
+  }
+  .glp1__pill {
+    fill: #ede9fe;
+    stroke: #7c3aed;
+    stroke-width: 2;
+  }
+  .glp1__dock {
+    stroke: #7c3aed;
+    stroke-width: 2;
+    stroke-dasharray: 3 3;
+  }
+  .glp1__insulin circle {
+    fill: #16a34a;
+  }
+  .glp1__insulin {
+    opacity: 0;
+    animation: glp1-insulin var(--dur) infinite;
+  }
+  .glp1__full circle {
+    fill: #8b5cf6;
+  }
+  .glp1__full {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: glp1-pop var(--dur) infinite;
+  }
+  .glp1__down rect {
+    fill: #fee2e2;
+    stroke: #ef4444;
+    stroke-width: 2;
+  }
+  .glp1__down {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: glp1-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .glp1__steps {
+    counter-reset: glp1step;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .glp1__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    animation: glp1-step var(--dur) infinite;
+  }
+  .glp1__step::before {
+    counter-increment: glp1step;
+    content: counter(glp1step);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: glp1-badge var(--dur) infinite;
+  }
+  .glp1__step:nth-child(1),
+  .glp1__step:nth-child(1)::before { animation-delay: 0s; }
+  .glp1__step:nth-child(2),
+  .glp1__step:nth-child(2)::before { animation-delay: 3s; }
+  .glp1__step:nth-child(3),
+  .glp1__step:nth-child(3)::before { animation-delay: 6s; }
+  .glp1__step:nth-child(4),
+  .glp1__step:nth-child(4)::before { animation-delay: 9s; }
+  .glp1__step:nth-child(5),
+  .glp1__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* blood sugar: high (1) during steps 1-2, drops to ~0.4 during step 3, low after */
+  @keyframes glp1-sugar {
+    0%, 40% { transform: scaleY(1); fill: #ef4444; }
+    52% { transform: scaleY(0.4); fill: #f59e0b; }
+    58%, 100% { transform: scaleY(0.38); fill: #22c55e; }
+  }
+  /* step 1 — the "blood sugar up" arrow fades in then out */
+  @keyframes glp1-rise {
+    0% { opacity: 0; }
+    5% { opacity: 1; }
+    18% { opacity: 1; }
+    22% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  /* step 2 — the drug slides in from the top-left toward the receptor, stays */
+  @keyframes glp1-bind {
+    0%, 16% { opacity: 0; transform: translate(-30px, -18px); }
+    24% { opacity: 1; transform: translate(4px, 2px); }
+    30%, 100% { opacity: 1; transform: translate(0, 0); }
+  }
+  /* step 3 — insulin dots travel from the pancreas toward the blood-sugar bar */
+  @keyframes glp1-insulin {
+    0%, 40% { opacity: 0; transform: translateX(-16px); }
+    46% { opacity: 1; }
+    58% { opacity: 1; transform: translateX(10px); }
+    62%, 100% { opacity: 0; transform: translateX(14px); }
+  }
+  /* step 4 — the brain "饱" badge pops in and stays */
+  @keyframes glp1-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    66% { opacity: 1; transform: scale(1.25); }
+    71%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* step 5 — the "血糖·体重 ↓" badge pops in last */
+  @keyframes glp1-pop-late {
+    0%, 78% { opacity: 0; transform: scale(0); }
+    84% { opacity: 1; transform: scale(1.2); }
+    89%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes glp1-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  @keyframes glp1-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .glp1 *,
+    .glp1__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .glp1__step,
+    .glp1__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .glp1__step { opacity: 1 !important; }
+    /* coherent static end-state: drug bound, insulin released, sugar low,
+       brain full, weight/sugar down */
+    .glp1__drug { opacity: 1 !important; }
+    .glp1__full { opacity: 1 !important; }
+    .glp1__down { opacity: 1 !important; }
+    .glp1__bar-fill { fill: #22c55e !important; }
+    /* hide the transient early-step highlights to avoid a cluttered frame */
+    .glp1__s1,
+    .glp1__insulin { opacity: 0 !important; }
+  }
+</style>

@@ -1,0 +1,364 @@
+---
+// Pd1Checkpoint.astro — schematic, self-contained SVG + CSS animation of how the
+// anti-PD-1 antibody tislelizumab (替雷利珠单抗) releases the PD-1 "brake" so a
+// T cell can attack the tumour again (Task 9 / 需求 4, 13).
+//
+// Same design rules as BtkInhibitor: SCHEMATIC labelled shapes, inline SVG +
+// scoped CSS, no JavaScript. Five storyboard steps cycle on a shared 20s
+// timeline (4s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on the resolved end-state, and the five captions read as a static
+// list (需求 13).
+//
+// Accessibility: `role="img"` + `<title>` from `alt` gives assistive tech a
+// description standalone; inside MechanismMedia the <figure> also labels it.
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the antibody shape. The mechanism/steps are
+   * class-level and stay fixed; only this name is parameterized so the SAME
+   * component can be reused across anti-PD-1 antibodies. Falls back to the class
+   * default when the caller passes nothing.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示替雷利珠单抗结合 T 细胞的 PD-1,阻断肿瘤 PD-L1 的抑制信号,使 T 细胞恢复攻击。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps (design.md / Task 9). Each becomes a caption line.
+const steps = [
+  '免疫卫兵(T 细胞)发现癌细胞',
+  '癌细胞伸出 PD-L1,踩住卫兵的“刹车”(PD-1)',
+  '卫兵被踩了刹车,停手不打',
+  '这个药挡住刹车,癌细胞踩不到了',
+  '卫兵重新清醒,继续攻击癌细胞',
+];
+---
+
+<div class="pd1">
+  <svg class="pd1__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* T cell (left) — greys out while inhibited */}
+    <g class="pd1__tcell">
+      <circle class="pd1__tcell-body" cx="92" cy="128" r="72" />
+      <text class="pd1__t pd1__t--cell" x="92" y="132" text-anchor="middle">T 细胞</text>
+    </g>
+
+    {/* Tumour cell (right) */}
+    <circle class="pd1__tumor" cx="300" cy="128" r="60" />
+    <text class="pd1__t pd1__t--tumor" x="300" y="132" text-anchor="middle">肿瘤细胞</text>
+
+    {/* PD-1 receptor (a notch on the T cell's right edge) */}
+    <rect class="pd1__pd1" x="158" y="116" width="18" height="24" rx="3" />
+    <text class="pd1__t pd1__t--small" x="150" y="104" text-anchor="middle">PD-1</text>
+
+    {/* PD-L1 ligand (a peg on the tumour's left edge) */}
+    <rect class="pd1__pdl1" x="240" y="120" width="20" height="16" rx="3" />
+    <text class="pd1__t pd1__t--small" x="250" y="104" text-anchor="middle">PD-L1</text>
+
+    {/* step 1 — recognition line + pulse between the two cells */}
+    <g class="pd1__s1">
+      <line x1="176" y1="90" x2="240" y2="90" />
+      <circle cx="208" cy="90" r="7" />
+    </g>
+
+    {/* steps 2-3 — PD-L1 engages PD-1 (brake) and the T cell is inhibited */}
+    <g class="pd1__brake">
+      <line class="pd1__link" x1="176" y1="128" x2="240" y2="128" />
+      <rect x="150" y="150" width="80" height="24" rx="12" />
+      <text class="pd1__t pd1__t--brake" x="190" y="167" text-anchor="middle">刹车 · 抑制</text>
+    </g>
+    <circle class="pd1__inhibited" cx="92" cy="128" r="72" />
+
+    {/* step 4 — antibody blocks PD-1 (appears at step 4, then stays) */}
+    <g class="pd1__drug">
+      <path class="pd1__ab" d="M150 210 L150 168 M150 168 L138 150 M150 168 L162 150" />
+      <text class="pd1__t pd1__t--drug" x="150" y="228" text-anchor="middle">{subject ?? '抗 PD-1 抗体'}</text>
+    </g>
+
+    {/* step 5 — T cell attacks the tumour again (burst) */}
+    <g class="pd1__attack">
+      <line x1="176" y1="112" x2="238" y2="98" />
+      <line x1="176" y1="128" x2="240" y2="128" />
+      <line x1="176" y1="144" x2="238" y2="158" />
+      <polygon points="248,128 232,120 234,136" />
+    </g>
+  </svg>
+
+  <ol class="pd1__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="pd1__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .pd1 {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .pd1__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .pd1__tcell-body {
+    fill: #dbeafe;
+    stroke: #3b82f6;
+    stroke-width: 2;
+  }
+  .pd1__tumor {
+    fill: #f3e8ff;
+    stroke: #a855f7;
+    stroke-width: 2;
+  }
+  .pd1__pd1 {
+    fill: #1d4ed8;
+  }
+  .pd1__pdl1 {
+    fill: #9333ea;
+  }
+  .pd1__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .pd1__t--cell {
+    fill: #1e3a8a;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .pd1__t--tumor {
+    fill: #6b21a8;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .pd1__t--small {
+    font-size: 11px;
+    fill: #475569;
+  }
+
+  /* --- animated layers --------------------------------------------------- */
+  .pd1__s1 line {
+    stroke: #f59e0b;
+    stroke-width: 2.5;
+    stroke-dasharray: 5 4;
+  }
+  .pd1__s1 circle {
+    fill: none;
+    stroke: #f59e0b;
+    stroke-width: 2.5;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pd1-ping var(--dur) infinite;
+  }
+  .pd1__s1 {
+    opacity: 0;
+    animation: pd1-flash var(--dur) infinite;
+  }
+
+  .pd1__link {
+    stroke: #9333ea;
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .pd1__brake rect {
+    fill: #fee2e2;
+    stroke: #ef4444;
+    stroke-width: 1.5;
+  }
+  .pd1__t--brake {
+    fill: #b91c1c;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .pd1__brake {
+    opacity: 0;
+    animation: pd1-brake var(--dur) infinite;
+  }
+  .pd1__inhibited {
+    fill: #64748b;
+    opacity: 0;
+    animation: pd1-inhibited var(--dur) infinite;
+  }
+
+  .pd1__ab {
+    fill: none;
+    stroke: #0f766e;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .pd1__t--drug {
+    fill: #0f766e;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pd1__drug {
+    opacity: 0;
+    animation: pd1-bind var(--dur) infinite;
+  }
+
+  .pd1__attack line {
+    stroke: #dc2626;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .pd1__attack polygon {
+    fill: #dc2626;
+  }
+  /* the attack burst pops in when the T cell re-engages (step 5) */
+  .pd1__attack {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pd1-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .pd1__steps {
+    counter-reset: pd1step;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .pd1__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    /* base state is fully readable; the animation dims the inactive steps */
+    animation: pd1-step var(--dur) infinite;
+  }
+  .pd1__step::before {
+    counter-increment: pd1step;
+    content: counter(pd1step);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: pd1-badge var(--dur) infinite;
+  }
+  .pd1__step:nth-child(1),
+  .pd1__step:nth-child(1)::before { animation-delay: 0s; }
+  .pd1__step:nth-child(2),
+  .pd1__step:nth-child(2)::before { animation-delay: 3s; }
+  .pd1__step:nth-child(3),
+  .pd1__step:nth-child(3)::before { animation-delay: 6s; }
+  .pd1__step:nth-child(4),
+  .pd1__step:nth-child(4)::before { animation-delay: 9s; }
+  .pd1__step:nth-child(5),
+  .pd1__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* step 1 — recognition line/pulse fades in and out */
+  @keyframes pd1-flash {
+    0% { opacity: 0; }
+    4% { opacity: 1; }
+    16% { opacity: 1; }
+    20% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  /* step 1 — the recognition dot clearly pings (scales) */
+  @keyframes pd1-ping {
+    0%, 20%, 100% { transform: scale(1); }
+    7% { transform: scale(1.8); }
+    13% { transform: scale(1); }
+  }
+  /* brake engaged during steps 2-3 (20%-60%), released once the drug binds */
+  @keyframes pd1-brake {
+    0%, 16% { opacity: 0; }
+    22%, 56% { opacity: 1; }
+    62%, 100% { opacity: 0; }
+  }
+  /* the T cell greys out while it is inhibited (steps 2-3) */
+  @keyframes pd1-inhibited {
+    0%, 16% { opacity: 0; }
+    22%, 56% { opacity: 0.55; }
+    62%, 100% { opacity: 0; }
+  }
+  /* step 4 — the antibody clearly slides UP into place and stays bound */
+  @keyframes pd1-bind {
+    0%, 56% { opacity: 0; transform: translateY(28px); }
+    63% { opacity: 1; transform: translateY(-4px); }
+    68%, 100% { opacity: 1; transform: translateY(0); }
+  }
+  /* step 5 — the attack burst pops in */
+  @keyframes pd1-pop-late {
+    0%, 76% { opacity: 0; transform: scale(0.2); }
+    82% { opacity: 1; transform: scale(1.25); }
+    87%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes pd1-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  /* the step's number badge lights up in the brand color while active */
+  @keyframes pd1-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .pd1 *,
+    .pd1__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    /* ::before badge isn't matched by `*`, so disable its animation explicitly */
+    .pd1__step,
+    .pd1__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .pd1__step { opacity: 1 !important; }
+    /* resolved static end-state: antibody bound, brake released, T cell attacking */
+    .pd1__drug { opacity: 1 !important; }
+    .pd1__attack { opacity: 1 !important; }
+    .pd1__brake { opacity: 0 !important; }
+    .pd1__inhibited { opacity: 0 !important; }
+    .pd1__s1 { opacity: 0 !important; }
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+// Disclaimer.astro — the medical disclaimer, single-sourced from i18n (需求 7 / P11).
+//
+// Two variants:
+//   - "footer"     : compact line for the global footer (used in BaseLayout).
+//   - "prominent"  : boxed note with a heading, for prominent placement on
+//                    drug mechanism pages.
+import { t } from '../lib/i18n';
+
+interface Props {
+  locale?: string;
+  variant?: 'footer' | 'prominent';
+}
+
+const { locale = 'zh', variant = 'footer' } = Astro.props;
+const title = t(locale, 'disclaimer.title');
+const body = t(locale, 'disclaimer.body');
+---
+
+{
+  variant === 'prominent' ? (
+    <aside class="disclaimer disclaimer--prominent" role="note" aria-label={title}>
+      <strong class="disclaimer__title">{title}</strong>
+      <p class="disclaimer__body">{body}</p>
+    </aside>
+  ) : (
+    <p class="disclaimer disclaimer--footer">{body}</p>
+  )
+}

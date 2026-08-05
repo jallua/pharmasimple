@@ -1,0 +1,136 @@
+---
+// Il1223Inhibitor.astro — schematic SVG + CSS animation of how an anti-IL-12/23
+// antibody (e.g. 乌司奴单抗 / ustekinumab) binds the p40 subunit SHARED by IL-12
+// and IL-23, so BOTH pro-inflammatory cytokines are intercepted at once and the
+// psoriatic / gut inflammation they drive cools down — broader than a p19-only
+// (IL-23-specific) antibody (需求 4, 13). SCHEMATIC labelled shapes, inline SVG +
+// scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s timeline
+// (3s each). Under prefers-reduced-motion all motion stops.
+interface Props {
+  alt?: string;
+  caption?: string;
+  subject?: string;
+}
+
+const {
+  alt = '动画演示乌司奴单抗抓住 IL-12 与 IL-23 共用的 p40 亚基,让两种炎症信号一起被拦下、无法激活受体,银屑病 / 肠道炎症随之减轻。',
+  subject,
+} = Astro.props;
+
+const steps = [
+  '银屑病、克罗恩病背后有 IL-12 和 IL-23 两个炎症信号',
+  '这两个信号共用一段“零件”——p40 亚基',
+  '乌司奴单抗(抗体)专抓这段共用的 p40',
+  'IL-12 和 IL-23 一起被拦下、接不上受体',
+  '两条炎症通路同时哑火,皮肤 / 肠道炎症降温',
+];
+---
+
+<div class="il12">
+  <svg class="il12__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    <rect class="il12__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="il12__t il12__t--organ" x="36" y="196" text-anchor="start">皮肤 / 肠道免疫细胞</text>
+    <rect class="il12__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="il12__t il12__t--small" x="208" y="126" text-anchor="middle">IL-12/23 受体</text>
+
+    <g class="il12__harm">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="il12__t il12__t--harm" x="208" y="66" text-anchor="middle">银屑病 · 肠道炎症</text>
+    </g>
+
+    <g class="il12__cytokines">
+      <text class="il12__t il12__t--small" x="63" y="28" text-anchor="middle">IL-12</text>
+      <circle class="il12__p35" cx="54" cy="48" r="9" />
+      <circle class="il12__p40" cx="72" cy="48" r="9" />
+      <text class="il12__t il12__t--small" x="117" y="28" text-anchor="middle">IL-23</text>
+      <circle class="il12__p19" cx="108" cy="48" r="9" />
+      <circle class="il12__p40" cx="126" cy="48" r="9" />
+      <text class="il12__t il12__t--legend" x="92" y="92" text-anchor="middle">橙色 = 共用 p40</text>
+    </g>
+
+    <circle class="il12__dock-dot" cx="208" cy="140" r="9" />
+
+    <g class="il12__drug">
+      <path class="il12__ab" d="M208 214 L208 166 M208 166 L192 142 M208 166 L224 142" />
+      <text class="il12__t il12__t--drug" x="208" y="232" text-anchor="middle">{subject ?? '抗 IL-12/23 抗体'}</text>
+    </g>
+
+    <g class="il12__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="il12__t il12__t--shield" x="208" y="150" text-anchor="middle">拦下 p40</text>
+    </g>
+
+    <g class="il12__resolved">
+      <rect x="200" y="30" width="150" height="30" rx="15" />
+      <text class="il12__t il12__t--resolved" x="275" y="50" text-anchor="middle">两条通路一起熄火</text>
+    </g>
+  </svg>
+
+  <ol class="il12__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="il12__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .il12 {
+    --dur: 15s;
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .il12__svg { width: 100%; height: auto; font-family: inherit; background: #f8fafc; border-radius: 12px; }
+  .il12__cell { fill: #fef2f2; stroke: #fca5a5; stroke-width: 2; }
+  .il12__receptor { fill: #64748b; }
+  .il12__t { fill: #1e293b; font-size: 13px; }
+  .il12__t--organ { fill: #475569; font-size: 12px; }
+  .il12__t--small { font-size: 11px; fill: #475569; }
+  .il12__t--legend { font-size: 10px; fill: #b45309; }
+  .il12__t--harm { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .il12__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .il12__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .il12__t--resolved { fill: #15803d; font-size: 12px; font-weight: 700; }
+  .il12__p35 { fill: #a78bfa; stroke: #6d28d9; stroke-width: 1.5; }
+  .il12__p19 { fill: #fb7185; stroke: #be123c; stroke-width: 1.5; }
+  .il12__p40 { fill: #f59e0b; stroke: #b45309; stroke-width: 1.5; }
+  .il12__cytokines { animation: il12-drift var(--dur) infinite; }
+  .il12__harm polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .il12__harm { opacity: 0; transform-box: fill-box; transform-origin: center; animation: il12-inflame var(--dur) infinite; }
+  .il12__dock-dot { fill: #f59e0b; stroke: #b45309; stroke-width: 1.5; opacity: 0; animation: il12-dock var(--dur) infinite; }
+  .il12__ab { fill: none; stroke: #0f766e; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .il12__drug { opacity: 0; animation: il12-bind var(--dur) infinite; }
+  .il12__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .il12__shield { opacity: 0; transform-box: fill-box; transform-origin: center; animation: il12-pop var(--dur) infinite; }
+  .il12__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .il12__resolved { opacity: 0; transform-box: fill-box; transform-origin: center; animation: il12-pop-late var(--dur) infinite; }
+  .il12__steps { counter-reset: il12step; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+  .il12__step { position: relative; padding: 0.4rem 0.6rem 0.4rem 2.5rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; color: #334155; background: transparent; transform-origin: left center; animation: il12-step var(--dur) infinite; }
+  .il12__step::before { counter-increment: il12step; content: counter(il12step); position: absolute; left: 0.5rem; top: 0.4rem; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #e2e8f0; color: #0f172a; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; animation: il12-badge var(--dur) infinite; }
+  .il12__step:nth-child(1), .il12__step:nth-child(1)::before { animation-delay: 0s; }
+  .il12__step:nth-child(2), .il12__step:nth-child(2)::before { animation-delay: 3s; }
+  .il12__step:nth-child(3), .il12__step:nth-child(3)::before { animation-delay: 6s; }
+  .il12__step:nth-child(4), .il12__step:nth-child(4)::before { animation-delay: 9s; }
+  .il12__step:nth-child(5), .il12__step:nth-child(5)::before { animation-delay: 12s; }
+  @keyframes il12-drift { 0% { transform: translate(0,0);} 10% { transform: translate(6px,4px);} 20% { transform: translate(-4px,2px);} 40%,100% { transform: translate(0,0);} }
+  @keyframes il12-dock { 0%,20% { opacity:0;} 26%,40% { opacity:1;} 46%,100% { opacity:0;} }
+  @keyframes il12-inflame { 0%,16% { opacity:0; transform: scale(0.6);} 24% { opacity:1; transform: scale(1.1);} 30%,74% { opacity:1; transform: scale(1);} 84%,100% { opacity:0; transform: scale(0.6);} }
+  @keyframes il12-bind { 0%,36% { opacity:0; transform: translateY(28px);} 44% { opacity:1; transform: translateY(-4px);} 50%,100% { opacity:1; transform: translateY(0);} }
+  @keyframes il12-pop { 0%,60% { opacity:0; transform: scale(0);} 66% { opacity:1; transform: scale(1.25);} 71%,100% { opacity:1; transform: scale(1);} }
+  @keyframes il12-pop-late { 0%,78% { opacity:0; transform: scale(0);} 84% { opacity:1; transform: scale(1.2);} 89%,100% { opacity:1; transform: scale(1);} }
+  @keyframes il12-step { 0%,17% { opacity:1; color:#0f766e; font-weight:700; background:#f0fdfa; transform: scale(1.02);} 20%,100% { opacity:0.5; color:#334155; font-weight:400; background:transparent; transform: scale(1);} }
+  @keyframes il12-badge { 0%,17% { background:#0f766e; color:#fff; transform: scale(1.15);} 20%,100% { background:#e2e8f0; color:#0f172a; transform: scale(1);} }
+  @media (prefers-reduced-motion: reduce) {
+    .il12 *, .il12__svg * { animation: none !important; transition: none !important; transform: none !important; }
+    .il12__step, .il12__step::before { animation: none !important; transform: none !important; }
+    .il12__step { opacity: 1 !important; }
+    .il12__drug { opacity: 1 !important; }
+    .il12__shield { opacity: 1 !important; }
+    .il12__resolved { opacity: 1 !important; }
+    .il12__harm { opacity: 0 !important; }
+    .il12__dock-dot { opacity: 0 !important; }
+  }
+</style>

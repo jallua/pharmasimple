@@ -1,0 +1,290 @@
+---
+// Il4Il13Inhibitor.astro — schematic, self-contained SVG + CSS animation of how
+// an IL-4Rα antibody (e.g. 度普利尤单抗 / dupilumab) caps the SHARED IL-4Rα
+// receptor so that neither IL-4 nor IL-13 can signal, and the type-2 (allergic)
+// inflammation subsides (需求 4, 13).
+//
+// Same design rules as the other animations: SCHEMATIC labelled shapes, inline
+// SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s
+// timeline (3s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on a coherent end-state (antibody capping IL-4Rα, cytokines blocked,
+// inflammation resolved) and the five captions read as a static list (需求 13).
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the antibody shape. The mechanism/steps are
+   * class-level and stay fixed; only this name is parameterized so the SAME
+   * component can be reused across IL-4Rα antibodies. Falls back to the class
+   * default when omitted.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 IL-4Rα 抑制剂(抗体)盖住细胞上的共用接口 IL-4Rα,让 IL-4、IL-13 都无法结合,过敏性炎症随之消退。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps. Each becomes a caption line.
+const steps = [
+  '过敏性炎症:IL-4、IL-13 两种信号过多',
+  '它们插进细胞的共用接口(IL-4Rα),点燃过敏炎症',
+  '这个药(抗体)盖住这个共用接口',
+  'IL-4、IL-13 都插不进去了',
+  '过敏性炎症消退(发痒、红肿减轻)',
+];
+---
+
+<div class="il4">
+  <svg class="il4__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* target cell (bottom) with the shared IL-4Rα receptor on its top edge */}
+    <rect class="il4__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="il4__t il4__t--organ" x="36" y="196" text-anchor="start">组织 / 免疫细胞</text>
+    <rect class="il4__receptor" x="196" y="132" width="24" height="24" rx="3" />
+    <text class="il4__t il4__t--small" x="208" y="126" text-anchor="middle">IL-4Rα 接口</text>
+
+    {/* inflammation starburst near the receptor — glows steps 2-4, fades at 5 */}
+    <g class="il4__inflam">
+      <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
+      <text class="il4__t il4__t--inflam" x="208" y="66" text-anchor="middle">过敏炎症 · 发痒红肿</text>
+    </g>
+
+    {/* step 1 — excess IL-4 (orange) and IL-13 (amber) molecules floating above */}
+    <g class="il4__dots">
+      <circle class="il4__il4" cx="70" cy="52" r="10" />
+      <circle class="il4__il13" cx="120" cy="34" r="10" />
+      <circle class="il4__il4" cx="96" cy="82" r="10" />
+      <text class="il4__t il4__t--small" x="96" y="16" text-anchor="middle">过多的 IL-4 / IL-13</text>
+    </g>
+
+    {/* step 2 — one cytokine docks onto the receptor (removed once blocked) */}
+    <circle class="il4__dock-dot" cx="208" cy="140" r="10" />
+
+    {/* step 3 — the Y-shaped antibody slides up and caps the shared receptor */}
+    <g class="il4__drug">
+      <path class="il4__ab" d="M208 214 L208 166 M208 166 L192 142 M208 166 L224 142" />
+      <text class="il4__t il4__t--drug" x="208" y="232" text-anchor="middle">{subject ?? 'IL-4Rα 抑制剂'}</text>
+    </g>
+
+    {/* step 4 — the receptor is capped / blocked (nothing can dock) */}
+    <g class="il4__shield">
+      <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="il4__t il4__t--shield" x="208" y="150" text-anchor="middle">盖住</text>
+    </g>
+
+    {/* step 5 — inflammation resolved badge */}
+    <g class="il4__resolved">
+      <rect x="228" y="30" width="112" height="30" rx="15" />
+      <text class="il4__t il4__t--resolved" x="284" y="50" text-anchor="middle">炎症消退</text>
+    </g>
+  </svg>
+
+  <ol class="il4__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="il4__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .il4 {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .il4__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .il4__cell { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+  .il4__receptor { fill: #64748b; }
+  .il4__t { fill: #1e293b; font-size: 13px; }
+  .il4__t--organ { fill: #475569; font-size: 12px; }
+  .il4__t--small { font-size: 11px; fill: #475569; }
+  .il4__t--inflam { fill: #b91c1c; font-size: 11px; font-weight: 700; }
+  .il4__t--drug { fill: #0f766e; font-size: 12px; font-weight: 600; }
+  .il4__t--shield { fill: #1d4ed8; font-size: 11px; font-weight: 700; }
+  .il4__t--resolved { fill: #15803d; font-size: 13px; font-weight: 700; }
+
+  /* --- animated layers --------------------------------------------------- */
+  .il4__il4 { fill: #f97316; stroke: #c2410c; stroke-width: 1.5; }
+  .il4__il13 { fill: #fbbf24; stroke: #d97706; stroke-width: 1.5; }
+  /* free cytokines gently drift while in excess (steps 1-2) */
+  .il4__dots { animation: il4-drift var(--dur) infinite; }
+  .il4__inflam polygon { fill: #fca5a5; stroke: #ef4444; stroke-width: 1.5; }
+  .il4__inflam {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: il4-inflame var(--dur) infinite;
+  }
+  .il4__dock-dot {
+    fill: #f97316;
+    stroke: #c2410c;
+    stroke-width: 1.5;
+    opacity: 0;
+    animation: il4-dock var(--dur) infinite;
+  }
+  .il4__ab {
+    fill: none;
+    stroke: #0f766e;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .il4__drug {
+    opacity: 0;
+    animation: il4-bind var(--dur) infinite;
+  }
+  .il4__shield path { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+  .il4__shield {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: il4-pop var(--dur) infinite;
+  }
+  .il4__resolved rect { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+  .il4__resolved {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: il4-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .il4__steps {
+    counter-reset: il4step;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .il4__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    animation: il4-step var(--dur) infinite;
+  }
+  .il4__step::before {
+    counter-increment: il4step;
+    content: counter(il4step);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: il4-badge var(--dur) infinite;
+  }
+  .il4__step:nth-child(1),
+  .il4__step:nth-child(1)::before { animation-delay: 0s; }
+  .il4__step:nth-child(2),
+  .il4__step:nth-child(2)::before { animation-delay: 3s; }
+  .il4__step:nth-child(3),
+  .il4__step:nth-child(3)::before { animation-delay: 6s; }
+  .il4__step:nth-child(4),
+  .il4__step:nth-child(4)::before { animation-delay: 9s; }
+  .il4__step:nth-child(5),
+  .il4__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  @keyframes il4-drift {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(6px, 4px); }
+    20% { transform: translate(-4px, 2px); }
+    40%, 100% { transform: translate(0, 0); }
+  }
+  @keyframes il4-dock {
+    0%, 20% { opacity: 0; }
+    26%, 40% { opacity: 1; }
+    46%, 100% { opacity: 0; }
+  }
+  @keyframes il4-inflame {
+    0%, 16% { opacity: 0; transform: scale(0.6); }
+    24% { opacity: 1; transform: scale(1.1); }
+    30%, 74% { opacity: 1; transform: scale(1); }
+    84%, 100% { opacity: 0; transform: scale(0.6); }
+  }
+  /* step 3 — the antibody slides UP into place and stays capping the receptor */
+  @keyframes il4-bind {
+    0%, 36% { opacity: 0; transform: translateY(28px); }
+    44% { opacity: 1; transform: translateY(-4px); }
+    50%, 100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes il4-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    66% { opacity: 1; transform: scale(1.25); }
+    71%, 100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes il4-pop-late {
+    0%, 78% { opacity: 0; transform: scale(0); }
+    84% { opacity: 1; transform: scale(1.2); }
+    89%, 100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes il4-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  @keyframes il4-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .il4 *,
+    .il4__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .il4__step,
+    .il4__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .il4__step { opacity: 1 !important; }
+    .il4__drug { opacity: 1 !important; }
+    .il4__shield { opacity: 1 !important; }
+    .il4__resolved { opacity: 1 !important; }
+    .il4__inflam { opacity: 0 !important; }
+    .il4__dock-dot { opacity: 0 !important; }
+  }
+</style>

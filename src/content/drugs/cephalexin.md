@@ -1,0 +1,52 @@
+---
+slug: cephalexin
+locale: zh
+company: aurobindo
+genericName: 头孢氨苄(cephalexin)
+brandName: Keflex(头孢氨苄)
+drugClass: 第一代头孢菌素(β-内酰胺类抗生素)
+popularity: 55
+summary: 一种第一代头孢菌素(β-内酰胺)抗生素:卡住细菌"砌细胞壁"的关键酶,让细菌外壁造不牢、胀破死亡;用于呼吸道、皮肤软组织、泌尿道等感染。由 Aurobindo 等企业大量生产。
+indications:
+  - region: 美国
+    regulator: FDA
+    items:
+      - 呼吸道感染、中耳炎
+      - 皮肤及皮肤结构感染
+      - 骨感染、泌尿生殖道感染
+    asOf: "2025"
+  - region: 中国
+    regulator: NMPA
+    items:
+      - 敏感菌所致的呼吸道、皮肤及泌尿道等感染
+target:
+  name: 青霉素结合蛋白(PBP,细菌转肽酶)
+  type: enzyme
+  role: 细菌用来"砌墙"的酶——把细胞壁(肽聚糖)交联牢固;壁牢,细菌才扛得住内部的高渗透压。
+mechanism:
+  analogy: 细菌靠外面一层"砖墙"(细胞壁)才不会被自己胀破。头孢氨苄卡住"砌墙工"(转肽酶),墙砌不牢、到处是缝,细菌一涨水就破了。
+  simple: 头孢氨苄是第一代头孢菌素,属 β-内酰胺类抗生素。它结合并抑制细菌合成细胞壁所需的"转肽酶"(青霉素结合蛋白 PBP),使细胞壁无法交联、出现缺陷,细菌因渗透压失衡而破裂死亡。相比青霉素,头孢菌素对部分细菌的破坏酶更稳定。用于敏感菌所致的呼吸道、皮肤、泌尿道等感染。口服给药。头孢氨苄属于第一代头孢菌素,抗菌谱以革兰阳性菌为主(如皮肤软组织感染常见的葡萄球菌、链球菌),对革兰阴性菌的覆盖较窄。
+  advanced: 头孢氨苄为第一代口服头孢菌素类 β-内酰胺抗生素,其 β-内酰胺环与细菌青霉素结合蛋白(转肽酶)活性位点共价结合,抑制肽聚糖交联、阻断细胞壁合成,呈杀菌作用;主要经肾排泄,常用于敏感革兰阳性菌与部分革兰阴性菌感染。
+media:
+  - type: animation
+    animationKey: blactam
+    alt: 动画演示 β-内酰胺(头孢菌素)抗生素卡住细菌的造壁酶,细胞壁造不牢、出现缺陷,细菌胀破死亡。
+    caption: 头孢菌素类抗生素(头孢氨苄)作用示意动画
+    status: ready
+citations:
+  - title: "FDA 说明书:CEPHALEXIN(头孢氨苄)"
+    publisher: 美国 FDA(DailyMed)
+    url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03f6f6ae-66bc-6819-8ba9-7c9c3fbef90d
+    sourceType: regulator
+  - title: "头孢氨苄(MedlinePlus,美国国立医学图书馆)"
+    publisher: MedlinePlus(NLM)
+    url: https://medlineplus.gov/druginfo/meds/a682733.html
+    sourceType: gov
+review:
+  reviewer: auto
+  checkedOn: 2026-08-03
+  confidence: high
+reviewStatus: reviewed
+updatedDate: 2026-08-03
+---
+头孢氨苄是常用的第一代头孢菌素(β-内酰胺)抗生素,由 Aurobindo 等企业大量生产。

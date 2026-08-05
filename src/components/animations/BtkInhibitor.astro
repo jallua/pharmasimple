@@ -1,0 +1,398 @@
+---
+// BtkInhibitor.astro — schematic, self-contained SVG + CSS animation of how the
+// BTK inhibitor zanubrutinib (泽布替尼) silences B-cell receptor signalling
+// (Task 9 / 需求 4, 13).
+//
+// It is deliberately SCHEMATIC (labelled shapes, not a photoreal molecule) and
+// uses only inline SVG + scoped CSS — no JavaScript. The five storyboard steps
+// cycle on a shared 20s timeline (4s each) with a visible caption highlighted
+// per step. Under `@media (prefers-reduced-motion: reduce)` every animation is
+// switched off: the diagram freezes on a coherent end-state and all five step
+// captions are shown as a static, readable list (需求 13 / 无障碍).
+//
+// Accessibility: the SVG carries `role="img"` + a `<title>` built from `alt`, so
+// assistive tech gets a description even when the component is rendered on its
+// own (inside MechanismMedia the wrapping <figure> also labels it).
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the drug shape. The mechanism/steps are class-level
+   * and stay fixed; only this name is parameterized so the SAME component can be
+   * reused across drugs of the class. Falls back to the class default when the
+   * caller passes nothing (keeps the diagram accurate even without a subject).
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示泽布替尼结合并卡住 B 细胞内的 BTK,使促增殖信号中断。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps (design.md / Task 9). Each becomes a caption line.
+const steps = [
+  'B 细胞收到“生长”信号',
+  'BTK 开关把“快繁殖”的命令往下传',
+  '这个药卡住 BTK 开关',
+  '“快繁殖”的命令被切断',
+  '癌变的 B 细胞停止繁殖',
+];
+---
+
+<div class="btk">
+  <svg class="btk__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* B cell */}
+    <rect class="btk__cell" x="14" y="20" width="332" height="196" rx="38" />
+    <text class="btk__t btk__t--left" x="30" y="44">恶性 B 细胞</text>
+
+    {/* B-cell receptor (BCR) straddling the membrane at the top */}
+    <g class="btk__bcr">
+      <line x1="180" y1="20" x2="180" y2="74" />
+      <line x1="180" y1="42" x2="163" y2="16" />
+      <line x1="180" y1="42" x2="197" y2="16" />
+    </g>
+    <text class="btk__t" x="238" y="28" text-anchor="middle">BCR 受体</text>
+
+    {/* connector receptor -> BTK */}
+    <line class="btk__wire" x1="180" y1="74" x2="180" y2="92" />
+
+    {/* BTK relay node */}
+    <rect class="btk__node" x="140" y="92" width="80" height="42" rx="9" />
+    <text class="btk__t btk__t--btk" x="180" y="118" text-anchor="middle">BTK</text>
+
+    {/* downstream "on" arrow (green) — dims once the signal is silenced */}
+    <g class="btk__arrow-on">
+      <line x1="180" y1="134" x2="180" y2="176" />
+      <polygon points="180,187 173,174 187,174" />
+    </g>
+
+    {/* downstream proliferation/survival node */}
+    <rect class="btk__down" x="112" y="186" width="136" height="32" rx="8" />
+    <text class="btk__t" x="180" y="206" text-anchor="middle">增殖 / 存活信号</text>
+
+    {/* the drug + padlock: appears at step 3 and stays bound through the end */}
+    <g class="btk__drug">
+      <polygon class="btk__pill" points="52,96 96,96 108,113 96,132 52,132 40,113" />
+      <text class="btk__t btk__t--drug" x="74" y="117" text-anchor="middle">{subject ?? 'BTK 抑制剂'}</text>
+      <line class="btk__dock" x1="108" y1="113" x2="140" y2="113" />
+      <g class="btk__lock">
+        <rect x="212" y="105" width="20" height="15" rx="3" />
+        <path d="M215 105 v-4 a7 7 0 0 1 14 0 v4" />
+      </g>
+    </g>
+
+    {/* step 1 — receptor stimulated (pulsing ring) */}
+    <circle class="btk__s1" cx="180" cy="34" r="20" />
+
+    {/* step 2 — signal travelling down from BTK */}
+    <g class="btk__s2">
+      <circle cx="180" cy="146" r="4" />
+      <circle cx="180" cy="158" r="4" />
+      <circle cx="180" cy="170" r="4" />
+    </g>
+
+    {/* step 4 — downstream signal switched off (red cross) */}
+    <g class="btk__s4">
+      <line x1="167" y1="149" x2="193" y2="175" />
+      <line x1="193" y1="149" x2="167" y2="175" />
+    </g>
+
+    {/* step 5 — proliferation halted (badge) */}
+    <g class="btk__s5">
+      <rect x="250" y="30" width="94" height="28" rx="14" />
+      <text class="btk__t btk__t--stop" x="297" y="48" text-anchor="middle">停止增殖</text>
+    </g>
+  </svg>
+
+  <ol class="btk__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="btk__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .btk {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .btk__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .btk__cell {
+    fill: #eff6ff;
+    stroke: #93c5fd;
+    stroke-width: 2;
+  }
+  .btk__node {
+    fill: #ffedd5;
+    stroke: #f97316;
+    stroke-width: 2;
+  }
+  .btk__down {
+    fill: #dcfce7;
+    stroke: #22c55e;
+    stroke-width: 1.5;
+  }
+  .btk__bcr line,
+  .btk__wire {
+    stroke: #64748b;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .btk__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .btk__t--left {
+    text-anchor: start;
+    fill: #475569;
+    font-size: 12px;
+  }
+  .btk__t--btk {
+    fill: #9a3412;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .btk__t--drug {
+    fill: #5b21b6;
+    font-size: 12px;
+  }
+  .btk__t--stop {
+    fill: #b91c1c;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* --- animated layers (base state = hidden / on) ------------------------ */
+  .btk__arrow-on line {
+    stroke: #16a34a;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .btk__arrow-on polygon {
+    fill: #16a34a;
+  }
+  .btk__arrow-on {
+    animation: btk-onoff var(--dur) infinite;
+  }
+
+  .btk__drug {
+    opacity: 0;
+    animation: btk-bind var(--dur) infinite;
+  }
+  /* the drug slides in from the left (see @keyframes btk-bind) */
+  .btk__pill {
+    fill: #ede9fe;
+    stroke: #7c3aed;
+    stroke-width: 2;
+  }
+  .btk__dock {
+    stroke: #7c3aed;
+    stroke-width: 2;
+    stroke-dasharray: 3 3;
+  }
+  .btk__lock rect {
+    fill: #7c3aed;
+  }
+  .btk__lock path {
+    fill: none;
+    stroke: #7c3aed;
+    stroke-width: 2.5;
+  }
+
+  .btk__s1 {
+    fill: none;
+    stroke: #ef4444;
+    stroke-width: 3;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: btk-pulse var(--dur) infinite;
+  }
+  .btk__s2 circle {
+    fill: #2563eb;
+  }
+  /* signal dots visibly travel DOWN from BTK during step 2 */
+  .btk__s2 {
+    opacity: 0;
+    animation: btk-travel var(--dur) infinite;
+    animation-delay: 3s;
+  }
+  .btk__s4 line {
+    stroke: #ef4444;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  /* the red cross pops in when the downstream signal switches off (step 4) */
+  .btk__s4 {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: btk-pop var(--dur) infinite;
+  }
+  .btk__s5 rect {
+    fill: #fee2e2;
+    stroke: #ef4444;
+    stroke-width: 2;
+  }
+  /* the "停止增殖" badge pops in last (step 5) */
+  .btk__s5 {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: btk-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .btk__steps {
+    counter-reset: btkstep;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .btk__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    /* base state is fully readable; the animation dims the inactive steps */
+    animation: btk-step var(--dur) infinite;
+  }
+  .btk__step::before {
+    counter-increment: btkstep;
+    content: counter(btkstep);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: btk-badge var(--dur) infinite;
+  }
+  .btk__step:nth-child(1),
+  .btk__step:nth-child(1)::before { animation-delay: 0s; }
+  .btk__step:nth-child(2),
+  .btk__step:nth-child(2)::before { animation-delay: 3s; }
+  .btk__step:nth-child(3),
+  .btk__step:nth-child(3)::before { animation-delay: 6s; }
+  .btk__step:nth-child(4),
+  .btk__step:nth-child(4)::before { animation-delay: 9s; }
+  .btk__step:nth-child(5),
+  .btk__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* step 1 — receptor stimulated: a ring that clearly pulses (scales) */
+  @keyframes btk-pulse {
+    0% { opacity: 0; transform: scale(0.5); }
+    4% { opacity: 1; transform: scale(1); }
+    10% { opacity: 0.7; transform: scale(1.45); }
+    16% { opacity: 1; transform: scale(1); }
+    20% { opacity: 0; transform: scale(1.5); }
+    100% { opacity: 0; }
+  }
+  /* step 2 — the signal dots slide downward from BTK */
+  @keyframes btk-travel {
+    0% { opacity: 0; transform: translateY(-16px); }
+    4% { opacity: 1; }
+    16% { opacity: 1; transform: translateY(8px); }
+    20% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 0; }
+  }
+  /* step 3 — the drug slides in from the left with a small overshoot */
+  @keyframes btk-bind {
+    0%, 36% { opacity: 0; transform: translateX(-44px); }
+    43% { opacity: 1; transform: translateX(6px); }
+    48%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* step 4 — the green "on" arrow dims once the signal is silenced */
+  @keyframes btk-onoff {
+    0%, 56% { opacity: 1; }
+    62%, 100% { opacity: 0.12; }
+  }
+  /* step 4 — the red cross pops in */
+  @keyframes btk-pop {
+    0%, 56% { opacity: 0; transform: scale(0); }
+    62% { opacity: 1; transform: scale(1.3); }
+    67%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* step 5 — the "stop" badge pops in */
+  @keyframes btk-pop-late {
+    0%, 76% { opacity: 0; transform: scale(0); }
+    82% { opacity: 1; transform: scale(1.25); }
+    87%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes btk-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  /* the step's number badge lights up in the brand color while active */
+  @keyframes btk-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .btk *,
+    .btk__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    /* all captions fully readable, no cycling (::before isn't matched by `*`) */
+    .btk__step,
+    .btk__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .btk__step { opacity: 1 !important; }
+    /* coherent static end-state: drug bound, signal off, proliferation halted */
+    .btk__drug { opacity: 1 !important; }
+    .btk__s4 { opacity: 1 !important; }
+    .btk__s5 { opacity: 1 !important; }
+    .btk__arrow-on { opacity: 0.18 !important; }
+    /* hide the transient early-step highlights to avoid a cluttered frame */
+    .btk__s1,
+    .btk__s2 { opacity: 0 !important; }
+  }
+</style>

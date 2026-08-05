@@ -1,0 +1,358 @@
+---
+// TnfInhibitor.astro — schematic, self-contained SVG + CSS animation of how a
+// TNF-α inhibitor (e.g. 阿达木单抗 / adalimumab) captures and neutralises the
+// excess inflammatory signal TNF-α: the Y-shaped antibody grabs the TNF-α
+// molecules so they can no longer reach their receptor, and the inflammation
+// (red swelling) subsides (需求 4, 13).
+//
+// Same design rules as the other animations: SCHEMATIC labelled shapes, inline
+// SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on a shared 15s
+// timeline (3s each) with the matching caption highlighted. Under
+// `@media (prefers-reduced-motion: reduce)` all motion stops, the diagram
+// freezes on a coherent end-state (antibody holding TNF-α, receptor free,
+// inflammation resolved) and the five captions read as a static list (需求 13).
+//
+// Accessibility: `role="img"` + `<title>` from `alt` gives assistive tech a
+// description standalone; inside MechanismMedia the <figure> also labels it.
+interface Props {
+  /** Required alt text (需求 4.3 / P5). Falls back to the storyboard summary. */
+  alt?: string;
+  /** Figure caption — rendered by the parent <figure>; accepted here for parity. */
+  caption?: string;
+  /**
+   * Subject label drawn on the antibody shape. The mechanism/steps are
+   * class-level and stay fixed; only this name is parameterized so the SAME
+   * component can be reused across TNF-α inhibitors. Falls back to the class
+   * default when omitted.
+   */
+  subject?: string;
+}
+
+const {
+  alt = '动画演示 TNF-α 抑制剂(抗体)抓住并中和过多的 TNF-α,使其接触不到受体,炎症随之消退。',
+  subject,
+} = Astro.props;
+
+// The five storyboard steps. Each becomes a caption line.
+const steps = [
+  '免疫失调,炎症信号 TNF-α 过多',
+  'TNF-α 结合受体,点燃炎症(红肿)',
+  '药物(抗体)把 TNF-α 抓住并中和',
+  'TNF-α 接触不到受体',
+  '炎症消退',
+];
+---
+
+<div class="tnf">
+  <svg class="tnf__svg" viewBox="0 0 360 250" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>{alt}</title>
+
+    {/* target cell (bottom) with a TNF receptor on its top edge */}
+    <rect class="tnf__cell" x="20" y="150" width="320" height="72" rx="22" />
+    <text class="tnf__t tnf__t--organ" x="36" y="196" text-anchor="start">组织细胞</text>
+    <rect class="tnf__receptor" x="196" y="132" width="20" height="24" rx="3" />
+    <text class="tnf__t tnf__t--small" x="206" y="126" text-anchor="middle">TNF 受体</text>
+
+    {/* inflammation starburst near the receptor — glows steps 2-4, fades at 5 */}
+    <g class="tnf__inflam">
+      <polygon points="206,74 214,96 236,96 218,110 226,132 206,118 186,132 194,110 176,96 198,96" />
+      <text class="tnf__t tnf__t--inflam" x="206" y="66" text-anchor="middle">炎症 · 红肿</text>
+    </g>
+
+    {/* step 1 — excess free TNF-α molecules floating above the cell */}
+    <g class="tnf__dots">
+      <circle cx="70" cy="52" r="10" />
+      <circle cx="120" cy="34" r="10" />
+      <circle cx="96" cy="82" r="10" />
+      <text class="tnf__t tnf__t--small" x="96" y="16" text-anchor="middle">过多的 TNF-α</text>
+    </g>
+
+    {/* step 2 — one TNF-α docks onto the receptor (removed once captured) */}
+    <circle class="tnf__dock-dot" cx="206" cy="140" r="10" />
+
+    {/* step 3 — the Y-shaped antibody slides in and captures the TNF-α */}
+    <g class="tnf__drug">
+      <path class="tnf__ab" d="M96 176 L96 128 M96 128 L80 104 M96 128 L112 104" />
+      <circle class="tnf__ab-dot" cx="80" cy="98" r="9" />
+      <circle class="tnf__ab-dot" cx="112" cy="98" r="9" />
+      <text class="tnf__t tnf__t--drug" x="96" y="196" text-anchor="middle">{subject ?? 'TNF-α 抑制剂'}</text>
+    </g>
+
+    {/* step 4 — the receptor is shielded / free (nothing can dock) */}
+    <g class="tnf__shield">
+      <path d="M244 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
+      <text class="tnf__t tnf__t--shield" x="266" y="150" text-anchor="middle">挡住</text>
+    </g>
+
+    {/* step 5 — inflammation resolved badge */}
+    <g class="tnf__resolved">
+      <rect x="228" y="30" width="112" height="30" rx="15" />
+      <text class="tnf__t tnf__t--resolved" x="284" y="50" text-anchor="middle">炎症消退</text>
+    </g>
+  </svg>
+
+  <ol class="tnf__steps" aria-label="作用步骤">
+    {steps.map((step) => (
+      <li class="tnf__step">{step}</li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .tnf {
+    --dur: 15s; /* 5 steps * 3s — a shorter, clearly-visible loop */
+    display: grid;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  .tnf__svg {
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  /* --- static base shapes ------------------------------------------------ */
+  .tnf__cell {
+    fill: #eff6ff;
+    stroke: #93c5fd;
+    stroke-width: 2;
+  }
+  .tnf__receptor {
+    fill: #64748b;
+  }
+  .tnf__t {
+    fill: #1e293b;
+    font-size: 13px;
+  }
+  .tnf__t--organ {
+    fill: #475569;
+    font-size: 12px;
+  }
+  .tnf__t--small {
+    font-size: 11px;
+    fill: #475569;
+  }
+  .tnf__t--inflam {
+    fill: #b91c1c;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tnf__t--drug {
+    fill: #0f766e;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .tnf__t--shield {
+    fill: #1d4ed8;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tnf__t--resolved {
+    fill: #15803d;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* --- animated layers --------------------------------------------------- */
+  .tnf__dots circle {
+    fill: #f97316;
+    stroke: #c2410c;
+    stroke-width: 1.5;
+  }
+  /* free TNF-α gently drifts while it is in excess (steps 1-2) */
+  .tnf__dots {
+    animation: tnf-drift var(--dur) infinite;
+  }
+  .tnf__inflam polygon {
+    fill: #fca5a5;
+    stroke: #ef4444;
+    stroke-width: 1.5;
+  }
+  .tnf__inflam {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: tnf-inflame var(--dur) infinite;
+  }
+  .tnf__dock-dot {
+    fill: #f97316;
+    stroke: #c2410c;
+    stroke-width: 1.5;
+    opacity: 0;
+    animation: tnf-dock var(--dur) infinite;
+  }
+  .tnf__ab {
+    fill: none;
+    stroke: #0f766e;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tnf__ab-dot {
+    fill: #f97316;
+    stroke: #0f766e;
+    stroke-width: 2;
+  }
+  .tnf__drug {
+    opacity: 0;
+    animation: tnf-bind var(--dur) infinite;
+  }
+  .tnf__shield path {
+    fill: #dbeafe;
+    stroke: #2563eb;
+    stroke-width: 2;
+  }
+  .tnf__shield {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: tnf-pop var(--dur) infinite;
+  }
+  .tnf__resolved rect {
+    fill: #dcfce7;
+    stroke: #22c55e;
+    stroke-width: 2;
+  }
+  .tnf__resolved {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: tnf-pop-late var(--dur) infinite;
+  }
+
+  /* --- caption list ------------------------------------------------------ */
+  .tnf__steps {
+    counter-reset: tnfstep;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .tnf__step {
+    position: relative;
+    padding: 0.4rem 0.6rem 0.4rem 2.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #334155;
+    background: transparent;
+    transform-origin: left center;
+    animation: tnf-step var(--dur) infinite;
+  }
+  .tnf__step::before {
+    counter-increment: tnfstep;
+    content: counter(tnfstep);
+    position: absolute;
+    left: 0.5rem;
+    top: 0.4rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #0f172a;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: tnf-badge var(--dur) infinite;
+  }
+  .tnf__step:nth-child(1),
+  .tnf__step:nth-child(1)::before { animation-delay: 0s; }
+  .tnf__step:nth-child(2),
+  .tnf__step:nth-child(2)::before { animation-delay: 3s; }
+  .tnf__step:nth-child(3),
+  .tnf__step:nth-child(3)::before { animation-delay: 6s; }
+  .tnf__step:nth-child(4),
+  .tnf__step:nth-child(4)::before { animation-delay: 9s; }
+  .tnf__step:nth-child(5),
+  .tnf__step:nth-child(5)::before { animation-delay: 12s; }
+
+  /* --- keyframes (15s cycle; each step owns a 20% / 3s slice) ------------ */
+  /* free TNF-α drifts subtly during steps 1-2, then settles */
+  @keyframes tnf-drift {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(6px, 4px); }
+    20% { transform: translate(-4px, 2px); }
+    40%, 100% { transform: translate(0, 0); }
+  }
+  /* step 2 — a TNF-α docks on the receptor (then removed once captured) */
+  @keyframes tnf-dock {
+    0%, 20% { opacity: 0; }
+    26%, 40% { opacity: 1; }
+    46%, 100% { opacity: 0; }
+  }
+  /* inflammation flares up during steps 2-4, then fades at step 5 */
+  @keyframes tnf-inflame {
+    0%, 16% { opacity: 0; transform: scale(0.6); }
+    24% { opacity: 1; transform: scale(1.1); }
+    30%, 74% { opacity: 1; transform: scale(1); }
+    84%, 100% { opacity: 0; transform: scale(0.6); }
+  }
+  /* step 3 — the antibody slides in from the left and captures the TNF-α */
+  @keyframes tnf-bind {
+    0%, 36% { opacity: 0; transform: translateX(-40px); }
+    44% { opacity: 1; transform: translateX(6px); }
+    50%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* step 4 — the "receptor shielded" badge pops in and stays */
+  @keyframes tnf-pop {
+    0%, 60% { opacity: 0; transform: scale(0); }
+    66% { opacity: 1; transform: scale(1.25); }
+    71%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* step 5 — the "炎症消退" badge pops in last */
+  @keyframes tnf-pop-late {
+    0%, 78% { opacity: 0; transform: scale(0); }
+    84% { opacity: 1; transform: scale(1.2); }
+    89%, 100% { opacity: 1; transform: scale(1); }
+  }
+  /* active caption: brand color + bold + a subtle scale + a soft brand wash */
+  @keyframes tnf-step {
+    0%, 17% {
+      opacity: 1;
+      color: #0f766e;
+      font-weight: 700;
+      background: #f0fdfa;
+      transform: scale(1.02);
+    }
+    20%, 100% {
+      opacity: 0.5;
+      color: #334155;
+      font-weight: 400;
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+  @keyframes tnf-badge {
+    0%, 17% { background: #0f766e; color: #ffffff; transform: scale(1.15); }
+    20%, 100% { background: #e2e8f0; color: #0f172a; transform: scale(1); }
+  }
+
+  /* --- reduced motion: freeze everything, show steps statically ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .tnf *,
+    .tnf__svg * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .tnf__step,
+    .tnf__step::before {
+      animation: none !important;
+      transform: none !important;
+    }
+    .tnf__step { opacity: 1 !important; }
+    /* coherent static end-state: antibody holding TNF-α, receptor shielded,
+       inflammation resolved */
+    .tnf__drug { opacity: 1 !important; }
+    .tnf__shield { opacity: 1 !important; }
+    .tnf__resolved { opacity: 1 !important; }
+    .tnf__inflam { opacity: 0 !important; }
+    /* hide the transient docked TNF-α to avoid a cluttered frame */
+    .tnf__dock-dot { opacity: 0 !important; }
+  }
+</style>

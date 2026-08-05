@@ -1,0 +1,72 @@
+---
+// Search.astro — client-side search UI powered by Pagefind (Task 8 / 需求 9).
+//
+// How it fits together:
+//   - `npm run build` runs `astro build`, then the `postbuild` script runs
+//     `pagefind --site dist`, which indexes the built HTML (Pagefind auto-
+//     segments CJK/Chinese) and emits the runtime bundle + default UI assets
+//     into `dist/pagefind/`.
+//   - This component mounts the Pagefind DEFAULT UI (`@pagefind/default-ui`)
+//     and points it at that bundle via `bundlePath: '/pagefind/'`.
+//   - Localized strings (placeholder + the "未找到相关内容" empty state) are
+//     passed from i18n through `data-*` attributes, because the <script> below
+//     is bundled by Astro and cannot read server-side variables directly.
+//
+// Accessibility (Task 12 / 需求 13): Pagefind generates its own <input> at
+// runtime, so we render a visually-hidden <label> *outside* the mount target
+// (Pagefind only rewrites the target's contents) and, once mounted, associate
+// it with the generated input by id and also set an aria-label as a robust
+// fallback. This gives the search box an accessible name in real browsers.
+//
+// NOTE: the Pagefind bundle only exists in the BUILT site, so search works when
+// serving the build (`npm run preview`) — not under `astro dev`.
+import { t } from '../lib/i18n';
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = 'zh' } = Astro.props;
+const inputLabel = t(locale, 'search.label');
+---
+
+<div class="pagefind-search-wrapper">
+  <label for="pagefind-search-input" class="sr-only">{inputLabel}</label>
+  <div
+    id="pagefind-search"
+    class="pagefind-search"
+    data-placeholder={t(locale, 'search.placeholder')}
+    data-zero={t(locale, 'search.noResults')}
+    data-input-label={inputLabel}
+  >
+  </div>
+</div>
+
+<script>
+  import { PagefindUI } from '@pagefind/default-ui';
+  import '@pagefind/default-ui/css/ui.css';
+
+  const el = document.querySelector('#pagefind-search');
+  if (el) {
+    new PagefindUI({
+      element: '#pagefind-search',
+      showSubResults: true,
+      // The index + runtime live at /pagefind/ in the built site (postbuild).
+      bundlePath: '/pagefind/',
+      translations: {
+        placeholder: el.getAttribute('data-placeholder') ?? undefined,
+        // The i18n empty state — shown when a query returns nothing (需求 9.4).
+        zero_results: el.getAttribute('data-zero') ?? undefined,
+      },
+    });
+
+    // Give Pagefind's runtime-generated <input> an accessible name: connect the
+    // visually-hidden <label for="pagefind-search-input"> and set aria-label.
+    const input = el.querySelector('input');
+    if (input) {
+      input.id = 'pagefind-search-input';
+      const label = el.getAttribute('data-input-label');
+      if (label) input.setAttribute('aria-label', label);
+    }
+  }
+</script>
