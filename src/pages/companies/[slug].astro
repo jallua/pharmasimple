@@ -1,13 +1,8 @@
 ---
-// Company detail (Task 7.3 / 需求 2): a published company's name, summary, its
-// published drugs, and a link back to the companies index. `getStaticPaths` is
-// built from PUBLISHED companies only (P1), and each page lists only that
-// company's PUBLISHED drugs (P1) whose reference resolves to it (P4) — all via
-// the pure `publishedCompanyDetailPaths` helper. With no content authored yet
-// (until Task 10) this simply produces zero pages.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { publishedCompanyDetailPaths, slugOf, toDrugUrl } from '../../lib/catalog';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { t } from '../../lib/i18n';
 
 export async function getStaticPaths() {
@@ -19,21 +14,22 @@ export async function getStaticPaths() {
 const locale = 'zh';
 const { company, drugs } = Astro.props;
 const { data } = company;
+
+const crumbs = [
+  { label: t(locale, 'nav.home'), href: '/' },
+  { label: t(locale, 'nav.companies'), href: '/companies' },
+  { label: data.name },
+];
 ---
 
-<BaseLayout title={data.name} locale={locale}>
-  <p class="back-link">
-    <a href="/companies">&larr; {t(locale, 'company.backToIndex')}</a>
-  </p>
-
+<BaseLayout title={data.name} description={data.summary} locale={locale}>
+  <Breadcrumbs items={crumbs} />
   <h1>{data.name}</h1>
   {data.country && <p class="company__country">{data.country}</p>}
   {data.summary && <p class="company__summary">{data.summary}</p>}
 
   <section class="company__drugs" aria-label={t(locale, 'company.relatedDrugs')}>
     <h2>{t(locale, 'company.relatedDrugs')}</h2>
-    {/* A company is only routed when it has >=1 published drug, so this list is
-        always non-empty (there is no "in preparation" placeholder). */}
     <ul class="drug-list">
       {drugs.map((drug) => (
         <li class="drug-list__item">

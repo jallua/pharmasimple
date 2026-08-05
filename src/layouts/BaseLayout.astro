@@ -6,11 +6,27 @@ import { defaultLocale, t } from '../lib/i18n';
 
 interface Props {
   title?: string;
+  description?: string;
   locale?: string;
 }
 
-const { title, locale = defaultLocale } = Astro.props;
-const resolvedTitle = title ?? t(locale, 'site.title');
+const { title, description, locale = defaultLocale } = Astro.props;
+const siteTitle = t(locale, 'site.title');
+const pageTitle = title ?? siteTitle;
+const documentTitle = pageTitle === siteTitle ? siteTitle : `${pageTitle} - ${siteTitle}`;
+const metaDescription = description ?? t(locale, 'site.tagline');
+
+// Canonical + OG URL — guarded: Astro.site is undefined in some render contexts
+// (e.g. the container API used by tests), where `new URL(path, undefined)` would
+// throw. Only emit canonical/og:url when an absolute URL can be resolved.
+const pathname = Astro.url?.pathname ?? '/';
+let canonicalURL: string | undefined;
+try {
+  canonicalURL = Astro.site ? new URL(pathname, Astro.site).href : undefined;
+} catch {
+  canonicalURL = undefined;
+}
+const ogLocale = locale === 'zh' ? 'zh_CN' : locale;
 ---
 
 <!doctype html>
@@ -18,19 +34,61 @@ const resolvedTitle = title ?? t(locale, 'site.title');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{resolvedTitle}</title>
+    <title>{documentTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0f766e" />
+    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={metaDescription} />
+    {canonicalURL && <meta property="og:url" content={canonicalURL} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={documentTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'dark' || t === 'light') {
+            document.documentElement.setAttribute('data-theme', t);
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">{t(locale, 'a11y.skipToContent')}</a>
     <header>
-      <nav aria-label={t(locale, 'nav.label')}>
+      <nav class="site-nav" aria-label={t(locale, 'nav.label')}>
         <a href="/" class="site-title">{t(locale, 'site.title')}</a>
-        <ul>
+        <button
+          id="nav-toggle"
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          aria-label={t(locale, 'nav.menu')}
+        >
+          <span class="nav-toggle__icon" aria-hidden="true"></span>
+        </button>
+        <ul id="primary-nav" class="nav-links">
           <li><a href="/drugs">{t(locale, 'nav.drugs')}</a></li>
           <li><a href="/companies">{t(locale, 'nav.companies')}</a></li>
-          <li><a href="/#search">{t(locale, 'nav.search')}</a></li>
+          <li><a href="/search">{t(locale, 'nav.search')}</a></li>
           <li><a href="/about">{t(locale, 'nav.about')}</a></li>
         </ul>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-pressed="false"
+          aria-label={t(locale, 'nav.themeToggle')}
+        >
+          <span class="theme-toggle__icon" aria-hidden="true"></span>
+        </button>
         <LanguageSwitcher locale={locale} />
       </nav>
     </header>
@@ -40,5 +98,34 @@ const resolvedTitle = title ?? t(locale, 'site.title');
     <footer>
       <Disclaimer locale={locale} variant="footer" />
     </footer>
+    <script>
+      const root = document.documentElement;
+      const prefersDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const effectiveTheme = () => {
+        const attr = root.getAttribute('data-theme');
+        return attr === 'dark' || attr === 'light' ? attr : prefersDark() ? 'dark' : 'light';
+      };
+      const themeBtn = document.getElementById('theme-toggle');
+      const syncThemeBtn = () => {
+        if (themeBtn) themeBtn.setAttribute('aria-pressed', String(effectiveTheme() === 'dark'));
+      };
+      syncThemeBtn();
+      themeBtn?.addEventListener('click', () => {
+        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try {
+          localStorage.setItem('theme', next);
+        } catch (e) {}
+        syncThemeBtn();
+      });
+
+      const navToggle = document.getElementById('nav-toggle');
+      const primaryNav = document.getElementById('primary-nav');
+      navToggle?.addEventListener('click', () => {
+        const open = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', String(!open));
+        primaryNav?.classList.toggle('is-open', !open);
+      });
+    </script>
   </body>
 </html>

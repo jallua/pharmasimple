@@ -1,0 +1,19 @@
+---
+// Custom 404 page (UX): friendly not-found message with clear ways back in.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../lib/i18n';
+
+const locale = 'zh';
+---
+
+<BaseLayout title={t(locale, 'notFound.title')} description={t(locale, 'notFound.body')} locale={locale}>
+  <section class="notfound">
+    <h1>{t(locale, 'notFound.title')}</h1>
+    <p class="notfound__body">{t(locale, 'notFound.body')}</p>
+    <ul class="notfound__links">
+      <li><a class="btn btn--primary" href="/">{t(locale, 'notFound.home')}</a></li>
+      <li><a class="btn btn--ghost" href="/drugs">{t(locale, 'notFound.drugs')}</a></li>
+      <li><a class="btn btn--ghost" href="/search">{t(locale, 'notFound.search')}</a></li>
+    </ul>
+  </section>
+</BaseLayout>

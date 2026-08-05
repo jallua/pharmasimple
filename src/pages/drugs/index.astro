@@ -1,44 +1,64 @@
 ---
-// Drugs index (需求 1 / 9): every PUBLISHED drug, grouped by drug class. Each
-// group shows its class name as a subheading and its drugs as cards linking to
-// the drug's mechanism page. The grouping + ordering (published-only, P1;
-// popularity within each group; most-prominent class first) come from the pure
-// `groupByDrugClass` helper. With no published drugs the page shows a friendly
-// empty state.
+// Drugs index: every PUBLISHED drug, grouped by therapeutic area then drug
+// class. A top anchor TOC jumps to each area; area sections carry areaAnchor
+// ids and class sections carry classAnchor ids (the homepage chips deep-link to
+// the latter). Grouping/ordering come from the pure catalog helpers (P1).
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { groupByDrugClass, slugOf, toDrugUrl, classAnchor } from '../../lib/catalog';
+import { groupByTherapeuticArea, areaAnchor, classAnchor, slugOf, toDrugUrl } from '../../lib/catalog';
 import { t } from '../../lib/i18n';
 
 const locale = 'zh';
-
-const groups = groupByDrugClass(await getCollection('drugs'));
+const areaGroups = groupByTherapeuticArea(await getCollection('drugs'));
 ---
 
-<BaseLayout title={t(locale, 'drugs.indexTitle')} locale={locale}>
+<BaseLayout title={t(locale, 'drugs.indexTitle')} description={t(locale, 'drugs.indexLead')} locale={locale}>
   <h1>{t(locale, 'drugs.indexTitle')}</h1>
   <p class="drugs-index__lead">{t(locale, 'drugs.indexLead')}</p>
 
   {
-    groups.length === 0 ? (
+    areaGroups.length === 0 ? (
       <p class="empty-state">{t(locale, 'drugs.empty')}</p>
     ) : (
-      groups.map((group) => (
-        <section class="drug-class-group" id={classAnchor(group.drugClass)} aria-label={group.drugClass}>
-          <h2 class="drug-class-group__title">{group.drugClass}</h2>
-          <ul class="drug-list">
-            {group.drugs.map((drug) => (
-              <li class="drug-list__item">
-                <a href={toDrugUrl(slugOf(drug))}>
-                  {drug.data.genericName}
-                  {drug.data.brandName ? ` (${drug.data.brandName})` : ''}
+      <>
+        <nav class="drugs-toc" aria-label={t(locale, 'drugs.tocTitle')}>
+          <ul class="drugs-toc__list">
+            {areaGroups.map((group) => (
+              <li>
+                <a class="chip drugs-toc__chip" href={`#${areaAnchor(group.area)}`}>
+                  {group.area}
+                  <span class="drugs-toc__num">{group.drugCount}</span>
                 </a>
-                {drug.data.summary && <p class="drug-list__summary">{drug.data.summary}</p>}
               </li>
             ))}
           </ul>
-        </section>
-      ))
+        </nav>
+        {areaGroups.map((group) => (
+          <section class="drug-area-group" id={areaAnchor(group.area)} aria-label={group.area}>
+            <h2 class="drug-area-group__title">{group.area}</h2>
+            {group.classes.map((classGroup) => (
+              <section
+                class="drug-class-group"
+                id={classAnchor(classGroup.drugClass)}
+                aria-label={classGroup.drugClass}
+              >
+                <h3 class="drug-class-group__title">{classGroup.drugClass}</h3>
+                <ul class="drug-list">
+                  {classGroup.drugs.map((drug) => (
+                    <li class="drug-list__item">
+                      <a href={toDrugUrl(slugOf(drug))}>
+                        {drug.data.genericName}
+                        {drug.data.brandName ? ` (${drug.data.brandName})` : ''}
+                      </a>
+                      {drug.data.summary && <p class="drug-list__summary">{drug.data.summary}</p>}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </section>
+        ))}
+      </>
     )
   }
 </BaseLayout>

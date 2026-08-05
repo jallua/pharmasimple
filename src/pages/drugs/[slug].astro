@@ -1,16 +1,12 @@
 ---
-// Drug mechanism page (Task 7.4 / 需求 3,4,5,6,7): assembles the layered
-// mechanism explainer, the media (animation/placeholder), indications, target,
-// citations, and a PROMINENT disclaimer. `getStaticPaths` is built from
-// PUBLISHED drugs only (P1) via the pure `publishedDrugDetailPaths` helper; with
-// no content authored yet (until Task 10) this produces zero pages.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { publishedDrugDetailPaths, slugOf, toCompanyUrl } from '../../lib/catalog';
+import { publishedDrugDetailPaths, relatedDrugs, slugOf, toCompanyUrl, toDrugUrl } from '../../lib/catalog';
 import MechanismLayers from '../../components/MechanismLayers.astro';
 import MechanismMedia from '../../components/MechanismMedia.astro';
 import Citations from '../../components/Citations.astro';
 import Disclaimer from '../../components/Disclaimer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { t } from '../../lib/i18n';
 
 export async function getStaticPaths() {
@@ -22,7 +18,6 @@ const locale = 'zh';
 const { drug } = Astro.props;
 const { data } = drug;
 
-// Normalize the company reference (string or `{ id/slug }`) for the back-link.
 const companyRefValue = data.company as unknown;
 const companyRefId =
   typeof companyRefValue === 'string'
@@ -31,13 +26,21 @@ const companyRefId =
        (companyRefValue as { id?: string; slug?: string })?.slug ??
        '');
 
-// Resolve the referenced company's display name for a friendlier link label
-// (falls back to the generic "所属公司" label when it can't be found).
 const companies = await getCollection('companies');
 const companyName = companies.find((c) => slugOf(c) === companyRefId)?.data.name;
+
+const allDrugs = await getCollection('drugs');
+const related = relatedDrugs(allDrugs, slugOf(drug));
+
+const crumbs = [
+  { label: t(locale, 'nav.home'), href: '/' },
+  { label: t(locale, 'nav.drugs'), href: '/drugs' },
+  { label: data.genericName },
+];
 ---
 
-<BaseLayout title={data.genericName} locale={locale}>
+<BaseLayout title={data.genericName} description={data.summary} locale={locale}>
+  <Breadcrumbs items={crumbs} />
   <article class="drug">
     <header class="drug__header">
       <h1 class="drug__name">{data.genericName}</h1>
@@ -53,20 +56,12 @@ const companyName = companies.find((c) => slugOf(c) === companyRefId)?.data.name
       {data.summary && <p class="drug__summary">{data.summary}</p>}
     </header>
 
-    {/* Prominent disclaimer near the top of every drug page (需求 7 / P11). */}
     <Disclaimer locale={locale} variant="prominent" />
 
     <MechanismLayers mechanism={data.mechanism} locale={locale} />
 
     <MechanismMedia media={data.media} locale={locale} subjectLabel={data.genericName} />
 
-    {/*
-      Indications are grouped by regulatory region (需求 5.1): the same drug is
-      approved for different indications in different regions. Each group renders
-      a region header ("region · regulator", plus an optional "as of" date) and
-      its own checklist. The lists stay inside `.drug__indications` so the ✓ pill
-      styling still applies to every <li>.
-    */}
     <section class="drug__indications" aria-label={t(locale, 'drug.indicationsByRegion')}>
       <h2>{t(locale, 'drug.indicationsByRegion')}</h2>
       {data.indications.map((group) => (
@@ -97,6 +92,24 @@ const companyName = companies.find((c) => slugOf(c) === companyRefId)?.data.name
       </p>
       <p class="drug__target-role">{data.target.role}</p>
     </section>
+
+    {related.length > 0 && (
+      <section class="related-drugs" aria-label={t(locale, 'drug.relatedTitle')}>
+        <h2>{t(locale, 'drug.relatedTitle')}</h2>
+        <p class="related-drugs__lead">{t(locale, 'drug.relatedLead')}</p>
+        <ul class="related-drugs__list">
+          {related.map((r) => (
+            <li class="related-drugs__item">
+              <a class="card related-drugs__card" href={toDrugUrl(slugOf(r))}>
+                <span class="related-drugs__name">{r.data.genericName}</span>
+                {r.data.brandName && <span class="related-drugs__brand">{r.data.brandName}</span>}
+                {r.data.drugClass && <span class="chip">{r.data.drugClass}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     <Citations citations={data.citations} locale={locale} />
   </article>

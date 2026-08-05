@@ -1,47 +1,71 @@
 ---
-// Companies index (Task 7.2 / 需求 1): list ONLY published companies that have
-// at least one published drug, in a stable order (by `order`, then name). There
-// is no "in preparation" placeholder — a company with no published drug is not
-// listed at all. When none qualify, the empty-state message is shown.
+// Companies index: published companies that have >=1 published drug, grouped by
+// headquarters country (largest groups first), each card showing the company's
+// published-drug count. Ordering/counting come from the pure catalog helpers.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import {
   publishedOnly,
   sortCompanies,
   companiesWithPublishedDrugs,
+  drugsCountByCompany,
   slugOf,
   toCompanyUrl,
 } from '../../lib/catalog';
 import { t } from '../../lib/i18n';
 
 const locale = 'zh';
-
 const drugs = await getCollection('drugs');
 const withPublishedDrugs = companiesWithPublishedDrugs(drugs);
-const companies = sortCompanies(publishedOnly(await getCollection('companies'))).filter(
-  (company) => withPublishedDrugs.has(slugOf(company)),
+const counts = drugsCountByCompany(drugs);
+const companies = sortCompanies(publishedOnly(await getCollection('companies'))).filter((company) =>
+  withPublishedDrugs.has(slugOf(company)),
 );
+
+type CompanyItem = (typeof companies)[number];
+const byCountry = new Map<string, CompanyItem[]>();
+for (const company of companies) {
+  const key = company.data.country ?? '其他';
+  const list = byCountry.get(key);
+  if (list) list.push(company);
+  else byCountry.set(key, [company]);
+}
+const countryGroups = [...byCountry.entries()]
+  .map(([country, list]) => ({ country, list }))
+  .sort((a, b) => b.list.length - a.list.length || a.country.localeCompare(b.country));
 ---
 
-<BaseLayout title={t(locale, 'nav.companies')} locale={locale}>
+<BaseLayout title={t(locale, 'nav.companies')} description={t(locale, 'meta.companiesDesc')} locale={locale}>
   <h1>{t(locale, 'nav.companies')}</h1>
+  <p class="drugs-index__lead">{t(locale, 'company.indexLead')}</p>
 
   {
     companies.length === 0 ? (
       <p class="empty-state">{t(locale, 'company.empty')}</p>
     ) : (
-      <ul class="company-list">
-        {companies.map((company) => (
-          <li class="company-list__item">
-            <a class="company-list__link" href={toCompanyUrl(slugOf(company))}>
-              {company.data.name}
-            </a>
-            {company.data.summary && (
-              <p class="company-list__summary">{company.data.summary}</p>
-            )}
-          </li>
-        ))}
-      </ul>
+      countryGroups.map((group) => (
+        <section class="company-country-group" aria-label={group.country}>
+          <h2 class="company-country-group__title">
+            {group.country}
+            <span class="company-country-group__count">{group.list.length} 家</span>
+          </h2>
+          <ul class="company-list">
+            {group.list.map((company) => (
+              <li class="company-list__item">
+                <a class="company-list__link" href={toCompanyUrl(slugOf(company))}>
+                  {company.data.name}
+                </a>
+                {company.data.summary && (
+                  <p class="company-list__summary">{company.data.summary}</p>
+                )}
+                <span class="company-list__count">
+                  {t(locale, 'company.recorded')} {counts.get(slugOf(company)) ?? 0} {t(locale, 'company.countUnit')}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
     )
   }
 </BaseLayout>

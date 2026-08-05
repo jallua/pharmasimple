@@ -16,6 +16,9 @@ import {
   therapeuticArea,
   groupByTherapeuticArea,
   THERAPEUTIC_AREAS,
+  relatedDrugs,
+  areaAnchor,
+  drugsCountByCompany,
   type CompanyEntry,
   type DrugEntry,
   type DrugData,
@@ -949,4 +952,42 @@ test('groupByTherapeuticArea: areas in canonical order; published-only; drugCoun
   expect(cardio?.classes[0].drugs.length).toBe(2);
   const allSlugs = areas.flatMap((a) => a.classes.flatMap((c) => c.drugs.map((d) => d.data.slug)));
   expect(allSlugs).not.toContain('draft');
+});
+
+// ---------------------------------------------------------------------------
+// areaAnchor / relatedDrugs / drugsCountByCompany — UX helpers.
+// ---------------------------------------------------------------------------
+
+test('areaAnchor: area- prefixed, whitespace-free, deterministic', () => {
+  expect(areaAnchor('肿瘤(抗癌)')).toBe(areaAnchor('肿瘤(抗癌)'));
+  expect(areaAnchor('肿瘤(抗癌)').startsWith('area-')).toBe(true);
+  expect(/\s/.test(areaAnchor('心血管与血液'))).toBe(false);
+});
+
+test('relatedDrugs: same class first, excludes self + drafts, capped', () => {
+  const drugs = [
+    popDrug('a', { drugClass: 'PD-1', popularity: 100 }),
+    popDrug('b', { drugClass: 'PD-1', popularity: 90 }),
+    popDrug('c', { drugClass: 'PD-1', popularity: 80, reviewStatus: 'draft' }),
+    popDrug('x', { drugClass: 'BTK', popularity: 70 }),
+  ];
+  expect(relatedDrugs(drugs, 'a').map((d) => d.data.slug)).toEqual(['b']);
+});
+
+test('relatedDrugs: falls back to same therapeutic area for a singleton class', () => {
+  const drugs = [
+    popDrug('pd1', { drugClass: '抗 PD-1 单克隆抗体(免疫检查点抑制剂)', popularity: 100 }),
+    popDrug('btk', { drugClass: 'BTK 抑制剂', popularity: 90 }),
+    popDrug('statin', { drugClass: '他汀类(HMG-CoA 还原酶抑制剂)', popularity: 80 }),
+  ];
+  expect(relatedDrugs(drugs, 'pd1').map((d) => d.data.slug)).toEqual(['btk']);
+});
+
+test('relatedDrugs: unknown slug yields empty', () => {
+  expect(relatedDrugs([popDrug('a', { drugClass: 'X' })], 'nope')).toEqual([]);
+});
+
+test('drugsCountByCompany: counts only published drugs per company', () => {
+  const drugs = [popDrug('a', {}), popDrug('b', {}), popDrug('c', { reviewStatus: 'draft' })];
+  expect(drugsCountByCompany(drugs).get('acme')).toBe(2);
 });

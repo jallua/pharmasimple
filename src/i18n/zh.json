@@ -9,7 +9,9 @@
     "drugs": "药物",
     "companies": "公司",
     "search": "搜索",
-    "about": "关于"
+    "about": "关于",
+    "menu": "菜单",
+    "themeToggle": "切换深色 / 浅色主题"
   },
   "disclaimer": {
     "title": "免责声明",
@@ -18,7 +20,8 @@
   "search": {
     "placeholder": "搜索药品、公司或适应症",
     "noResults": "未找到相关内容",
-    "label": "站内搜索"
+    "label": "站内搜索",
+    "pageLead": "搜索药品、公司或适应症,直达它们的作用机制说明。"
   },
   "a11y": {
     "skipToContent": "跳到主要内容"
@@ -48,7 +51,8 @@
     "heading": "作用机制",
     "analogy": "一句话比喻",
     "simple": "通俗版",
-    "advanced": "进阶版"
+    "advanced": "进阶版",
+    "pauseAnimation": "暂停动画"
   },
   "citations": {
     "heading": "参考来源"
@@ -61,12 +65,15 @@
     "target": "作用靶点",
     "drugClass": "药物类别",
     "company": "所属公司",
-    "updated": "更新于"
+    "updated": "更新于",
+    "relatedTitle": "同类药物",
+    "relatedLead": "点开对比同一类别下其它药物的差异:"
   },
   "drugs": {
     "indexTitle": "全部药物",
     "indexLead": "按作用机制分类浏览所有已收录的药物。",
-    "empty": "暂无已发布的药物内容,敬请期待。"
+    "empty": "暂无已发布的药物内容,敬请期待。",
+    "tocTitle": "按治疗领域快速跳转"
   },
   "targetType": {
     "receptor": "受体",
@@ -79,7 +86,21 @@
   "company": {
     "backToIndex": "返回公司索引",
     "relatedDrugs": "相关药品",
-    "empty": "暂无已发布的公司内容,敬请期待。"
+    "empty": "暂无已发布的公司内容,敬请期待。",
+    "indexLead": "按总部所在国家 / 地区分组,浏览已收录的制药公司及其药品。",
+    "recorded": "收录",
+    "countUnit": "种药物"
+  },
+  "meta": {
+    "companiesDesc": "已收录制药公司及其药品的通俗作用机制说明,按总部国家 / 地区分组。",
+    "aboutDesc": "了解本站的内容方法、来源与免责声明。"
+  },
+  "notFound": {
+    "title": "页面走丢了",
+    "body": "抱歉,没有找到这个页面。它可能已被移动,或从未存在。",
+    "home": "返回首页",
+    "drugs": "浏览全部药物",
+    "search": "去搜索"
   },
   "language": {
     "label": "语言",

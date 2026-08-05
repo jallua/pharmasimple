@@ -23,6 +23,8 @@
   --muted: #64748b;        /* secondary text on white */
   --muted-strong: #475569; /* muted text on tinted bands (keeps >=4.5:1) */
   --border: #e2e8f0;
+  --header-bg: #ffffffe6;
+  --surface-2: #f1f5f9;
   --brand: #0d9488;        /* teal-600 — decorative accents/borders */
   --brand-strong: #0f766e; /* teal-700 — text/links on white (>=4.5:1) */
   --brand-hover: #115e59;  /* teal-800 — link/button hover */
@@ -158,7 +160,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: #ffffffe6;
+  background: var(--header-bg);
   -webkit-backdrop-filter: saturate(1.3) blur(8px);
   backdrop-filter: saturate(1.3) blur(8px);
   border-bottom: 1px solid var(--border);
@@ -665,7 +667,7 @@ a.by-class__chip:focus-visible {
    it reads as the "deeper" layer without hiding behind a collapse. Its label is
    styled like the simple layer's label. */
 .mechanism__layer--advanced {
-  background: #f1f5f9; /* slate-100: subtly distinct from white simple card + page bg */
+  background: var(--surface-2); /* subtly distinct from white simple card + page bg */
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem 1.2rem;
@@ -1049,4 +1051,249 @@ a.area__chip:focus-visible {
 }
 .by-class__all a:hover {
   color: var(--brand-hover);
+}
+
+/* ===========================================================================
+ * Dark theme — variable overrides. Auto-applies under a dark OS preference
+ * (unless the user explicitly chose light), and when the user toggles to dark.
+ * ======================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1220;
+    --surface: #111c2e;
+    --surface-2: #0e1728;
+    --ink: #f1f5f9;
+    --text: #cbd5e1;
+    --muted: #94a3b8;
+    --muted-strong: #cbd5e1;
+    --border: #2b3a52;
+    --brand: #2dd4bf;
+    --brand-strong: #5eead4;
+    --brand-hover: #99f6e4;
+    --brand-50: #0c2b28;
+    --brand-100: #123a35;
+    --brand-200: #155e56;
+    --warn-bg: #3a2e0b;
+    --warn-border: #f59e0b;
+    --warn-ink: #fde68a;
+    --header-bg: #0b1220e6;
+    --color-bg: #111c2e;
+    --color-link: var(--brand-strong);
+    --color-link-hover: var(--brand-hover);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #111c2e;
+  --surface-2: #0e1728;
+  --ink: #f1f5f9;
+  --text: #cbd5e1;
+  --muted: #94a3b8;
+  --muted-strong: #cbd5e1;
+  --border: #2b3a52;
+  --brand: #2dd4bf;
+  --brand-strong: #5eead4;
+  --brand-hover: #99f6e4;
+  --brand-50: #0c2b28;
+  --brand-100: #123a35;
+  --brand-200: #155e56;
+  --warn-bg: #3a2e0b;
+  --warn-border: #f59e0b;
+  --warn-ink: #fde68a;
+  --header-bg: #0b1220e6;
+  --color-bg: #111c2e;
+  --color-link: var(--brand-strong);
+  --color-link-hover: var(--brand-hover);
+}
+
+/* ===========================================================================
+ * Header controls (theme toggle + mobile nav toggle) + responsive nav.
+ * ======================================================================== */
+.nav-toggle,
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.nav-toggle:hover,
+.theme-toggle:hover {
+  border-color: var(--brand-200);
+  color: var(--brand-strong);
+}
+.nav-toggle__icon {
+  display: block;
+  position: relative;
+  width: 1.1rem;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.nav-toggle__icon::before,
+.nav-toggle__icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.nav-toggle__icon::before { top: -6px; }
+.nav-toggle__icon::after { top: 6px; }
+.theme-toggle__icon {
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  background: linear-gradient(90deg, currentColor 0 50%, transparent 50% 100%);
+}
+.nav-toggle { display: none; }
+.site-nav .nav-links { margin-left: auto; }
+@media (max-width: 640px) {
+  .site-title { order: 0; }
+  .theme-toggle { order: 1; margin-left: auto; }
+  .nav-toggle { order: 2; display: inline-flex; }
+  .nav-links {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    display: none;
+  }
+  .nav-links.is-open { display: flex; }
+}
+
+/* --- Breadcrumbs ---------------------------------------------------------- */
+.breadcrumbs { margin-bottom: 0.25rem; }
+.breadcrumbs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--muted-strong);
+}
+.breadcrumbs__item { display: inline-flex; align-items: center; gap: 0.4rem; }
+.breadcrumbs__item + .breadcrumbs__item::before {
+  content: "/";
+  color: var(--muted);
+}
+.breadcrumbs a { color: var(--brand-strong); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--brand-hover); }
+.breadcrumbs [aria-current="page"] { color: var(--muted-strong); }
+
+/* --- Related drugs (drug page) -------------------------------------------- */
+.related-drugs__lead { margin: -0.2rem 0 1rem; color: var(--muted-strong); }
+.related-drugs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+}
+.related-drugs__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  height: 100%;
+}
+.related-drugs__name { font-weight: 700; color: var(--ink); }
+.related-drugs__brand { color: var(--muted-strong); font-size: 0.9rem; }
+.related-drugs__card .chip { align-self: flex-start; }
+
+/* --- /drugs TOC + therapeutic-area / class groups ------------------------- */
+.drugs-toc { margin: 0.5rem 0 1.75rem; }
+.drugs-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+a.drugs-toc__chip { gap: 0.45em; text-decoration: none; }
+a.drugs-toc__chip:hover,
+a.drugs-toc__chip:focus-visible {
+  background: var(--brand-200);
+  color: var(--brand-hover);
+  border-color: var(--brand);
+}
+.drugs-toc__num {
+  background: var(--surface);
+  border: 1px solid var(--brand-200);
+  border-radius: var(--radius-pill);
+  padding: 0 0.4em;
+  font-size: 0.8em;
+}
+.drug-area-group { scroll-margin-top: 5rem; }
+.drug-area-group + .drug-area-group { margin-top: 2.5rem; }
+.drug-area-group__title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--border);
+}
+.drug-class-group { scroll-margin-top: 5rem; }
+.drug-class-group__title { font-size: 1.12rem; }
+
+/* --- Companies grouped by country ----------------------------------------- */
+.company-country-group + .company-country-group { margin-top: 2rem; }
+.company-country-group__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 1.3rem;
+}
+.company-country-group__count {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.company-list__count { font-size: 0.82rem; color: var(--muted); }
+
+/* --- Animation pause control ---------------------------------------------- */
+.anim-toggle {
+  margin-top: 0.75rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--brand-strong);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.anim-toggle:hover { border-color: var(--brand-200); color: var(--brand-hover); }
+.mechanism-media__item.is-paused .mechanism-media__anim * {
+  animation-play-state: paused !important;
+}
+
+/* --- 404 not-found -------------------------------------------------------- */
+.notfound { text-align: center; padding: 2rem 1rem 3rem; }
+.notfound__body { color: var(--muted-strong); max-width: 36rem; margin: 0 auto 1.5rem; }
+.notfound__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
 }

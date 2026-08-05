@@ -1,0 +1,32 @@
+---
+// Breadcrumbs.astro — a small, accessible breadcrumb trail. `items` is ordered
+// from the site root to the current page; the LAST item is the current page
+// (plain text with aria-current), earlier items are links.
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Crumb[];
+  label?: string;
+}
+const { items, label = '面包屑导航' } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <nav class="breadcrumbs" aria-label={label}>
+      <ol class="breadcrumbs__list">
+        {items.map((item, index) => (
+          <li class="breadcrumbs__item">
+            {item.href && index < items.length - 1 ? (
+              <a href={item.href}>{item.label}</a>
+            ) : (
+              <span aria-current="page">{item.label}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

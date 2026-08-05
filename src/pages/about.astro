@@ -1,5 +1,5 @@
 ---
-// About (Task 7.5 / 需求 7): content methodology + a full, prominent disclaimer.
+// About: content methodology + a full, prominent disclaimer.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Disclaimer from '../components/Disclaimer.astro';
 import { t } from '../lib/i18n';
@@ -7,7 +7,7 @@ import { t } from '../lib/i18n';
 const locale = 'zh';
 ---
 
-<BaseLayout title={t(locale, 'about.title')} locale={locale}>
+<BaseLayout title={t(locale, 'about.title')} description={t(locale, 'meta.aboutDesc')} locale={locale}>
   <div class="reading">
     <h1>{t(locale, 'about.title')}</h1>
 

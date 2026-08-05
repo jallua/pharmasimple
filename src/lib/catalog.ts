@@ -798,3 +798,60 @@ export function groupByTherapeuticArea(drugs: DrugEntry[]): TherapeuticAreaGroup
   }
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// UX helpers (site UX pass): related drugs, area anchors, per-company drug
+// counts. All pure + fixture-testable, built on the published-only primitives
+// so the publish gate (P1) still holds.
+// ---------------------------------------------------------------------------
+
+/**
+ * Safe, deterministic HTML id/anchor for a therapeutic-area name (mirrors
+ * {@link classAnchor} but with an "area-" prefix). Pure + total.
+ */
+export function areaAnchor(area: string): string {
+  const body = (area ?? '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '');
+  return `area-${body}`;
+}
+
+/**
+ * "同类药物" for a drug detail page: other PUBLISHED drugs that share the given
+ * drug's `drugClass`; if it is the only one in its class, fall back to other
+ * published drugs in the same therapeutic area. Excludes the drug itself,
+ * orders by popularity, and caps the count (default 8). Pure + fixture-testable.
+ */
+export function relatedDrugs(allDrugs: DrugEntry[], currentSlug: string, limit = 8): DrugEntry[] {
+  const published = publishedOnly(allDrugs);
+  const current = published.find((d) => entrySlug(d) === currentSlug);
+  if (!current) return [];
+  const currentClass = current.data.drugClass ?? '';
+  const others = published.filter((d) => entrySlug(d) !== currentSlug);
+
+  let pool =
+    currentClass.length > 0
+      ? others.filter((d) => (d.data.drugClass ?? '') === currentClass)
+      : [];
+  if (pool.length === 0 && currentClass.length > 0) {
+    const area = therapeuticArea(currentClass);
+    pool = others.filter(
+      (d) => (d.data.drugClass ?? '').length > 0 && therapeuticArea(d.data.drugClass ?? '') === area,
+    );
+  }
+  return sortByPopularity(pool).slice(0, limit);
+}
+
+/**
+ * Map of company slug -> number of that company's PUBLISHED drugs (P1). Used by
+ * the companies index to show a "收录 N 种药物" count. Pure + total.
+ */
+export function drugsCountByCompany(drugs: DrugEntry[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const drug of publishedOnly(drugs)) {
+    const ref = companyRef(drug);
+    if (ref) counts.set(ref, (counts.get(ref) ?? 0) + 1);
+  }
+  return counts;
+}
