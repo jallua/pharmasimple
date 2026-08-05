@@ -950,3 +950,103 @@ main:focus:not(:focus-visible) {
     transform: none;
   }
 }
+
+/* ===========================================================================
+ * Home "按作用机制浏览" — therapeutic-area accordion of class chips.
+ * ======================================================================== */
+.by-class__lead {
+  margin: -0.2rem 0 1rem;
+  color: var(--muted-strong);
+}
+.by-class__areas {
+  display: grid;
+  gap: 0.75rem;
+}
+.area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 0.35rem 1.1rem;
+}
+.area[open] {
+  border-color: var(--brand-200);
+}
+.area__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  color: var(--ink);
+}
+.area__summary::-webkit-details-marker {
+  display: none;
+}
+.area__summary::after {
+  content: "▸";
+  color: var(--brand);
+  transition: transform 0.15s ease;
+}
+.area[open] .area__summary::after {
+  transform: rotate(90deg);
+}
+.area__name {
+  font-size: 1.05rem;
+}
+.area__count {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.area__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.15rem 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+a.area__chip {
+  gap: 0.5em;
+  padding: 0.35em 0.4em 0.35em 0.9em;
+  font-size: 0.9rem;
+  white-space: normal;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+a.area__chip:hover,
+a.area__chip:focus-visible {
+  background: var(--brand-200);
+  color: var(--brand-hover);
+  border-color: var(--brand);
+}
+.area__chip-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.35em;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1px solid var(--brand-200);
+  color: var(--brand-strong);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.by-class__all {
+  margin-top: 0.9rem;
+}
+.by-class__all a {
+  font-weight: 600;
+  color: var(--brand-strong);
+  text-decoration: none;
+}
+.by-class__all a:hover {
+  color: var(--brand-hover);
+}

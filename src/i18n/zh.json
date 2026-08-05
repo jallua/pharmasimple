@@ -33,7 +33,9 @@
     "popularTitle": "热门药物",
     "popularLead": "从这些常用药物直接了解它们怎么起作用:",
     "byClassTitle": "按作用机制浏览",
-    "viewMechanism": "查看作用机制"
+    "byClassLead": "按治疗领域分组,点开可展开该领域下的药物类别;点击任一类别可跳转到对应的药物列表。",
+    "viewMechanism": "查看作用机制",
+    "viewAllDrugs": "查看全部药物"
   },
   "about": {
     "title": "关于本站",

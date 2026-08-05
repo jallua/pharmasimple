@@ -1,25 +1,33 @@
 ---
 // Home (需求 9 / 1): hero + prominent search, then two drug-first browse
-// sections — "热门药物" (the most prominent published drugs, straight to their
-// mechanism pages) and "按作用机制浏览" (one chip per published drug class,
-// linking to the all-drugs index) — followed by the smaller company/about
-// entry cards. Popularity ordering + class grouping come from the pure
-// `sortByPopularity` / `groupByDrugClass` helpers (published-only, P1).
+// sections — "热门药物" (most-prominent published drugs; BeiGene's products
+// pinned first, then by popularity) and "按作用机制浏览" (published drug classes
+// grouped by therapeutic area; each class chip jumps to that class's section on
+// the all-drugs index) — followed by the smaller company/about entry cards.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Search from '../components/Search.astro';
 import { getCollection } from 'astro:content';
-import { sortByPopularity, groupByDrugClass, slugOf, toDrugUrl } from '../lib/catalog';
+import {
+  sortByPopularity,
+  groupByTherapeuticArea,
+  classAnchor,
+  companyRefOf,
+  slugOf,
+  toDrugUrl,
+} from '../lib/catalog';
 import { t } from '../lib/i18n';
 
 const locale = 'zh';
 
 const allDrugs = await getCollection('drugs');
-// Up to 8 most-prominent published drugs for the "热门药物" grid.
-const popular = sortByPopularity(allDrugs).slice(0, 8);
-// Distinct published drug classes (most-prominent class first), for browse chips.
-const drugClasses = groupByDrugClass(allDrugs)
-  .map((group) => group.drugClass)
-  .filter((drugClass) => drugClass.length > 0);
+// Up to 8 most-prominent published drugs, with BeiGene's products pinned first.
+const sortedByPopularity = sortByPopularity(allDrugs);
+const popular = [
+  ...sortedByPopularity.filter((drug) => companyRefOf(drug) === 'beigene'),
+  ...sortedByPopularity.filter((drug) => companyRefOf(drug) !== 'beigene'),
+].slice(0, 8);
+// Published drug classes grouped by therapeutic area for the browse section.
+const areaGroups = groupByTherapeuticArea(allDrugs);
 ---
 
 <BaseLayout title={t(locale, 'site.title')} locale={locale}>
@@ -60,16 +68,36 @@ const drugClasses = groupByDrugClass(allDrugs)
   }
 
   {
-    drugClasses.length > 0 && (
+    areaGroups.length > 0 && (
       <section class="by-class" aria-label={t(locale, 'home.byClassTitle')}>
         <h2>{t(locale, 'home.byClassTitle')}</h2>
-        <ul class="by-class__list">
-          {drugClasses.map((drugClass) => (
-            <li>
-              <a class="chip by-class__chip" href="/drugs">{drugClass}</a>
-            </li>
+        <p class="by-class__lead">{t(locale, 'home.byClassLead')}</p>
+        <div class="by-class__areas">
+          {areaGroups.map((group, index) => (
+            <details class="area" open={index === 0}>
+              <summary class="area__summary">
+                <span class="area__name">{group.area}</span>
+                <span class="area__count">{group.classes.length} 类 · {group.drugCount} 种</span>
+              </summary>
+              <ul class="area__list">
+                {group.classes.map((classGroup) => (
+                  <li>
+                    <a
+                      class="chip area__chip"
+                      href={`/drugs#${classAnchor(classGroup.drugClass)}`}
+                    >
+                      <span class="area__chip-name">{classGroup.drugClass}</span>
+                      <span class="area__chip-num">{classGroup.drugs.length}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
           ))}
-        </ul>
+        </div>
+        <p class="by-class__all">
+          <a href="/drugs">{t(locale, 'home.viewAllDrugs')} &rarr;</a>
+        </p>
       </section>
     )
   }

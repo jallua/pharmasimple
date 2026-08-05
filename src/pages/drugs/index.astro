@@ -7,7 +7,7 @@
 // empty state.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { groupByDrugClass, slugOf, toDrugUrl } from '../../lib/catalog';
+import { groupByDrugClass, slugOf, toDrugUrl, classAnchor } from '../../lib/catalog';
 import { t } from '../../lib/i18n';
 
 const locale = 'zh';
@@ -24,7 +24,7 @@ const groups = groupByDrugClass(await getCollection('drugs'));
       <p class="empty-state">{t(locale, 'drugs.empty')}</p>
     ) : (
       groups.map((group) => (
-        <section class="drug-class-group" aria-label={group.drugClass}>
+        <section class="drug-class-group" id={classAnchor(group.drugClass)} aria-label={group.drugClass}>
           <h2 class="drug-class-group__title">{group.drugClass}</h2>
           <ul class="drug-list">
             {group.drugs.map((drug) => (

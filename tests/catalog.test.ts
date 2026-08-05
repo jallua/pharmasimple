@@ -12,6 +12,10 @@ import {
   hasScopeViolation,
   sortByPopularity,
   groupByDrugClass,
+  classAnchor,
+  therapeuticArea,
+  groupByTherapeuticArea,
+  THERAPEUTIC_AREAS,
   type CompanyEntry,
   type DrugEntry,
   type DrugData,
@@ -876,4 +880,73 @@ test('groupByDrugClass (property): covers exactly the published drugs and groups
       }
     }),
   );
+});
+
+// ---------------------------------------------------------------------------
+// classAnchor / therapeuticArea / groupByTherapeuticArea — homepage browse UX.
+// ---------------------------------------------------------------------------
+
+test('classAnchor: safe, non-empty, prefixed, deterministic id; distinct near-duplicates differ', () => {
+  const a = classAnchor('抗 PD-1 单克隆抗体(免疫检查点抑制剂)');
+  expect(a).toBe(classAnchor('抗 PD-1 单克隆抗体(免疫检查点抑制剂)'));
+  expect(a.startsWith('class-')).toBe(true);
+  expect(/\s/.test(a)).toBe(false);
+  expect(classAnchor('')).toBe('class-');
+  expect(classAnchor('———')).toBe('class-');
+  expect(classAnchor('抗 PD-L1 单克隆抗体')).not.toBe(classAnchor('抗 PD-L1 单克隆抗体(免疫检查点抑制剂)'));
+});
+
+test('classAnchor (property): class- prefix, no whitespace, no leading/trailing dash in body', () => {
+  fc.assert(
+    fc.property(fc.string(), (s) => {
+      const anchor = classAnchor(s);
+      expect(anchor.startsWith('class-')).toBe(true);
+      const body = anchor.slice('class-'.length);
+      expect(/\s/.test(body)).toBe(false);
+      if (body.length > 0) {
+        expect(body.startsWith('-')).toBe(false);
+        expect(body.endsWith('-')).toBe(false);
+      }
+    }),
+  );
+});
+
+test('therapeuticArea: representative classes map to the expected area; unknown -> 其他', () => {
+  expect(therapeuticArea('抗 PD-1 单克隆抗体(免疫检查点抑制剂)')).toBe('肿瘤(抗癌)');
+  expect(therapeuticArea('BTK 抑制剂')).toBe('肿瘤(抗癌)');
+  expect(therapeuticArea('TNF-α 抑制剂(全人源单克隆抗体)')).toBe('免疫与炎症');
+  expect(therapeuticArea('GLP-1 受体激动剂')).toBe('代谢与内分泌');
+  expect(therapeuticArea('他汀类(HMG-CoA 还原酶抑制剂)')).toBe('心血管与血液');
+  expect(therapeuticArea('第二代头孢菌素(β-内酰胺类抗生素)')).toBe('抗感染与疫苗');
+  expect(therapeuticArea('mRNA 疫苗')).toBe('抗感染与疫苗');
+  expect(therapeuticArea('非典型抗精神病药(多巴胺 D2 部分激动剂)')).toBe('神经与精神');
+  expect(therapeuticArea('短效 β2 受体激动剂(SABA,支气管扩张剂)')).toBe('呼吸与过敏');
+  expect(therapeuticArea('前列腺素类似物(眼用降眼压药)')).toBe('眼科');
+  expect(therapeuticArea('CFTR 调节剂(校正剂+增效剂)')).toBe('其他(罕见病、皮肤等)');
+  expect(therapeuticArea('某种全新未知机制')).toBe('其他(罕见病、皮肤等)');
+});
+
+test('therapeuticArea (property): always returns one of the known areas', () => {
+  fc.assert(
+    fc.property(fc.string(), (s) => {
+      expect(THERAPEUTIC_AREAS).toContain(therapeuticArea(s));
+    }),
+  );
+});
+
+test('groupByTherapeuticArea: areas in canonical order; published-only; drugCount matches', () => {
+  const drugs = [
+    popDrug('p1', { drugClass: '抗 PD-1 单克隆抗体(免疫检查点抑制剂)', popularity: 100 }),
+    popDrug('s1', { drugClass: '他汀类(HMG-CoA 还原酶抑制剂)', popularity: 90 }),
+    popDrug('s2', { drugClass: '他汀类(HMG-CoA 还原酶抑制剂)', popularity: 80 }),
+    popDrug('g1', { drugClass: 'GLP-1 受体激动剂', popularity: 70 }),
+    popDrug('draft', { drugClass: '抗 PD-1 单克隆抗体(免疫检查点抑制剂)', reviewStatus: 'draft' }),
+  ];
+  const areas = groupByTherapeuticArea(drugs);
+  expect(areas.map((a) => a.area)).toEqual(['肿瘤(抗癌)', '代谢与内分泌', '心血管与血液']);
+  const cardio = areas.find((a) => a.area === '心血管与血液');
+  expect(cardio?.drugCount).toBe(2);
+  expect(cardio?.classes[0].drugs.length).toBe(2);
+  const allSlugs = areas.flatMap((a) => a.classes.flatMap((c) => c.drugs.map((d) => d.data.slug)));
+  expect(allSlugs).not.toContain('draft');
 });

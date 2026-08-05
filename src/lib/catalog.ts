@@ -689,3 +689,112 @@ export function publishedDrugDetailPaths(drugs: DrugEntry[]): DrugDetailPath[] {
 export function companiesWithPublishedDrugs(drugs: DrugEntry[]): Set<string> {
   return new Set(publishedOnly(drugs).map((drug) => companyRef(drug)));
 }
+
+// ---------------------------------------------------------------------------
+// Therapeutic-area grouping for the homepage "按作用机制浏览" browse.
+// Pure + fixture-testable. Maps a free-text `drugClass` to a coarse therapeutic
+// area via ordered keyword rules (first match wins; anything unmatched falls
+// into the final "其他" bucket) and builds an area -> class-group structure on
+// top of the published-only `groupByDrugClass` (so P1 still holds).
+// ---------------------------------------------------------------------------
+
+/** Ordered therapeutic areas (display order for the homepage browse). */
+export const THERAPEUTIC_AREAS = [
+  '肿瘤(抗癌)',
+  '免疫与炎症',
+  '代谢与内分泌',
+  '心血管与血液',
+  '抗感染与疫苗',
+  '神经与精神',
+  '呼吸与过敏',
+  '眼科',
+  '其他(罕见病、皮肤等)',
+] as const;
+
+export type TherapeuticArea = (typeof THERAPEUTIC_AREAS)[number];
+
+const FALLBACK_AREA: TherapeuticArea = '其他(罕见病、皮肤等)';
+
+const AREA_RULES: ReadonlyArray<{ area: TherapeuticArea; re: RegExp }> = [
+  {
+    area: '肿瘤(抗癌)',
+    re: /PD-1|PD-L1|HER2|EGFR|VEGFR|BCR-ABL|ALK|BTK|PARP|CDK|IDH|HDAC|酪氨酸激酶|雄激素受体|雌激素受体|SERD|门冬酰胺酶|抗癌|ADC/i,
+  },
+  { area: '免疫与炎症', re: /TNF|IL-\d|白细胞介素|整合素|IgA 肾病|皮质类固醇/i },
+  { area: '代谢与内分泌', re: /GLP-1|GIP|SGLT2|双胍|胰岛素|葡萄糖苷酶|降糖|皮质醇|孕激素|避孕/i },
+  {
+    area: '心血管与血液',
+    re: /他汀|HMG-CoA|Ⅹa|Xa 因子|抗凝|血管紧张素|ACEI|钙通道|CCB|COX|抗血小板|溶栓|纤溶|凝血因子|集落刺激因子|G-CSF|前列环素|IP 受体/i,
+  },
+  { area: '抗感染与疫苗', re: /抗生素|头孢|青霉素|内酰胺|HIV|反转录酶|疫苗|mRNA|载体/i },
+  { area: '神经与精神', re: /抗精神病|多巴胺|抗癫痫|麻醉|GABA|VMAT2|CGRP|偏头痛/i },
+  { area: '呼吸与过敏', re: /β2|支气管|抗组胺|鼻用|哮喘/i },
+  { area: '眼科', re: /眼用|降眼压|前列腺素类似物/i },
+  {
+    area: FALLBACK_AREA,
+    re: /FGF23|利钠肽|CNP|siRNA|RNAi|反义寡核苷酸|CFTR|免疫球蛋白|加压素|抗利尿|维 A 酸|视黄酸/i,
+  },
+];
+
+/**
+ * Map a free-text drug class to a coarse therapeutic area (first matching rule
+ * wins; anything unmatched falls into the final "其他" bucket). Pure + total.
+ */
+export function therapeuticArea(drugClass: string): TherapeuticArea {
+  const c = drugClass ?? '';
+  for (const { area, re } of AREA_RULES) {
+    if (re.test(c)) return area;
+  }
+  return FALLBACK_AREA;
+}
+
+/**
+ * Build a safe, deterministic HTML id/anchor for a (possibly Chinese) drug-class
+ * name: lowercase, keep letters/numbers (incl. CJK), collapse every other run to
+ * a single '-', and trim stray '-'. Prefixed with "class-" so the result is a
+ * valid, non-empty id even for a punctuation-only class. Pure + total.
+ */
+export function classAnchor(drugClass: string): string {
+  const body = (drugClass ?? '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '');
+  return `class-${body}`;
+}
+
+/** A therapeutic area with its drug-class groups (see {@link groupByTherapeuticArea}). */
+export interface TherapeuticAreaGroup {
+  area: TherapeuticArea;
+  classes: DrugClassGroup[];
+  drugCount: number;
+}
+
+/**
+ * Group published drugs by therapeutic area, then by drug class, for the
+ * homepage browse. Areas follow {@link THERAPEUTIC_AREAS} order and only
+ * non-empty areas are returned; within an area the classes keep the
+ * `groupByDrugClass` ordering (most-prominent class first). Pure; built on the
+ * published-only `groupByDrugClass` so the publish gate (P1) still holds.
+ */
+export function groupByTherapeuticArea(drugs: DrugEntry[]): TherapeuticAreaGroup[] {
+  const classGroups = groupByDrugClass(drugs).filter((g) => g.drugClass.length > 0);
+  const byArea = new Map<TherapeuticArea, DrugClassGroup[]>();
+  for (const group of classGroups) {
+    const area = therapeuticArea(group.drugClass);
+    const arr = byArea.get(area);
+    if (arr) arr.push(group);
+    else byArea.set(area, [group]);
+  }
+  const result: TherapeuticAreaGroup[] = [];
+  for (const area of THERAPEUTIC_AREAS) {
+    const classes = byArea.get(area);
+    if (classes && classes.length > 0) {
+      result.push({
+        area,
+        classes,
+        drugCount: classes.reduce((sum, g) => sum + g.drugs.length, 0),
+      });
+    }
+  }
+  return result;
+}
