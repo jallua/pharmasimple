@@ -2,7 +2,8 @@
 slug: camrelizumab
 locale: zh
 company: hengrui
-genericName: 卡瑞利珠单抗(camrelizumab)
+genericName: 卡瑞利珠单抗
+genericNameEn: camrelizumab
 brandName: 艾瑞卡(AiRuiKa)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 46

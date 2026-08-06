@@ -2,7 +2,8 @@
 slug: infliximab
 locale: zh
 company: celltrion
-genericName: 英夫利西单抗(infliximab)
+genericName: 英夫利西单抗
+genericNameEn: infliximab
 brandName: Remsima / Inflectra
 drugClass: TNF 抑制剂(人鼠嵌合单克隆抗体)
 popularity: 60

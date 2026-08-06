@@ -2,7 +2,8 @@
 slug: lurasidone
 locale: zh
 company: sumitomo-pharma
-genericName: 鲁拉西酮(lurasidone)
+genericName: 鲁拉西酮
+genericNameEn: lurasidone
 brandName: Latuda
 drugClass: 非典型(第二代)抗精神病药
 popularity: 47

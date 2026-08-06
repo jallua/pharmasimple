@@ -2,7 +2,8 @@
 slug: asparaginase-erwinia
 locale: zh
 company: jazz
-genericName: 重组欧文菌门冬酰胺酶(asparaginase erwinia chrysanthemi, recombinant)
+genericName: 重组欧文菌门冬酰胺酶
+genericNameEn: asparaginase erwinia chrysanthemi, recombinant
 brandName: Rylaze
 drugClass: 门冬酰胺酶(天冬酰胺清除酶)
 popularity: 32

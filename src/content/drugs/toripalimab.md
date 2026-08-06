@@ -2,7 +2,8 @@
 slug: toripalimab
 locale: zh
 company: junshi
-genericName: 特瑞普利单抗(toripalimab)
+genericName: 特瑞普利单抗
+genericNameEn: toripalimab
 brandName: 拓益(Loqtorzi)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 40

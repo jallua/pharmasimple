@@ -2,7 +2,8 @@
 slug: chidamide
 locale: zh
 company: chipscreen
-genericName: 西达本胺(chidamide)
+genericName: 西达本胺
+genericNameEn: chidamide
 brandName: 爱谱沙(Epidaza)
 drugClass: HDAC 抑制剂(组蛋白去乙酰化酶抑制剂)
 popularity: 44

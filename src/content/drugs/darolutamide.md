@@ -2,7 +2,8 @@
 slug: darolutamide
 locale: zh
 company: orion
-genericName: 达罗他胺(darolutamide)
+genericName: 达罗他胺
+genericNameEn: darolutamide
 brandName: Nubeqa(达罗他胺)
 drugClass: 雄激素受体抑制剂(ARi)
 popularity: 49

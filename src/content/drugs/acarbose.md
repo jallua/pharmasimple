@@ -2,7 +2,8 @@
 slug: acarbose
 locale: zh
 company: huadong
-genericName: 阿卡波糖(acarbose)
+genericName: 阿卡波糖
+genericNameEn: acarbose
 brandName: 卡博平(华东)/ Glucobay
 drugClass: α-葡萄糖苷酶抑制剂(口服降糖药)
 popularity: 58

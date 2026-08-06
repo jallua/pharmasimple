@@ -2,7 +2,8 @@
 slug: cetuximab
 locale: zh
 company: merck-kgaa
-genericName: 西妥昔单抗(cetuximab)
+genericName: 西妥昔单抗
+genericNameEn: cetuximab
 brandName: 爱必妥(Erbitux)
 drugClass: 抗 EGFR 单克隆抗体
 popularity: 54

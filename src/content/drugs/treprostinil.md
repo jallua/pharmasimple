@@ -2,7 +2,8 @@
 slug: treprostinil
 locale: zh
 company: united-therapeutics
-genericName: 曲前列尼尔(treprostinil)
+genericName: 曲前列尼尔
+genericNameEn: treprostinil
 brandName: Remodulin / Tyvaso / Orenitram(曲前列尼尔)
 drugClass: 前列环素类似物(IP 受体激动剂)
 popularity: 48

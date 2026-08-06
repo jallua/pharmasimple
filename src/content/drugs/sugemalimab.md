@@ -2,7 +2,8 @@
 slug: sugemalimab
 locale: zh
 company: cstone
-genericName: 舒格利单抗(sugemalimab)
+genericName: 舒格利单抗
+genericNameEn: sugemalimab
 brandName: 择捷美(Cejemly)
 drugClass: 抗 PD-L1 单克隆抗体(免疫检查点抑制剂)
 popularity: 46

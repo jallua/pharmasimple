@@ -2,7 +2,8 @@
 slug: rosuvastatin
 locale: zh
 company: shionogi
-genericName: 瑞舒伐他汀(rosuvastatin)
+genericName: 瑞舒伐他汀
+genericNameEn: rosuvastatin
 brandName: 可定(Crestor)
 drugClass: 他汀类(HMG-CoA 还原酶抑制剂)
 popularity: 72

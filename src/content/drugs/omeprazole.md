@@ -2,7 +2,8 @@
 slug: omeprazole
 locale: zh
 company: dr-reddys
-genericName: 奥美拉唑(omeprazole)
+genericName: 奥美拉唑
+genericNameEn: omeprazole
 brandName: Prilosec / 洛赛克(Losec)
 drugClass: 质子泵抑制剂(PPI)
 popularity: 60

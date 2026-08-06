@@ -114,6 +114,8 @@ export interface DrugData {
    */
   company: string | { collection?: string; id?: string; slug?: string };
   genericName: string;
+  /** English generic/INN name, shown as a secondary line (optional). */
+  genericNameEn?: string;
   brandName?: string;
   drugClass?: string;
   /** Homepage prominence weight (higher = more prominent); optional (需求 1/9). */

@@ -2,7 +2,8 @@
 slug: immune-globulin
 locale: zh
 company: grifols
-genericName: 人免疫球蛋白(immune globulin)
+genericName: 人免疫球蛋白
+genericNameEn: immune globulin
 brandName: Gamunex-C
 drugClass: 静脉/皮下注射人免疫球蛋白(IgG 替代治疗)
 popularity: 35

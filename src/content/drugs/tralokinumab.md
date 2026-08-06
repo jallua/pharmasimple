@@ -2,7 +2,8 @@
 slug: tralokinumab
 locale: zh
 company: leo-pharma
-genericName: 曲罗芦单抗(tralokinumab)
+genericName: 曲罗芦单抗
+genericNameEn: tralokinumab
 brandName: Adbry / Adtralza
 drugClass: 抗 IL-13 单克隆抗体
 popularity: 47

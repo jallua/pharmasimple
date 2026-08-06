@@ -2,7 +2,8 @@
 slug: tagitanlimab
 locale: zh
 company: kelun
-genericName: 泰特利单抗(tagitanlimab)
+genericName: 泰特利单抗
+genericNameEn: tagitanlimab
 drugClass: 抗 PD-L1 单克隆抗体
 popularity: 40
 summary: 一种抗 PD-L1 抗体:松开癌细胞踩住免疫"刹车"的手,让 T 细胞恢复战斗力去清除肿瘤;用于复发或转移性鼻咽癌。由科伦博泰(Kelun-Biotech)研发,已在中国获批。

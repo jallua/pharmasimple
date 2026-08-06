@@ -2,7 +2,8 @@
 slug: prourokinase
 locale: zh
 company: tasly
-genericName: 重组人尿激酶原(recombinant human prourokinase)
+genericName: 重组人尿激酶原
+genericNameEn: recombinant human prourokinase
 brandName: 普佑克
 drugClass: 溶栓药(纤溶酶原激活剂)
 popularity: 31

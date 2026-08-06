@@ -2,7 +2,8 @@
 slug: disitamab-vedotin
 locale: zh
 company: remegen
-genericName: 维迪西妥单抗(disitamab vedotin)
+genericName: 维迪西妥单抗
+genericNameEn: disitamab vedotin
 brandName: 爱地希(Aidixi)
 drugClass: 抗 HER2 抗体偶联药物(ADC)
 popularity: 45

@@ -2,7 +2,8 @@
 slug: inetetamab
 locale: zh
 company: 3sbio
-genericName: 伊尼妥单抗(inetetamab)
+genericName: 伊尼妥单抗
+genericNameEn: inetetamab
 brandName: 赛普汀(Cipterbin)
 drugClass: 抗 HER2 单克隆抗体
 popularity: 38

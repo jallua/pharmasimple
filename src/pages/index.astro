@@ -51,6 +51,9 @@ const areaGroups = groupByTherapeuticArea(allDrugs);
             <li>
               <a class="card featured__card" href={toDrugUrl(slugOf(drug))}>
                 <span class="featured__name">{drug.data.genericName}</span>
+                {drug.data.genericNameEn && (
+                  <span class="featured__en">{drug.data.genericNameEn}</span>
+                )}
                 {drug.data.brandName && (
                   <span class="featured__brand">{drug.data.brandName}</span>
                 )}

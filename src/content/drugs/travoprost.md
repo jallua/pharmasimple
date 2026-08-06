@@ -2,7 +2,8 @@
 slug: travoprost
 locale: zh
 company: alcon
-genericName: 曲伏前列素(travoprost)
+genericName: 曲伏前列素
+genericNameEn: travoprost
 brandName: 苏为坦(Travatan)
 drugClass: 前列腺素类似物(眼用降眼压药)
 popularity: 48

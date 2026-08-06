@@ -2,7 +2,8 @@
 slug: cephalexin
 locale: zh
 company: aurobindo
-genericName: 头孢氨苄(cephalexin)
+genericName: 头孢氨苄
+genericNameEn: cephalexin
 brandName: Keflex(头孢氨苄)
 drugClass: 第一代头孢菌素(β-内酰胺类抗生素)
 popularity: 55

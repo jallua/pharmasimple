@@ -2,7 +2,8 @@
 slug: retifanlimab
 locale: zh
 company: incyte
-genericName: retifanlimab(瑞替法尼单抗)
+genericName: 瑞替法尼单抗
+genericNameEn: retifanlimab
 brandName: Zynyz
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 40

@@ -2,7 +2,8 @@
 slug: vutrisiran
 locale: zh
 company: alnylam
-genericName: vutrisiran(伏西兰)
+genericName: 伏西兰
+genericNameEn: vutrisiran
 brandName: Amvuttra
 drugClass: 小干扰 RNA(siRNA / RNAi 疗法)
 popularity: 55

@@ -2,7 +2,8 @@
 slug: niraparib
 locale: zh
 company: zai-lab
-genericName: 尼拉帕利(niraparib)
+genericName: 尼拉帕利
+genericNameEn: niraparib
 brandName: 则乐(Zejula)
 drugClass: PARP 抑制剂
 popularity: 53

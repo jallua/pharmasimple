@@ -2,7 +2,8 @@
 slug: propofol
 locale: zh
 company: fresenius-kabi
-genericName: 丙泊酚(propofol)
+genericName: 丙泊酚
+genericNameEn: propofol
 brandName: Diprivan(得普利麻)
 drugClass: 静脉全身麻醉药(GABA-A 受体正向调节剂)
 popularity: 59

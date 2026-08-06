@@ -2,7 +2,8 @@
 slug: tozinameran
 locale: zh
 company: biontech
-genericName: 新型冠状病毒 mRNA 疫苗(tozinameran)
+genericName: 新型冠状病毒 mRNA 疫苗
+genericNameEn: tozinameran
 brandName: Comirnaty(复必泰)
 drugClass: mRNA 疫苗
 popularity: 90

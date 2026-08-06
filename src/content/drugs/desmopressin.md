@@ -2,7 +2,8 @@
 slug: desmopressin
 locale: zh
 company: ferring
-genericName: 去氨加压素(desmopressin,DDAVP)
+genericName: 去氨加压素
+genericNameEn: desmopressin (DDAVP)
 brandName: 弥凝(Minirin)
 drugClass: 加压素(抗利尿激素)类似物(V2 受体激动剂)
 popularity: 50

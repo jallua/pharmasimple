@@ -2,7 +2,8 @@
 slug: trastuzumab
 locale: zh
 company: roche
-genericName: 曲妥珠单抗(trastuzumab)
+genericName: 曲妥珠单抗
+genericNameEn: trastuzumab
 brandName: 赫赛汀(Herceptin)
 drugClass: 抗 HER2 单克隆抗体
 popularity: 80

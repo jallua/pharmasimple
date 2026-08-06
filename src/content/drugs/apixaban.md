@@ -2,7 +2,8 @@
 slug: apixaban
 locale: zh
 company: bristol-myers-squibb
-genericName: 阿哌沙班(apixaban)
+genericName: 阿哌沙班
+genericNameEn: apixaban
 brandName: 艾乐妥(Eliquis)
 drugClass: Ⅹa 因子抑制剂(口服抗凝药)
 popularity: 88

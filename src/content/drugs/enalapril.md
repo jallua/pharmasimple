@@ -2,7 +2,8 @@
 slug: enalapril
 locale: zh
 company: yangtze-river
-genericName: 依那普利(enalapril)
+genericName: 依那普利
+genericNameEn: enalapril
 brandName: 悦宁定(Vasotec)
 drugClass: 血管紧张素转换酶抑制剂(ACEI)
 popularity: 57

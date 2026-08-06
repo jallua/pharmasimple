@@ -2,7 +2,8 @@
 slug: cefuroxime
 locale: zh
 company: lupin
-genericName: 头孢呋辛(cefuroxime)
+genericName: 头孢呋辛
+genericNameEn: cefuroxime
 brandName: Ceftin / Zinnat(头孢呋辛酯)
 drugClass: 第二代头孢菌素(β-内酰胺类抗生素)
 popularity: 54

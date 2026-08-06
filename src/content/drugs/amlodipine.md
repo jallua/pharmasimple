@@ -2,7 +2,8 @@
 slug: amlodipine
 locale: zh
 company: cspc
-genericName: 氨氯地平 / 左旋氨氯地平(amlodipine / levamlodipine)
+genericName: 氨氯地平 / 左旋氨氯地平
+genericNameEn: amlodipine / levamlodipine
 brandName: 玄宁(左旋氨氯地平,石药)
 drugClass: 钙通道阻滞剂(CCB,二氢吡啶类)
 popularity: 66

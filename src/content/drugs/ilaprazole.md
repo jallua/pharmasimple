@@ -2,7 +2,8 @@
 slug: ilaprazole
 locale: zh
 company: livzon
-genericName: 艾普拉唑(ilaprazole)
+genericName: 艾普拉唑
+genericNameEn: ilaprazole
 brandName: 壹丽安(ilaprazole)
 drugClass: 质子泵抑制剂(PPI)
 popularity: 42

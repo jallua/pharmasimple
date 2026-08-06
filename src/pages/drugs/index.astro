@@ -50,6 +50,7 @@ const areaGroups = groupByTherapeuticArea(await getCollection('drugs'));
                         {drug.data.genericName}
                         {drug.data.brandName ? ` (${drug.data.brandName})` : ''}
                       </a>
+                      {drug.data.genericNameEn && <p class="drug-list__en">{drug.data.genericNameEn}</p>}
                       {drug.data.summary && <p class="drug-list__summary">{drug.data.summary}</p>}
                     </li>
                   ))}

@@ -2,7 +2,8 @@
 slug: burosumab
 locale: zh
 company: kyowa-kirin
-genericName: 布罗索尤单抗(burosumab)
+genericName: 布罗索尤单抗
+genericNameEn: burosumab
 brandName: Crysvita
 drugClass: 抗 FGF23 单克隆抗体
 popularity: 43

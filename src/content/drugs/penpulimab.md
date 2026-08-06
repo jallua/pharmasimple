@@ -2,7 +2,8 @@
 slug: penpulimab
 locale: zh
 company: akeso
-genericName: 派安普利单抗(penpulimab)
+genericName: 派安普利单抗
+genericNameEn: penpulimab
 brandName: 安尼可(Anniko)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 44

@@ -2,7 +2,8 @@
 slug: elasomeran
 locale: zh
 company: moderna
-genericName: 新型冠状病毒 mRNA 疫苗(elasomeran)
+genericName: 新型冠状病毒 mRNA 疫苗
+genericNameEn: elasomeran
 brandName: Spikevax(莫德纳)
 drugClass: mRNA 疫苗
 popularity: 88

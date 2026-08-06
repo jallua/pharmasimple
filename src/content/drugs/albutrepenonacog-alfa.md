@@ -2,7 +2,8 @@
 slug: albutrepenonacog-alfa
 locale: zh
 company: csl
-genericName: 重组人凝血因子IX融合蛋白(albutrepenonacog alfa)
+genericName: 重组人凝血因子IX融合蛋白
+genericNameEn: albutrepenonacog alfa
 brandName: Idelvion
 drugClass: 长效重组凝血因子IX(白蛋白融合蛋白)
 popularity: 34

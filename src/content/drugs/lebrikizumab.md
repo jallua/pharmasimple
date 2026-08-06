@@ -2,7 +2,8 @@
 slug: lebrikizumab
 locale: zh
 company: almirall
-genericName: lebrikizumab(来瑞组单抗)
+genericName: 来瑞组单抗
+genericNameEn: lebrikizumab
 brandName: Ebglyss
 drugClass: 抗 IL-13 单克隆抗体
 popularity: 46

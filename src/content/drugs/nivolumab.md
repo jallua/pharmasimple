@@ -2,7 +2,8 @@
 slug: nivolumab
 locale: zh
 company: bristol-myers-squibb
-genericName: 纳武利尤单抗(nivolumab)
+genericName: 纳武利尤单抗
+genericNameEn: nivolumab
 brandName: 欧狄沃(Opdivo)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 85

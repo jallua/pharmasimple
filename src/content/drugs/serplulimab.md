@@ -2,7 +2,8 @@
 slug: serplulimab
 locale: zh
 company: fosun-pharma
-genericName: 斯鲁利单抗(serplulimab)
+genericName: 斯鲁利单抗
+genericNameEn: serplulimab
 brandName: 汉斯状(HANSIZHUANG)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 42

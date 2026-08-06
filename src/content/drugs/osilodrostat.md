@@ -2,7 +2,8 @@
 slug: osilodrostat
 locale: zh
 company: recordati
-genericName: 奥西洛司他(osilodrostat)
+genericName: 奥西洛司他
+genericNameEn: osilodrostat
 brandName: Isturisa
 drugClass: 皮质醇合成抑制剂(11β-羟化酶抑制剂)
 popularity: 30

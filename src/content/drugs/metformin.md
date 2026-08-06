@@ -2,7 +2,8 @@
 slug: metformin
 locale: zh
 company: cr-pharma
-genericName: 二甲双胍(metformin)
+genericName: 二甲双胍
+genericNameEn: metformin
 brandName: 格华止(Glucophage)
 drugClass: 双胍类口服降糖药
 popularity: 74

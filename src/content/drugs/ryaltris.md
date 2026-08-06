@@ -2,7 +2,8 @@
 slug: ryaltris
 locale: zh
 company: glenmark
-genericName: 奥洛他定 / 糠酸莫米松(olopatadine / mometasone furoate)
+genericName: 奥洛他定 / 糠酸莫米松
+genericNameEn: olopatadine / mometasone furoate
 brandName: Ryaltris
 drugClass: 鼻用复方(抗组胺药 + 糖皮质激素)
 popularity: 33

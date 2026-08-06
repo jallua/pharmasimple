@@ -2,7 +2,8 @@
 slug: amoxicillin
 locale: zh
 company: sandoz
-genericName: 阿莫西林(amoxicillin)
+genericName: 阿莫西林
+genericNameEn: amoxicillin
 brandName: Amoxil / 阿莫仙
 drugClass: β-内酰胺类抗生素(青霉素类)
 popularity: 62

@@ -2,7 +2,8 @@
 slug: ivosidenib
 locale: zh
 company: servier
-genericName: 艾伏尼布(ivosidenib)
+genericName: 艾伏尼布
+genericNameEn: ivosidenib
 brandName: Tibsovo
 drugClass: IDH1 抑制剂(靶向抗癌药)
 popularity: 46

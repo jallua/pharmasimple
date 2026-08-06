@@ -2,7 +2,8 @@
 slug: aspirin
 locale: zh
 company: shanghai-pharma
-genericName: 阿司匹林(aspirin,乙酰水杨酸)
+genericName: 阿司匹林(乙酰水杨酸)
+genericNameEn: aspirin
 brandName: 信谊阿司匹林 / Aspirin
 drugClass: 环氧合酶(COX)抑制剂(抗血小板 / 解热镇痛抗炎)
 popularity: 68

@@ -2,7 +2,8 @@
 slug: elacestrant
 locale: zh
 company: menarini
-genericName: 艾拉司群(elacestrant)
+genericName: 艾拉司群
+genericNameEn: elacestrant
 brandName: Orserdu
 drugClass: 选择性雌激素受体降解剂(SERD)
 popularity: 44

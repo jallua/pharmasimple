@@ -2,7 +2,8 @@
 slug: eflapegrastim
 locale: zh
 company: hanmi
-genericName: 艾氟培格司亭(eflapegrastim)
+genericName: 艾氟培格司亭
+genericNameEn: eflapegrastim
 brandName: Rolvedon
 drugClass: 长效重组人粒细胞集落刺激因子(G-CSF)
 popularity: 33

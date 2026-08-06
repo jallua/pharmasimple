@@ -2,7 +2,8 @@
 slug: valbenazine
 locale: zh
 company: neurocrine
-genericName: 缬苯那嗪(valbenazine)
+genericName: 缬苯那嗪
+genericNameEn: valbenazine
 brandName: Ingrezza
 drugClass: VMAT2 抑制剂
 popularity: 52

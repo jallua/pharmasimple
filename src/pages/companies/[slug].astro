@@ -57,6 +57,7 @@ const jsonLd = [
             {drug.data.genericName}
             {drug.data.brandName ? ` (${drug.data.brandName})` : ''}
           </a>
+          {drug.data.genericNameEn && <p class="drug-list__en">{drug.data.genericNameEn}</p>}
         </li>
       ))}
     </ul>

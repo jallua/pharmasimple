@@ -2,7 +2,8 @@
 slug: adapalene
 locale: zh
 company: galderma
-genericName: 阿达帕林(adapalene)
+genericName: 阿达帕林
+genericNameEn: adapalene
 brandName: 达芙文(Differin)
 drugClass: 外用维 A 酸类(视黄酸受体调节剂)
 popularity: 55

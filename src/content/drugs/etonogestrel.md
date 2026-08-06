@@ -2,7 +2,8 @@
 slug: etonogestrel
 locale: zh
 company: organon
-genericName: 依托孕烯(etonogestrel)
+genericName: 依托孕烯
+genericNameEn: etonogestrel
 brandName: Nexplanon
 drugClass: 孕激素(长效皮下埋植避孕)
 popularity: 40

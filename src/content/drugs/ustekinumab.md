@@ -2,7 +2,8 @@
 slug: ustekinumab
 locale: zh
 company: samsung-biologics
-genericName: 乌司奴单抗(ustekinumab)
+genericName: 乌司奴单抗
+genericNameEn: ustekinumab
 brandName: 喜达诺(Stelara)生物类似药
 drugClass: 抗 IL-12/23(p40)单克隆抗体
 popularity: 56

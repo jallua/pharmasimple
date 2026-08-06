@@ -2,7 +2,8 @@
 slug: tafluprost
 locale: zh
 company: santen
-genericName: 他氟前列素(tafluprost)
+genericName: 他氟前列素
+genericNameEn: tafluprost
 brandName: Taflotan / Zioptan(他氟前列素)
 drugClass: 前列腺素类似物(眼用降眼压药,无防腐剂)
 popularity: 44

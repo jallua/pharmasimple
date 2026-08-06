@@ -2,7 +2,8 @@
 slug: pantoprazole
 locale: zh
 company: zydus
-genericName: 泮托拉唑(pantoprazole)
+genericName: 泮托拉唑
+genericNameEn: pantoprazole
 brandName: Protonix(泮托拉唑)
 drugClass: 质子泵抑制剂(PPI)
 popularity: 56

@@ -2,7 +2,8 @@
 slug: bictegravir
 locale: zh
 company: gilead
-genericName: 比克恩丙诺片(比克替拉韦/恩曲他滨/丙酚替诺福韦,bictegravir/emtricitabine/tenofovir alafenamide)
+genericName: 比克恩丙诺片(比克替拉韦/恩曲他滨/丙酚替诺福韦)
+genericNameEn: bictegravir/emtricitabine/tenofovir alafenamide
 brandName: 必妥维(Biktarvy)
 drugClass: 抗 HIV 复方药(整合酶抑制剂 + 反转录酶抑制剂)
 popularity: 85

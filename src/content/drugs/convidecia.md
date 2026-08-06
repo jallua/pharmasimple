@@ -2,7 +2,8 @@
 slug: convidecia
 locale: zh
 company: cansino
-genericName: 重组新型冠状病毒疫苗(5 型腺病毒载体,Ad5-nCoV)
+genericName: 重组新型冠状病毒疫苗(5 型腺病毒载体)
+genericNameEn: Ad5-nCoV
 brandName: 克威莎(Convidecia)
 drugClass: 腺病毒载体疫苗(新冠)
 popularity: 52

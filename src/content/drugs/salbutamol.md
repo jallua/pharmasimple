@@ -2,7 +2,8 @@
 slug: salbutamol
 locale: zh
 company: cipla
-genericName: 沙丁胺醇(salbutamol / albuterol)
+genericName: 沙丁胺醇
+genericNameEn: salbutamol / albuterol
 brandName: Asthalin / Ventolin(沙丁胺醇)
 drugClass: 短效 β2 受体激动剂(SABA,支气管扩张剂)
 popularity: 61

@@ -2,7 +2,8 @@
 slug: edoxaban
 locale: zh
 company: daiichi-sankyo
-genericName: 艾多沙班(edoxaban)
+genericName: 艾多沙班
+genericNameEn: edoxaban
 brandName: Lixiana / Savaysa
 drugClass: Ⅹa 因子抑制剂(口服抗凝药)
 popularity: 50

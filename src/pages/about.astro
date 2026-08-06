@@ -1,24 +1,89 @@
 ---
-// About: content methodology + a full, prominent disclaimer.
+// About: what the site is, how to read a drug page, content methodology,
+// coverage stats, authoritative sources, and a prominent disclaimer.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Disclaimer from '../components/Disclaimer.astro';
+import { getCollection } from 'astro:content';
+import { publishedOnly } from '../lib/catalog';
 import { t } from '../lib/i18n';
 
 const locale = 'zh';
+const companyCount = publishedOnly(await getCollection('companies')).length;
+const drugCount = publishedOnly(await getCollection('drugs')).length;
+
+const guide = [
+  t(locale, 'about.guideAnalogy'),
+  t(locale, 'about.guideSimple'),
+  t(locale, 'about.guideAdvanced'),
+  t(locale, 'about.guideAnimation'),
+  t(locale, 'about.guideIndications'),
+  t(locale, 'about.guideTarget'),
+  t(locale, 'about.guideCitations'),
+];
+const methodPoints = [
+  t(locale, 'about.methodPoint1'),
+  t(locale, 'about.methodPoint2'),
+  t(locale, 'about.methodPoint3'),
+];
+const sources = [
+  'FDA(美国)',
+  'NMPA(中国)',
+  'EMA(欧盟)',
+  'PMDA(日本)',
+  'NCI / NCBI(美国国立)',
+  'DailyMed(官方说明书)',
+  'MedlinePlus(NLM)',
+];
 ---
 
 <BaseLayout title={t(locale, 'about.title')} description={t(locale, 'meta.aboutDesc')} locale={locale}>
   <div class="reading">
     <h1>{t(locale, 'about.title')}</h1>
+    <p class="about-lead">{t(locale, 'about.intro')}</p>
+
+    <section aria-label={t(locale, 'about.guideTitle')}>
+      <h2>{t(locale, 'about.guideTitle')}</h2>
+      <p>{t(locale, 'about.guideLead')}</p>
+      <ul class="about-guide">
+        {guide.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </section>
 
     <section aria-label={t(locale, 'about.methodologyTitle')}>
       <h2>{t(locale, 'about.methodologyTitle')}</h2>
-      <p>{t(locale, 'about.methodologyBody')}</p>
+      <p>{t(locale, 'about.methodologyLead')}</p>
+      <ul class="about-points">
+        {methodPoints.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-label={t(locale, 'about.coverageTitle')}>
+      <h2>{t(locale, 'about.coverageTitle')}</h2>
+      <ul class="about-stats">
+        <li class="about-stat">
+          <span class="about-stat__num">{companyCount}</span>
+          <span class="about-stat__label">{t(locale, 'about.coverageUnitCompanies')}</span>
+        </li>
+        <li class="about-stat">
+          <span class="about-stat__num">{drugCount}</span>
+          <span class="about-stat__label">{t(locale, 'about.coverageUnitDrugs')}</span>
+        </li>
+      </ul>
     </section>
 
     <section aria-label={t(locale, 'about.sourcesTitle')}>
       <h2>{t(locale, 'about.sourcesTitle')}</h2>
-      <p>{t(locale, 'about.sourcesBody')}</p>
+      <p>{t(locale, 'about.sourcesLead')}</p>
+      <ul class="about-sources">
+        {sources.map((s) => (
+          <li class="chip">{s}</li>
+        ))}
+      </ul>
+      <p class="about-note">{t(locale, 'about.sourcesNote')}</p>
     </section>
 
     <Disclaimer locale={locale} variant="prominent" />

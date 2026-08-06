@@ -2,7 +2,8 @@
 slug: cabozantinib
 locale: zh
 company: ipsen
-genericName: 卡博替尼(cabozantinib)
+genericName: 卡博替尼
+genericNameEn: cabozantinib
 brandName: Cabometyx(卡博替尼)
 drugClass: 多靶点酪氨酸激酶抑制剂(VEGFR/MET/AXL)
 popularity: 50

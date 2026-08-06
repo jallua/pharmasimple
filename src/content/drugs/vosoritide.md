@@ -2,7 +2,8 @@
 slug: vosoritide
 locale: zh
 company: biomarin
-genericName: 伏索利肽(vosoritide)
+genericName: 伏索利肽
+genericNameEn: vosoritide
 brandName: Voxzogo
 drugClass: C 型利钠肽(CNP)类似物
 popularity: 35

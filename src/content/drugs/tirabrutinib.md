@@ -2,7 +2,8 @@
 slug: tirabrutinib
 locale: zh
 company: ono
-genericName: tirabrutinib(替拉鲁替尼)
+genericName: 替拉鲁替尼
+genericNameEn: tirabrutinib
 brandName: Velexbru
 drugClass: BTK 抑制剂(第二代)
 popularity: 32

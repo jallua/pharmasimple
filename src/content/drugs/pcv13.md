@@ -2,7 +2,8 @@
 slug: pcv13
 locale: zh
 company: walvax
-genericName: 13 价肺炎球菌多糖结合疫苗(PCV13)
+genericName: 13 价肺炎球菌多糖结合疫苗
+genericNameEn: PCV13
 brandName: 沃安欣(沃森 / Walvax)
 drugClass: 肺炎球菌多糖结合疫苗
 popularity: 51

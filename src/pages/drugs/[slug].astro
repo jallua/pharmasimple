@@ -40,11 +40,12 @@ const crumbs = [
 
 const siteBase = (Astro.site?.href ?? 'https://dongyaojun.com/').replace(/\/+$/, '');
 const drugUrl = `${siteBase}/drugs/${slugOf(drug)}/`;
+const altNames = [data.genericNameEn, data.brandName].filter(Boolean);
 const jsonLd = [
   {
     '@type': 'Drug',
     name: data.genericName,
-    ...(data.brandName ? { alternateName: data.brandName } : {}),
+    ...(altNames.length ? { alternateName: altNames } : {}),
     ...(data.summary ? { description: data.summary } : {}),
     ...(data.drugClass ? { drugClass: data.drugClass } : {}),
     mechanismOfAction: data.mechanism.simple,
@@ -67,6 +68,7 @@ const jsonLd = [
   <article class="drug">
     <header class="drug__header">
       <h1 class="drug__name">{data.genericName}</h1>
+      {data.genericNameEn && <p class="drug__inn">{data.genericNameEn}</p>}
       {data.brandName && <p class="drug__brand">{data.brandName}</p>}
       <div class="drug__meta">
         {data.drugClass && <span class="chip drug__class">{data.drugClass}</span>}
@@ -125,6 +127,7 @@ const jsonLd = [
             <li class="related-drugs__item">
               <a class="card related-drugs__card" href={toDrugUrl(slugOf(r))}>
                 <span class="related-drugs__name">{r.data.genericName}</span>
+                {r.data.genericNameEn && <span class="related-drugs__en">{r.data.genericNameEn}</span>}
                 {r.data.brandName && <span class="related-drugs__brand">{r.data.brandName}</span>}
                 {r.data.drugClass && <span class="chip">{r.data.drugClass}</span>}
               </a>

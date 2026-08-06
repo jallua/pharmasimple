@@ -2,7 +2,8 @@
 slug: acalabrutinib
 locale: zh
 company: astrazeneca
-genericName: 阿可替尼(acalabrutinib)
+genericName: 阿可替尼
+genericNameEn: acalabrutinib
 brandName: Calquence
 drugClass: BTK 抑制剂
 popularity: 55

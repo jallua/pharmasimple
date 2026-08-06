@@ -2,7 +2,8 @@
 slug: iruplinalkib
 locale: zh
 company: qilu
-genericName: 伊鲁阿克(iruplinalkib)
+genericName: 伊鲁阿克
+genericNameEn: iruplinalkib
 brandName: 启欣可
 drugClass: ALK/ROS1 酪氨酸激酶抑制剂(新一代)
 popularity: 44

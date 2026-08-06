@@ -2,7 +2,8 @@
 slug: fremanezumab
 locale: zh
 company: teva
-genericName: 瑞玛奈珠单抗(fremanezumab)
+genericName: 瑞玛奈珠单抗
+genericNameEn: fremanezumab
 brandName: Ajovy
 drugClass: 抗 CGRP 单克隆抗体(偏头痛预防)
 popularity: 55

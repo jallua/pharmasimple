@@ -2,7 +2,8 @@
 slug: natalizumab
 locale: zh
 company: biogen
-genericName: 那他珠单抗(natalizumab)
+genericName: 那他珠单抗
+genericNameEn: natalizumab
 brandName: Tysabri
 drugClass: 抗 α4 整合素单克隆抗体
 popularity: 58

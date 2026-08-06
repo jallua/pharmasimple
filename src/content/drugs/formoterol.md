@@ -2,7 +2,8 @@
 slug: formoterol
 locale: zh
 company: chiesi
-genericName: 福莫特罗(formoterol)
+genericName: 福莫特罗
+genericNameEn: formoterol
 brandName: Foradil / Foster(含福莫特罗)
 drugClass: 长效 β2 受体激动剂(LABA,支气管扩张剂)
 popularity: 50

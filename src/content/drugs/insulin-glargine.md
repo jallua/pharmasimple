@@ -2,7 +2,8 @@
 slug: insulin-glargine
 locale: zh
 company: biocon
-genericName: 甘精胰岛素(insulin glargine)
+genericName: 甘精胰岛素
+genericNameEn: insulin glargine
 brandName: Semglee(甘精胰岛素-yfgn)
 drugClass: 长效基础胰岛素(人胰岛素类似物)
 popularity: 57

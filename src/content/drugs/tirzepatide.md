@@ -2,7 +2,8 @@
 slug: tirzepatide
 locale: zh
 company: eli-lilly
-genericName: 替尔泊肽(tirzepatide)
+genericName: 替尔泊肽
+genericNameEn: tirzepatide
 brandName: 穆峰达(Mounjaro) / Zepbound
 drugClass: GIP/GLP-1 双受体激动剂
 popularity: 92

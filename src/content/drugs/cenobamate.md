@@ -2,7 +2,8 @@
 slug: cenobamate
 locale: zh
 company: sk-biopharm
-genericName: 塞诺巴美(cenobamate)
+genericName: 塞诺巴美
+genericNameEn: cenobamate
 brandName: Xcopri
 drugClass: 抗癫痫药(钠通道调节 + GABA-A 正向变构调节)
 popularity: 36

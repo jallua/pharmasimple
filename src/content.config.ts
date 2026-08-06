@@ -65,6 +65,7 @@ const drugs = defineCollection({
       locale,
       company: reference('companies'), // 引用完整性(需求 2)
       genericName: z.string().min(1),
+      genericNameEn: z.string().optional(), // 英文通用名/INN(作为副标题展示)
       brandName: z.string().optional(),
       drugClass: z.string().optional(),
       // 首页「热门药物」排序权重:数值越大越靠前;缺省时排在最后(需求 1 / 9)。
