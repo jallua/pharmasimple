@@ -47,13 +47,28 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
     <circle cx="985" cy="220" r="9"/>
   </g>
 
-  <g transform="translate(120 96) rotate(-28)">
-    <rect x="0" y="0" width="122" height="52" rx="26" fill="url(#pill)"/>
-    <rect x="0" y="0" width="61" height="52" rx="26" fill="#ffffff"/>
-    <line x1="61" y1="6" x2="61" y2="46" stroke="#0f766e" stroke-opacity="0.3" stroke-width="2.5"/>
+  <g transform="translate(116 44) scale(1.6)">
+    <g stroke="#99f6e4" stroke-width="2.4" stroke-linecap="round">
+      <line x1="32" y1="4" x2="32" y2="9"/>
+      <line x1="13" y1="12" x2="16.5" y2="15.5"/>
+      <line x1="51" y1="12" x2="47.5" y2="15.5"/>
+      <line x1="6" y1="29" x2="11" y2="29"/>
+      <line x1="58" y1="29" x2="53" y2="29"/>
+    </g>
+    <circle cx="32" cy="28" r="15" fill="#ffffff"/>
+    <rect x="25" y="43" width="14" height="5" rx="1.5" fill="#ccfbf1"/>
+    <rect x="27" y="49" width="10" height="4" rx="1.5" fill="#99f6e4"/>
+    <g stroke="#0f766e" stroke-width="2.2">
+      <line x1="26" y1="26" x2="38" y2="23"/>
+      <line x1="38" y1="23" x2="34" y2="35"/>
+      <line x1="34" y1="35" x2="26" y2="26"/>
+    </g>
+    <circle cx="26" cy="26" r="3.2" fill="#0f766e"/>
+    <circle cx="38" cy="23" r="3.2" fill="#14b8a6"/>
+    <circle cx="34" cy="35" r="3.2" fill="#0f766e"/>
   </g>
 
-  <text x="118" y="336" font-family="${FONT}" font-size="152" font-weight="800" fill="#ffffff" letter-spacing="8">药知道</text>
+  <text x="118" y="336" font-family="${FONT}" font-size="152" font-weight="800" fill="#ffffff" letter-spacing="8">懂药君</text>
   <text x="122" y="410" font-family="${FONT}" font-size="38" fill="#ccfbf1">用大白话和原创动画，讲清药物如何起作用</text>
   <rect x="124" y="440" width="150" height="6" rx="3" fill="#5eead4"/>
   <text x="122" y="566" font-family="${FONT}" font-size="28" fill="#5eead4" letter-spacing="3">pharmasimple.matata.fun</text>
