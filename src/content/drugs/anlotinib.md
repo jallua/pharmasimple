@@ -2,7 +2,7 @@
 slug: anlotinib
 locale: zh
 company: sino-biopharm
-genericName: 安罗替尼
+genericName: 安罗替尼(anlotinib)
 brandName: 福可维(Anlotinib)
 drugClass: 多靶点酪氨酸激酶抑制剂(VEGFR 等)
 popularity: 54

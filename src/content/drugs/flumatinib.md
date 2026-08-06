@@ -2,7 +2,7 @@
 slug: flumatinib
 locale: zh
 company: hansoh
-genericName: 氟马替尼
+genericName: 氟马替尼(flumatinib)
 brandName: 豪森昕福
 drugClass: BCR-ABL 酪氨酸激酶抑制剂
 popularity: 40

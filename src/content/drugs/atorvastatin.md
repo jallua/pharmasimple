@@ -2,7 +2,7 @@
 slug: atorvastatin
 locale: zh
 company: viatris
-genericName: 阿托伐他汀
+genericName: 阿托伐他汀(atorvastatin)
 brandName: 立普妥(Lipitor)
 drugClass: 他汀类(HMG-CoA 还原酶抑制剂)
 popularity: 80

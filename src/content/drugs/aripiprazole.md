@@ -2,7 +2,7 @@
 slug: aripiprazole
 locale: zh
 company: otsuka
-genericName: 阿立哌唑
+genericName: 阿立哌唑(aripiprazole)
 brandName: 安律凡(Abilify)
 drugClass: 非典型抗精神病药(多巴胺 D2 部分激动剂)
 popularity: 66

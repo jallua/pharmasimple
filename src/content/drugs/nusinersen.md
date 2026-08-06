@@ -2,7 +2,7 @@
 slug: nusinersen
 locale: zh
 company: ionis
-genericName: 诺西那生
+genericName: 诺西那生(nusinersen)
 brandName: 思而赞(Spinraza)
 drugClass: 反义寡核苷酸(ASO)
 popularity: 58

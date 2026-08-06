@@ -2,7 +2,7 @@
 slug: imatinib
 locale: zh
 company: novartis
-genericName: 伊马替尼
+genericName: 伊马替尼(imatinib)
 brandName: 格列卫(Gleevec / Glivec)
 drugClass: BCR-ABL 酪氨酸激酶抑制剂
 popularity: 78

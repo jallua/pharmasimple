@@ -2,7 +2,7 @@
 slug: pembrolizumab
 locale: zh
 company: merck-msd
-genericName: 帕博利珠单抗
+genericName: 帕博利珠单抗(pembrolizumab)
 brandName: 可瑞达(Keytruda)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 100

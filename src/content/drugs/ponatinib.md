@@ -2,7 +2,7 @@
 slug: ponatinib
 locale: zh
 company: takeda
-genericName: 泊那替尼
+genericName: 泊那替尼(ponatinib)
 brandName: Iclusig
 drugClass: BCR-ABL 酪氨酸激酶抑制剂(第三代)
 popularity: 52

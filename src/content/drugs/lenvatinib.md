@@ -2,7 +2,7 @@
 slug: lenvatinib
 locale: zh
 company: eisai
-genericName: 仑伐替尼
+genericName: 仑伐替尼(lenvatinib)
 brandName: 乐卫玛(Lenvima)
 drugClass: 多靶点酪氨酸激酶抑制剂(VEGFR 等)
 popularity: 72

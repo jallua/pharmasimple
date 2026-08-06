@@ -2,7 +2,7 @@
 slug: fruquintinib
 locale: zh
 company: hutchmed
-genericName: 呋喹替尼
+genericName: 呋喹替尼(fruquintinib)
 brandName: 爱优特(Elunate) / Fruzaqla
 drugClass: VEGFR 抑制剂(高选择性)
 popularity: 52

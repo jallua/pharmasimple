@@ -2,7 +2,7 @@
 slug: tislelizumab
 locale: zh
 company: beigene
-genericName: 替雷利珠单抗
+genericName: 替雷利珠单抗(tislelizumab)
 brandName: 百泽安(Tevimbra)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 65

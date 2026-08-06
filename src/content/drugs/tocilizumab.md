@@ -2,7 +2,7 @@
 slug: tocilizumab
 locale: zh
 company: chugai
-genericName: 托珠单抗
+genericName: 托珠单抗(tocilizumab)
 brandName: 雅美罗(Actemra)
 drugClass: 抗 IL-6 受体单克隆抗体
 popularity: 68

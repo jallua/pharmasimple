@@ -2,7 +2,7 @@
 slug: cemiplimab
 locale: zh
 company: regeneron
-genericName: 西米普利单抗
+genericName: 西米普利单抗(cemiplimab)
 brandName: Libtayo
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 48

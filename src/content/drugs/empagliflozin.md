@@ -2,7 +2,7 @@
 slug: empagliflozin
 locale: zh
 company: boehringer-ingelheim
-genericName: 恩格列净
+genericName: 恩格列净(empagliflozin)
 brandName: 欧唐静(Jardiance)
 drugClass: SGLT2 抑制剂(钠-葡萄糖协同转运蛋白 2 抑制剂)
 popularity: 82

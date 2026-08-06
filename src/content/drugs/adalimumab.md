@@ -2,7 +2,7 @@
 slug: adalimumab
 locale: zh
 company: abbvie
-genericName: 阿达木单抗
+genericName: 阿达木单抗(adalimumab)
 brandName: 修美乐(Humira)
 drugClass: TNF-α 抑制剂(全人源单克隆抗体)
 popularity: 90

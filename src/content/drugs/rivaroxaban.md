@@ -2,7 +2,7 @@
 slug: rivaroxaban
 locale: zh
 company: bayer
-genericName: 利伐沙班
+genericName: 利伐沙班(rivaroxaban)
 brandName: 拜瑞妥(Xarelto)
 drugClass: Ⅹa 因子抑制剂(口服抗凝药)
 popularity: 84

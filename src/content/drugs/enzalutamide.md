@@ -2,7 +2,7 @@
 slug: enzalutamide
 locale: zh
 company: astellas
-genericName: 恩扎卢胺
+genericName: 恩扎卢胺(enzalutamide)
 brandName: 安可坦(Xtandi)
 drugClass: 雄激素受体抑制剂(抗雄激素)
 popularity: 78

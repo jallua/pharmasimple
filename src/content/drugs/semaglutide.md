@@ -2,7 +2,7 @@
 slug: semaglutide
 locale: zh
 company: novo-nordisk
-genericName: 司美格鲁肽
+genericName: 司美格鲁肽(semaglutide)
 brandName: Ozempic / Wegovy
 drugClass: GLP-1 受体激动剂
 popularity: 95

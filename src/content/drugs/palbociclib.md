@@ -2,7 +2,7 @@
 slug: palbociclib
 locale: zh
 company: pfizer
-genericName: 哌柏西利
+genericName: 哌柏西利(palbociclib)
 brandName: 爱博新(Ibrance)
 drugClass: CDK4/6 抑制剂
 popularity: 74

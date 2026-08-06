@@ -2,7 +2,7 @@
 slug: dupilumab
 locale: zh
 company: sanofi
-genericName: 度普利尤单抗
+genericName: 度普利尤单抗(dupilumab)
 brandName: 达必妥(Dupixent)
 drugClass: IL-4Rα 抑制剂(白细胞介素-4 受体 α 拮抗剂)
 popularity: 88

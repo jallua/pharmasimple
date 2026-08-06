@@ -2,7 +2,7 @@
 slug: tildrakizumab
 locale: zh
 company: sun-pharma
-genericName: 替瑞奇珠单抗
+genericName: 替瑞奇珠单抗(tildrakizumab)
 brandName: Ilumya
 drugClass: 抗 IL-23 单克隆抗体
 popularity: 44

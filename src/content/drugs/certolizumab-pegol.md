@@ -2,7 +2,7 @@
 slug: certolizumab-pegol
 locale: zh
 company: ucb
-genericName: 培塞利珠单抗
+genericName: 培塞利珠单抗(certolizumab pegol)
 brandName: 希敏佳(Cimzia)
 drugClass: TNF 抑制剂(聚乙二醇化抗体 Fab 片段,无 Fc)
 popularity: 55

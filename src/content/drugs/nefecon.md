@@ -2,7 +2,7 @@
 slug: nefecon
 locale: zh
 company: everest-medicines
-genericName: 布地奈德(靶向释放制剂)
+genericName: 布地奈德(budesonide,靶向释放制剂)
 brandName: 耐赋康(Nefecon)
 drugClass: 靶向释放皮质类固醇(IgA 肾病)
 popularity: 50

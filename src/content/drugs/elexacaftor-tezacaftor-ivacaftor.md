@@ -2,7 +2,7 @@
 slug: elexacaftor-tezacaftor-ivacaftor
 locale: zh
 company: vertex
-genericName: 依来卡托/替扎卡托/伊伐卡托
+genericName: 依来卡托/替扎卡托/伊伐卡托(elexacaftor/tezacaftor/ivacaftor)
 brandName: Trikafta(三联疗法)
 drugClass: CFTR 调节剂(校正剂+增效剂)
 popularity: 70

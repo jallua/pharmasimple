@@ -2,7 +2,7 @@
 slug: etanercept
 locale: zh
 company: amgen
-genericName: 依那西普
+genericName: 依那西普(etanercept)
 brandName: 恩利(Enbrel)
 drugClass: TNF 抑制剂(可溶性诱饵受体 / p75-Fc 融合蛋白)
 popularity: 70

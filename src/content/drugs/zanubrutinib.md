@@ -2,7 +2,7 @@
 slug: zanubrutinib
 locale: zh
 company: beigene
-genericName: 泽布替尼
+genericName: 泽布替尼(zanubrutinib)
 brandName: 百悦泽(Brukinsa)
 drugClass: BTK 抑制剂
 popularity: 75

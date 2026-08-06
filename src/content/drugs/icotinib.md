@@ -2,7 +2,7 @@
 slug: icotinib
 locale: zh
 company: betta
-genericName: 埃克替尼
+genericName: 埃克替尼(icotinib)
 brandName: 凯美纳(Conmana)
 drugClass: EGFR 酪氨酸激酶抑制剂
 popularity: 48

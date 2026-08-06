@@ -2,7 +2,7 @@
 slug: dostarlimab
 locale: zh
 company: gsk
-genericName: 多塔利单抗
+genericName: 多塔利单抗(dostarlimab)
 brandName: Jemperli
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 50

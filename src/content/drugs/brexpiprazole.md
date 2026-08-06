@@ -2,7 +2,7 @@
 slug: brexpiprazole
 locale: zh
 company: lundbeck
-genericName: 布瑞哌唑
+genericName: 布瑞哌唑(brexpiprazole)
 brandName: Rexulti
 drugClass: 非典型抗精神病药(多巴胺 D2 部分激动剂)
 popularity: 50

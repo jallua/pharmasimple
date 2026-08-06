@@ -2,7 +2,7 @@
 slug: orelabrutinib
 locale: zh
 company: innocare
-genericName: 奥布替尼
+genericName: 奥布替尼(orelabrutinib)
 brandName: 宜诺凯(HIBRUKA)
 drugClass: BTK 抑制剂
 popularity: 30

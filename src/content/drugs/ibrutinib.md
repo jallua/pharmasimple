@@ -2,7 +2,7 @@
 slug: ibrutinib
 locale: zh
 company: johnson-and-johnson
-genericName: 伊布替尼
+genericName: 伊布替尼(ibrutinib)
 brandName: 亿珂(Imbruvica)
 drugClass: BTK 抑制剂(布鲁顿酪氨酸激酶抑制剂)
 popularity: 80

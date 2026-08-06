@@ -2,7 +2,7 @@
 slug: sintilimab
 locale: zh
 company: innovent
-genericName: 信迪利单抗
+genericName: 信迪利单抗(sintilimab)
 brandName: 达伯舒(Tyvyt)
 drugClass: 抗 PD-1 单克隆抗体(免疫检查点抑制剂)
 popularity: 45
