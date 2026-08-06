@@ -71,7 +71,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <text x="118" y="336" font-family="${FONT}" font-size="152" font-weight="800" fill="#ffffff" letter-spacing="8">懂药君</text>
   <text x="122" y="410" font-family="${FONT}" font-size="38" fill="#ccfbf1">用大白话和原创动画，讲清药物如何起作用</text>
   <rect x="124" y="440" width="150" height="6" rx="3" fill="#5eead4"/>
-  <text x="122" y="566" font-family="${FONT}" font-size="28" fill="#5eead4" letter-spacing="3">pharmasimple.matata.fun</text>
+  <text x="122" y="566" font-family="${FONT}" font-size="28" fill="#5eead4" letter-spacing="3">dongyaojun.com</text>
 </svg>`;
 
 const png = await sharp(Buffer.from(svg)).png().toBuffer();

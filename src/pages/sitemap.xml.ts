@@ -7,7 +7,7 @@ import { publishedDrugDetailPaths, publishedCompanyDetailPaths } from '../lib/ca
 const STATIC_PATHS = ['/', '/drugs/', '/companies/', '/about/', '/search/'];
 
 export async function GET(context: APIContext) {
-  const origin = (context.site?.href ?? 'https://pharmasimple.matata.fun/').replace(/\/+$/, '');
+  const origin = (context.site?.href ?? 'https://dongyaojun.com/').replace(/\/+$/, '');
   const drugs = await getCollection('drugs');
   const companies = await getCollection('companies');
 

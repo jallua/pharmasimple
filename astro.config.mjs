@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://pharmasimple.matata.fun',
+  site: 'https://dongyaojun.com',
   i18n: {
     defaultLocale: 'zh',
     locales: ['zh'],

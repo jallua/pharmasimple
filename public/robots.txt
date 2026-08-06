@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pharmasimple.matata.fun/sitemap.xml
+Sitemap: https://dongyaojun.com/sitemap.xml
