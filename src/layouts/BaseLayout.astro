@@ -125,11 +125,8 @@ const structuredData = {
     </footer>
     <script>
       const root = document.documentElement;
-      const prefersDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const effectiveTheme = () => {
-        const attr = root.getAttribute('data-theme');
-        return attr === 'dark' || attr === 'light' ? attr : prefersDark() ? 'dark' : 'light';
-      };
+      // Light is the default; dark only when the user explicitly toggled it.
+      const effectiveTheme = () => (root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
       const themeBtn = document.getElementById('theme-toggle');
       const syncThemeBtn = () => {
         if (themeBtn) themeBtn.setAttribute('aria-pressed', String(effectiveTheme() === 'dark'));

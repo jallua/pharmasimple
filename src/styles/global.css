@@ -1054,35 +1054,10 @@ a.area__chip:focus-visible {
 }
 
 /* ===========================================================================
- * Dark theme — variable overrides. Auto-applies under a dark OS preference
- * (unless the user explicitly chose light), and when the user toggles to dark.
+ * Dark theme — variable overrides. Light is the DEFAULT; dark applies ONLY when
+ * the user explicitly toggles it (data-theme="dark"). The OS dark preference is
+ * intentionally NOT auto-applied.
  * ======================================================================== */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f172a;
-    --surface: #1e293b;
-    --surface-2: #243247;
-    --ink: #f8fafc;
-    --text: #cbd5e1;
-    --muted: #94a3b8;
-    --muted-strong: #cbd5e1;
-    --border: #334155;
-    --brand: #2dd4bf;
-    --brand-strong: #5eead4;
-    --brand-hover: #99f6e4;
-    --brand-50: #0c2b29;
-    --brand-100: #134e4a;
-    --brand-200: #115e59;
-    --warn-bg: #422006;
-    --warn-border: #f59e0b;
-    --warn-ink: #fcd34d;
-    --header-bg: #0f172ae6;
-    --color-bg: #1e293b;
-    --color-focus: #60a5fa;
-    --color-link: var(--brand-strong);
-    --color-link-hover: var(--brand-hover);
-  }
-}
 :root[data-theme="dark"] {
   --bg: #0f172a;
   --surface: #1e293b;
