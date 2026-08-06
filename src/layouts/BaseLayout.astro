@@ -8,9 +8,10 @@ interface Props {
   title?: string;
   description?: string;
   locale?: string;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
-const { title, description, locale = defaultLocale } = Astro.props;
+const { title, description, locale = defaultLocale, jsonLd } = Astro.props;
 const siteTitle = t(locale, 'site.title');
 const pageTitle = title ?? siteTitle;
 const documentTitle = pageTitle === siteTitle ? siteTitle : `${pageTitle} - ${siteTitle}`;
@@ -27,6 +28,24 @@ try {
   canonicalURL = undefined;
 }
 const ogLocale = locale === 'zh' ? 'zh_CN' : locale;
+
+// og:image + JSON-LD structured data — guarded on Astro.site so the container
+// render used by tests (no site) emits neither an absolute image URL nor
+// url-bearing schema nodes.
+const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : undefined;
+const ogImage = siteOrigin ? `${siteOrigin}/og-image.png` : undefined;
+const websiteNode: Record<string, unknown> = {
+  '@type': 'WebSite',
+  name: siteTitle,
+  inLanguage: ogLocale.replace('_', '-'),
+  description: metaDescription,
+  ...(siteOrigin ? { url: `${siteOrigin}/` } : {}),
+};
+const extraNodes = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [websiteNode, ...extraNodes],
+};
 ---
 
 <!doctype html>
@@ -45,9 +64,15 @@ const ogLocale = locale === 'zh' ? 'zh_CN' : locale;
     <meta property="og:title" content={documentTitle} />
     <meta property="og:description" content={metaDescription} />
     {canonicalURL && <meta property="og:url" content={canonicalURL} />}
-    <meta name="twitter:card" content="summary" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:width" content="1200" />}
+    {ogImage && <meta property="og:image:height" content="630" />}
+    {ogImage && <meta property="og:image:alt" content={documentTitle} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={documentTitle} />
     <meta name="twitter:description" content={metaDescription} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
     <script is:inline>
       (function () {
         try {

@@ -37,9 +37,32 @@ const crumbs = [
   { label: t(locale, 'nav.drugs'), href: '/drugs' },
   { label: data.genericName },
 ];
+
+const siteBase = (Astro.site?.href ?? 'https://pharmasimple.matata.fun/').replace(/\/+$/, '');
+const drugUrl = `${siteBase}/drugs/${slugOf(drug)}/`;
+const jsonLd = [
+  {
+    '@type': 'Drug',
+    name: data.genericName,
+    ...(data.brandName ? { alternateName: data.brandName } : {}),
+    ...(data.summary ? { description: data.summary } : {}),
+    ...(data.drugClass ? { drugClass: data.drugClass } : {}),
+    mechanismOfAction: data.mechanism.simple,
+    url: drugUrl,
+    inLanguage: 'zh-CN',
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: `${siteBase}/` },
+      { '@type': 'ListItem', position: 2, name: t(locale, 'nav.drugs'), item: `${siteBase}/drugs/` },
+      { '@type': 'ListItem', position: 3, name: data.genericName, item: drugUrl },
+    ],
+  },
+];
 ---
 
-<BaseLayout title={data.genericName} description={data.summary} locale={locale}>
+<BaseLayout title={data.genericName} description={data.summary} locale={locale} jsonLd={jsonLd}>
   <Breadcrumbs items={crumbs} />
   <article class="drug">
     <header class="drug__header">

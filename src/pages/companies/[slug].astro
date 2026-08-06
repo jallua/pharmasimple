@@ -20,9 +20,29 @@ const crumbs = [
   { label: t(locale, 'nav.companies'), href: '/companies' },
   { label: data.name },
 ];
+
+const siteBase = (Astro.site?.href ?? 'https://pharmasimple.matata.fun/').replace(/\/+$/, '');
+const companyUrl = `${siteBase}/companies/${slugOf(company)}/`;
+const jsonLd = [
+  {
+    '@type': 'Organization',
+    name: data.name,
+    ...(data.summary ? { description: data.summary } : {}),
+    ...(data.country ? { address: { '@type': 'PostalAddress', addressCountry: data.country } } : {}),
+    url: companyUrl,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: `${siteBase}/` },
+      { '@type': 'ListItem', position: 2, name: t(locale, 'nav.companies'), item: `${siteBase}/companies/` },
+      { '@type': 'ListItem', position: 3, name: data.name, item: companyUrl },
+    ],
+  },
+];
 ---
 
-<BaseLayout title={data.name} description={data.summary} locale={locale}>
+<BaseLayout title={data.name} description={data.summary} locale={locale} jsonLd={jsonLd}>
   <Breadcrumbs items={crumbs} />
   <h1>{data.name}</h1>
   {data.country && <p class="company__country">{data.country}</p>}
