@@ -31,7 +31,7 @@ media:
 citations:
   - title: "NMPA:泰特利单抗注射液获批上市"
     publisher: 国家药品监督管理局(NMPA)
-    url: http://english.nmpa.gov.cn/2025-06/11/c_1101537.htm
+    url: https://english.nmpa.gov.cn/2025-06/11/c_1101537.htm
     sourceType: regulator
   - title: "科伦博泰:泰特利单抗第二项适应症(联合顺铂与吉西他滨一线治疗复发/转移性鼻咽癌)获批"
     publisher: 科伦博泰(Kelun-Biotech)

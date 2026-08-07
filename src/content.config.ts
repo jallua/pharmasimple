@@ -16,13 +16,27 @@ const reviewStatus = z.enum(['draft', 'reviewed']); // 需求 8
 const locale = z.enum(['zh']); // 后续扩展 'en' 等(需求 10)
 
 const citation = z.object({
+  id: z.string().min(1).optional(), // 字段级证据使用的稳定 ID
   title: z.string().min(1),
   publisher: z.string().optional(),
-  url: z.string().url().optional(),
+  url: z.url().optional(),
   retrievedDate: z.coerce.date().optional(), // 采集来源日期(需求 11.2)
-  // 来源类型,用于「权威锚点」判定(P13):regulator/label/gov 视为权威锚点;
-  // company(药企官方网站)计入来源总数但不作为锚点;other 仅计数。
+  sourceId: z.string().min(1).optional(), // 若提供,必须与官方来源注册表和 URL 一致
+  // 兼容已有内容的展示元数据;权威性只由来源注册表 + HTTPS URL 判定。
   sourceType: z.enum(['regulator', 'label', 'gov', 'company', 'other']).optional(),
+});
+
+const evidenceLink = z.object({
+  claim: z.string().min(1),
+  citationIds: z.array(z.string().min(1)).min(1),
+});
+
+const verification = z.object({
+  status: z.enum(['verified', 'conflicted', 'stale', 'blocked']),
+  checkedAt: z.coerce.date(),
+  pipelineVersion: z.string().min(1),
+  evidenceBundleHash: z.string().regex(/^sha256:[a-f0-9]{64}$/),
+  recheckBy: z.coerce.date().optional(),
 });
 
 // 自动审核元数据(P15 / 需求 8.7):审核者恒为 auto,记录核对日期与置信等级,
@@ -96,7 +110,11 @@ const drugs = defineCollection({
       }),
       media: z.array(media).optional(), // 图/动画可选:无已制作素材时不展示(需求 4)
       citations: z.array(citation),
-      review: review.optional(), // 自动审核元数据(P15)
+      // 后台字段级证据;前端仍只在页面底部统一展示 citations。
+      evidence: z.array(evidenceLink).optional(),
+      // 新自动流水线写入的机器验证结果;旧内容迁移期间仍兼容 review。
+      verification: verification.optional(),
+      review: review.optional(), // 旧自动审核元数据(P15),待内容迁移后移除
       reviewStatus,
       updatedDate: z.coerce.date().optional(),
     })
@@ -105,12 +123,15 @@ const drugs = defineCollection({
       message: '已评审的药品必须至少包含一条来源引用',
       path: ['citations'],
     })
-    // 已评审(已发布)的药品必须带有自动审核元数据,且置信等级为 high(P15 / 需求 8.4、8.7)。
+    // 发布内容必须由新流水线验证通过;迁移期间兼容已有的 high review 元数据。
     .refine(
-      (d) => d.reviewStatus !== 'reviewed' || (d.review !== undefined && d.review.confidence === 'high'),
+      (d) =>
+        d.reviewStatus !== 'reviewed' ||
+        d.verification?.status === 'verified' ||
+        (d.review !== undefined && d.review.confidence === 'high'),
       {
-        message: '已发布的药品必须包含自动审核元数据(review)且置信等级为“高”(high)',
-        path: ['review'],
+        message: '已发布的药品必须通过自动验证(verification=verified)或具有迁移期 high review 元数据',
+        path: ['verification'],
       },
     ),
 });

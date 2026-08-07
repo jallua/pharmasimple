@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "sources": [
+    { "id": "us-fda", "name": "美国 FDA", "category": "regulator", "authoritative": true, "independenceGroup": "us-fda", "allowedHosts": ["fda.gov", "accessdata.fda.gov"] },
+    { "id": "us-dailymed", "name": "DailyMed", "category": "label", "authoritative": true, "independenceGroup": "us-dailymed", "allowedHosts": ["dailymed.nlm.nih.gov"] },
+    { "id": "us-ncbi", "name": "NCBI", "category": "gov", "authoritative": true, "independenceGroup": "us-ncbi", "allowedHosts": ["ncbi.nlm.nih.gov"] },
+    { "id": "us-medlineplus", "name": "MedlinePlus", "category": "gov", "authoritative": true, "independenceGroup": "us-medlineplus", "allowedHosts": ["medlineplus.gov"] },
+    { "id": "us-nci", "name": "美国国家癌症研究所", "category": "gov", "authoritative": true, "independenceGroup": "us-nci", "allowedHosts": ["cancer.gov", "dctd.cancer.gov"] },
+    { "id": "us-nih", "name": "美国国立卫生研究院", "category": "gov", "authoritative": true, "independenceGroup": "us-nih", "allowedHosts": ["nih.gov", "ninds.nih.gov"] },
+    { "id": "us-cdc", "name": "美国 CDC", "category": "gov", "authoritative": true, "independenceGroup": "us-cdc", "allowedHosts": ["cdc.gov"] },
+    { "id": "cn-nmpa", "name": "中国国家药品监督管理局", "category": "regulator", "authoritative": true, "independenceGroup": "cn-nmpa", "allowedHosts": ["nmpa.gov.cn"] },
+    { "id": "eu-ema", "name": "欧洲药品管理局", "category": "regulator", "authoritative": true, "independenceGroup": "eu-ema", "allowedHosts": ["ema.europa.eu"] },
+    { "id": "jp-pmda", "name": "日本 PMDA", "category": "regulator", "authoritative": true, "independenceGroup": "jp-pmda", "allowedHosts": ["pmda.go.jp"] },
+    { "id": "au-tga", "name": "澳大利亚 TGA", "category": "regulator", "authoritative": true, "independenceGroup": "au-tga", "allowedHosts": ["tga.gov.au"] },
+    { "id": "who", "name": "世界卫生组织", "category": "gov", "authoritative": true, "independenceGroup": "who", "allowedHosts": ["who.int"] }
+  ]
+}

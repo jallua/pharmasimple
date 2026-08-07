@@ -59,13 +59,13 @@ const sourceTypeArb: fc.Arbitrary<SourceType> = fc.constantFrom(
   'other',
 );
 
-// A citation guaranteed to be an authoritative anchor (regulator/label/gov).
-const anchorCitationArb: fc.Arbitrary<Citation> = fc.record({
-  title: nonEmptyString,
-  publisher: fc.option(nonEmptyString, { nil: undefined }),
-  url: fc.option(fc.webUrl(), { nil: undefined }),
-  sourceType: fc.constantFrom('regulator', 'label', 'gov'),
-});
+// A citation guaranteed to be an authoritative anchor from the registry.
+const anchorCitationArb: fc.Arbitrary<Citation> = nonEmptyString.map((title) => ({
+  title,
+  url: 'https://www.fda.gov/drugs/example',
+  sourceId: 'us-fda',
+  sourceType: 'regulator' as const,
+}));
 
 // Any citation (may or may not be an anchor).
 const citationArb: fc.Arbitrary<Citation> = fc.record({
@@ -75,10 +75,14 @@ const citationArb: fc.Arbitrary<Citation> = fc.record({
   sourceType: fc.option(sourceTypeArb, { nil: undefined }),
 });
 
-// >=2 citations including at least one authoritative anchor (satisfies P13).
+// >=2 independently identified sources including one registry anchor (P13).
 const anchoredCitationsArb: fc.Arbitrary<Citation[]> = fc
-  .tuple(anchorCitationArb, fc.array(citationArb, { minLength: 1, maxLength: 2 }))
-  .map(([anchor, rest]) => [anchor, ...rest]);
+  .tuple(anchorCitationArb, nonEmptyString, fc.array(citationArb, { maxLength: 1 }))
+  .map(([anchor, title, rest]) => [
+    anchor,
+    { title, url: 'https://dailymed.nlm.nih.gov/dailymed/example', sourceId: 'us-dailymed' },
+    ...rest,
+  ]);
 
 // High-confidence, in-window auto-review (satisfies P15). `checkedOn` is "now"
 // with no `recheckBy`, so the recheck deadline is ~12 months in the future.
@@ -237,28 +241,29 @@ const baseReviewedDrug = (overrides: Partial<DrugData> = {}): DrugData => ({
   ...overrides,
 });
 
-test('P13: isAuthoritativeAnchor — sourceType + allowlisted hosts; journals & company sites are not anchors', () => {
-  // sourceType regulator/label/gov are anchors; company/other are not.
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'regulator' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'label' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'gov' })).toBe(true);
+test('P13: authority comes from registry URL; hand-written sourceType cannot grant trust', () => {
+  // Legacy sourceType values without a registered HTTPS URL are never anchors.
+  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'regulator' })).toBe(false);
+  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'label' })).toBe(false);
+  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'gov' })).toBe(false);
   expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'company' })).toBe(false);
   expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'other' })).toBe(false);
 
-  // Allowlisted hosts (with/without www, and subdomains) are anchors by URL.
+  // Registry hosts (including www/subdomains) are anchors by URL.
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a' })).toBe(true);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://accessdata.fda.gov/a' })).toBe(true);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://dailymed.nlm.nih.gov/a' })).toBe(true);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.ncbi.nlm.nih.gov/books/x' })).toBe(true);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.cancer.gov/a' })).toBe(true);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.nmpa.gov.cn/a' })).toBe(true);
-  // Australia's TGA (newly added to the allowlist) is an anchor by host, too.
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.tga.gov.au/' })).toBe(true);
 
-  // Peer-reviewed journals / arbitrary sites are NOT authoritative anymore.
+  // A declared sourceId must agree with the URL-derived registry entry.
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a', sourceId: 'eu-ema' })).toBe(false);
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a', sourceId: 'us-fda' })).toBe(true);
+
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.nature.com/articles/x' })).toBe(false);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://example.com/x' })).toBe(false);
-  // Malformed / missing URL and no sourceType -> not an anchor.
   expect(isAuthoritativeAnchor({ title: 'x', url: 'not a url' })).toBe(false);
   expect(isAuthoritativeAnchor({ title: 'x' })).toBe(false);
 });
@@ -288,12 +293,12 @@ test('P13: two sources but NO authoritative anchor fails (a company site is not 
   expect(r.violations.some((v) => v.includes('anchor'))).toBe(true);
 });
 
-test('P13: an allowlisted host counts as the anchor even without a sourceType', () => {
+test('P13: a registered host counts as the anchor even without sourceType', () => {
   const r = drugContentInvariants(
     baseReviewedDrug({
       citations: [
         { title: 'DailyMed', url: 'https://dailymed.nlm.nih.gov/x' },
-        { title: 'BeiGene 官网', sourceType: 'company' },
+        { title: 'BeiGene 官网', url: 'https://www.beigene.com/x', sourceType: 'company' },
       ],
     }),
   );
@@ -717,8 +722,8 @@ test('P10: findDuplicateSlugs detects an injected duplicate (and only it)', () =
 test('P10: URL builders are deterministic and embed the slug', () => {
   fc.assert(
     fc.property(nonEmptyString, (slug) => {
-      expect(toCompanyUrl(slug)).toBe(`/companies/${slug}`);
-      expect(toDrugUrl(slug)).toBe(`/drugs/${slug}`);
+      expect(toCompanyUrl(slug)).toBe(`/companies/${slug}/`);
+      expect(toDrugUrl(slug)).toBe(`/drugs/${slug}/`);
       // Stable across calls.
       expect(toCompanyUrl(slug)).toBe(toCompanyUrl(slug));
       expect(toDrugUrl(slug)).toBe(toDrugUrl(slug));

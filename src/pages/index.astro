@@ -87,7 +87,7 @@ const areaGroups = groupByTherapeuticArea(allDrugs);
                   <li>
                     <a
                       class="chip area__chip"
-                      href={`/drugs#${classAnchor(classGroup.drugClass)}`}
+                      href={`/drugs/#${classAnchor(classGroup.drugClass)}`}
                     >
                       <span class="area__chip-name">{classGroup.drugClass}</span>
                       <span class="area__chip-num">{classGroup.drugs.length}</span>
@@ -99,7 +99,7 @@ const areaGroups = groupByTherapeuticArea(allDrugs);
           ))}
         </div>
         <p class="by-class__all">
-          <a href="/drugs">{t(locale, 'home.viewAllDrugs')} &rarr;</a>
+          <a href="/drugs/">{t(locale, 'home.viewAllDrugs')} &rarr;</a>
         </p>
       </section>
     )
@@ -109,13 +109,13 @@ const areaGroups = groupByTherapeuticArea(allDrugs);
     <h2>{t(locale, 'home.browseTitle')}</h2>
     <ul>
       <li>
-        <a class="card" href="/companies">
+        <a class="card" href="/companies/">
           <span class="home-entries__title">{t(locale, 'nav.companies')}</span>
           <span class="home-entries__desc">{t(locale, 'home.companiesEntry')}</span>
         </a>
       </li>
       <li>
-        <a class="card" href="/about">
+        <a class="card" href="/about/">
           <span class="home-entries__title">{t(locale, 'nav.about')}</span>
           <span class="home-entries__desc">{t(locale, 'home.aboutEntry')}</span>
         </a>

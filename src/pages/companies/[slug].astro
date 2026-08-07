@@ -17,7 +17,7 @@ const { data } = company;
 
 const crumbs = [
   { label: t(locale, 'nav.home'), href: '/' },
-  { label: t(locale, 'nav.companies'), href: '/companies' },
+  { label: t(locale, 'nav.companies'), href: '/companies/' },
   { label: data.name },
 ];
 
@@ -26,6 +26,7 @@ const companyUrl = `${siteBase}/companies/${slugOf(company)}/`;
 const jsonLd = [
   {
     '@type': 'Organization',
+    '@id': `${companyUrl}#organization`,
     name: data.name,
     ...(data.summary ? { description: data.summary } : {}),
     ...(data.country ? { address: { '@type': 'PostalAddress', addressCountry: data.country } } : {}),
@@ -33,6 +34,7 @@ const jsonLd = [
   },
   {
     '@type': 'BreadcrumbList',
+    '@id': `${companyUrl}#breadcrumb`,
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: `${siteBase}/` },
       { '@type': 'ListItem', position: 2, name: t(locale, 'nav.companies'), item: `${siteBase}/companies/` },

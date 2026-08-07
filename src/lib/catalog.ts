@@ -11,6 +11,12 @@
 // The invariants encoded here mirror the correctness properties P1-P10 in the
 // design document.
 
+import {
+  distinctCitationSourceCount,
+  isRegisteredAuthoritativeSource,
+  resolveRegisteredSource,
+} from './source-registry.ts';
+
 // ---------------------------------------------------------------------------
 // Types — standalone mirrors of the content schema in `content.config.ts`.
 // ---------------------------------------------------------------------------
@@ -36,11 +42,33 @@ export type TargetType =
 export type SourceType = 'regulator' | 'label' | 'gov' | 'company' | 'other';
 
 export interface Citation {
+  /** Stable ID used by field-level evidence records. */
+  id?: string;
   title: string;
   publisher?: string;
   url?: string;
   retrievedDate?: Date | string;
+  /** Optional declaration; it must agree with the URL-derived registry entry. */
+  sourceId?: string;
+  /** Legacy display metadata only. It is never trusted for authority decisions. */
   sourceType?: SourceType;
+}
+
+export interface EvidenceLink {
+  /** Machine-readable claim path, for example `indications.US.CLL`. */
+  claim: string;
+  /** Citation IDs supporting this claim; citations remain rendered together at page bottom. */
+  citationIds: string[];
+}
+
+export type VerificationStatus = 'verified' | 'conflicted' | 'stale' | 'blocked';
+
+export interface Verification {
+  status: VerificationStatus;
+  checkedAt: Date | string;
+  pipelineVersion: string;
+  evidenceBundleHash: string;
+  recheckBy?: Date | string;
 }
 
 export type Confidence = 'high' | 'medium' | 'low';
@@ -128,6 +156,10 @@ export interface DrugData {
   /** Figures/animations are optional: a drug with no ready media shows none. */
   media?: Media[];
   citations: Citation[];
+  /** Optional field-level evidence used by the automatic verifier; not rendered inline. */
+  evidence?: EvidenceLink[];
+  /** New machine verification metadata. Legacy content may still carry `review` during migration. */
+  verification?: Verification;
   /** Auto-review metadata; required (and high-confidence) once published (P15). */
   review?: Review;
   reviewStatus: ReviewStatus;
@@ -214,10 +246,10 @@ export const publishedOnly = <T extends { data: { reviewStatus: ReviewStatus } }
 ): T[] => items.filter((item) => item.data.reviewStatus === 'reviewed');
 
 /** Stable URL for a company detail page. */
-export const toCompanyUrl = (slug: string): string => `/companies/${slug}`;
+export const toCompanyUrl = (slug: string): string => `/companies/${slug}/`;
 
 /** Stable URL for a drug mechanism page. */
-export const toDrugUrl = (slug: string): string => `/drugs/${slug}`;
+export const toDrugUrl = (slug: string): string => `/drugs/${slug}/`;
 
 /**
  * P8 — search coverage. Build the search-index records from the published
@@ -322,50 +354,12 @@ export function checkReferentialIntegrity(
 // ---------------------------------------------------------------------------
 
 /**
- * Host allowlist for an authoritative regulator/gov "anchor" citation (P13). A
- * citation URL whose hostname equals one of these — or is a subdomain of one —
- * is treated as authoritative. Company official sites and peer-reviewed journals
- * are deliberately absent.
- */
-export const ANCHOR_HOST_ALLOWLIST: readonly string[] = [
-  'fda.gov',
-  'accessdata.fda.gov',
-  'dailymed.nlm.nih.gov',
-  'nlm.nih.gov',
-  'nih.gov',
-  'ncbi.nlm.nih.gov',
-  'cancer.gov',
-  'nmpa.gov.cn',
-  'ema.europa.eu',
-  'pmda.go.jp',
-  'tga.gov.au',
-  'who.int',
-];
-
-/** True when `host` equals an allowlisted domain or is a subdomain of one. */
-function hostIsAllowlisted(host: string): boolean {
-  const h = host.toLowerCase();
-  return ANCHOR_HOST_ALLOWLIST.some((domain) => h === domain || h.endsWith(`.${domain}`));
-}
-
-/**
- * P13 anchor test. A citation is an authoritative anchor when its `sourceType`
- * is `regulator`/`label`/`gov`, OR its `url` host is in {@link ANCHOR_HOST_ALLOWLIST}.
- * A `company` (drug-maker) source is NOT an anchor (it only counts toward the
- * required source total), and peer-reviewed journals are not authoritative.
+ * P13 anchor test. Authority is derived exclusively from the versioned source
+ * registry and an HTTPS URL. A hand-written `sourceType` can never grant trust.
+ * If `sourceId` is supplied it must match the URL-derived registry entry.
  */
 export function isAuthoritativeAnchor(citation: Citation | undefined | null): boolean {
-  if (!citation) return false;
-  const st = citation.sourceType;
-  if (st === 'regulator' || st === 'label' || st === 'gov') return true;
-  if (typeof citation.url === 'string' && citation.url.length > 0) {
-    try {
-      return hostIsAllowlisted(new URL(citation.url).hostname);
-    } catch {
-      return false; // malformed URL -> not an anchor
-    }
-  }
-  return false;
+  return citation ? isRegisteredAuthoritativeSource(citation) : false;
 }
 
 // P14 scope red-line regexes (case-insensitive). `DOSING_RE` matches a number
@@ -486,16 +480,45 @@ export function drugContentInvariants(
 
   // --- Codified review checks (P13/P14/P15) — published (reviewed) drugs only.
   if (data.reviewStatus === 'reviewed') {
-    // P13 — sources: >=2 total, and at least one authoritative anchor.
-    if (citations.length < 2) {
+    // P13 — source trust comes from the registry + URL, never from sourceType.
+    const mismatchedSourceIds = citations.filter(
+      (citation) => citation.sourceId && !resolveRegisteredSource(citation),
+    );
+    if (mismatchedSourceIds.length > 0) {
       violations.push(
-        `citations: a reviewed drug needs >=2 independent authoritative sources (has ${citations.length}) (P13)`,
+        `citations: ${mismatchedSourceIds.length} declared sourceId value(s) do not match their URL (P13)`,
       );
     }
-    if (!citations.some((c) => isAuthoritativeAnchor(c))) {
+    const independentSourceCount = distinctCitationSourceCount(citations);
+    if (independentSourceCount < 2) {
       violations.push(
-        'citations: a reviewed drug needs at least one authoritative regulator/gov anchor (P13)',
+        `citations: a reviewed drug needs >=2 independently identified sources (has ${independentSourceCount}) (P13)`,
       );
+    }
+    if (!citations.some((citation) => isAuthoritativeAnchor(citation))) {
+      violations.push(
+        'citations: a reviewed drug needs at least one registry-approved official anchor (P13)',
+      );
+    }
+
+    // Field-level evidence is backend-only. When supplied, every reference must
+    // resolve to a unique citation ID; the frontend still renders one list below.
+    const citationIds = citations.map((citation) => citation.id).filter(nonEmpty);
+    if (new Set(citationIds).size !== citationIds.length) {
+      violations.push('citations: citation IDs must be unique (P13)');
+    }
+    if (Array.isArray(data.evidence)) {
+      const knownIds = new Set(citationIds);
+      for (const evidence of data.evidence) {
+        if (!nonEmpty(evidence.claim) || !Array.isArray(evidence.citationIds) || evidence.citationIds.length < 1) {
+          violations.push('evidence: every claim needs at least one citation ID (P13)');
+        } else if (evidence.citationIds.some((id) => !knownIds.has(id))) {
+          violations.push(`evidence.${evidence.claim}: references an unknown citation ID (P13)`);
+        }
+      }
+    }
+    if (data.verification && data.verification.status !== 'verified') {
+      violations.push(`verification.status: reviewed content must be verified, got '${data.verification.status}' (P15)`);
     }
 
     // P14 — scope red-line: no dosing/usage-advice text in summary + mechanism.
@@ -511,26 +534,48 @@ export function drugContentInvariants(
       }
     }
 
-    // P15 — verification + freshness.
-    const review = data.review;
-    if (!review) {
-      violations.push('review: a reviewed drug must carry auto-review metadata (P15)');
-    } else {
-      if (review.confidence !== 'high') {
-        violations.push(
-          `review.confidence: must be 'high' for a reviewed drug (got '${review.confidence}') (P15)`,
-        );
-      }
-      const checkedOn =
-        review.checkedOn !== undefined ? new Date(review.checkedOn) : undefined;
-      if (!checkedOn || isNaN(checkedOn.getTime())) {
-        violations.push('review.checkedOn: a reviewed drug must record a valid check date (P15)');
+    // P15 — prefer machine verification; keep legacy review metadata during migration.
+    const verification = data.verification;
+    if (verification) {
+      const checkedAt = new Date(verification.checkedAt);
+      if (isNaN(checkedAt.getTime())) {
+        violations.push('verification.checkedAt: must be a valid date (P15)');
       } else {
-        const deadline = recheckDeadline(review);
-        if (deadline && today.getTime() > deadline.getTime()) {
+        const deadline = verification.recheckBy
+          ? new Date(verification.recheckBy)
+          : new Date(Date.UTC(
+              checkedAt.getUTCFullYear() + 1,
+              checkedAt.getUTCMonth(),
+              checkedAt.getUTCDate(),
+            ));
+        if (isNaN(deadline.getTime()) || today.getTime() > deadline.getTime()) {
+          violations.push('verification: evidence bundle is stale or has an invalid recheck date (P15)');
+        }
+      }
+      if (!Array.isArray(data.evidence) || data.evidence.length < 1) {
+        violations.push('verification: verified content must carry field-level evidence (P15)');
+      }
+    } else {
+      const review = data.review;
+      if (!review) {
+        violations.push('verification: reviewed content needs verification or legacy review metadata (P15)');
+      } else {
+        if (review.confidence !== 'high') {
           violations.push(
-            `review: recheck overdue (deadline ${deadline.toISOString().slice(0, 10)}) (P15)`,
+            `review.confidence: must be 'high' for a reviewed drug (got '${review.confidence}') (P15)`,
           );
+        }
+        const checkedOn =
+          review.checkedOn !== undefined ? new Date(review.checkedOn) : undefined;
+        if (!checkedOn || isNaN(checkedOn.getTime())) {
+          violations.push('review.checkedOn: a reviewed drug must record a valid check date (P15)');
+        } else {
+          const deadline = recheckDeadline(review);
+          if (deadline && today.getTime() > deadline.getTime()) {
+            violations.push(
+              `review: recheck overdue (deadline ${deadline.toISOString().slice(0, 10)}) (P15)`,
+            );
+          }
         }
       }
     }

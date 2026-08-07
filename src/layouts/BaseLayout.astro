@@ -13,14 +13,18 @@ interface Props {
 
 const { title, description, locale = defaultLocale, jsonLd } = Astro.props;
 const siteTitle = t(locale, 'site.title');
+const siteDescription = t(locale, 'site.tagline');
 const pageTitle = title ?? siteTitle;
 const documentTitle = pageTitle === siteTitle ? siteTitle : `${pageTitle} - ${siteTitle}`;
-const metaDescription = description ?? t(locale, 'site.tagline');
+const metaDescription = description ?? siteDescription;
 
-// Canonical + OG URL — guarded: Astro.site is undefined in some render contexts
-// (e.g. the container API used by tests), where `new URL(path, undefined)` would
-// throw. Only emit canonical/og:url when an absolute URL can be resolved.
-const pathname = Astro.url?.pathname ?? '/';
+// Canonical URLs use one directory-style form everywhere. The extension guard
+// keeps file routes such as sitemap.xml unchanged.
+const rawPathname = Astro.url?.pathname ?? '/';
+const pathname =
+  rawPathname === '/' || rawPathname.endsWith('/') || /\.[^/]+$/.test(rawPathname)
+    ? rawPathname
+    : `${rawPathname}/`;
 let canonicalURL: string | undefined;
 try {
   canonicalURL = Astro.site ? new URL(pathname, Astro.site).href : undefined;
@@ -29,23 +33,28 @@ try {
 }
 const ogLocale = locale === 'zh' ? 'zh_CN' : locale;
 
-// og:image + JSON-LD structured data — guarded on Astro.site so the container
-// render used by tests (no site) emits neither an absolute image URL nor
-// url-bearing schema nodes.
+// The WebSite node is a stable site entity. Page-specific descriptions belong
+// to each page node, not to the WebSite node.
 const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : undefined;
 const ogImage = siteOrigin ? `${siteOrigin}/og-image.png` : undefined;
 const websiteNode: Record<string, unknown> = {
   '@type': 'WebSite',
+  ...(siteOrigin ? { '@id': `${siteOrigin}/#website`, url: `${siteOrigin}/` } : {}),
   name: siteTitle,
   inLanguage: ogLocale.replace('_', '-'),
-  description: metaDescription,
-  ...(siteOrigin ? { url: `${siteOrigin}/` } : {}),
+  description: siteDescription,
 };
 const extraNodes = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [websiteNode, ...extraNodes],
 };
+// JSON.stringify alone can preserve characters that close or disrupt a script
+// element. Escape them before injecting data that may later come from scrapers.
+const structuredDataJson = JSON.stringify(structuredData)
+  .replace(/</g, '\\u003c')
+  .replace(/\u2028/g, '\\u2028')
+  .replace(/\u2029/g, '\\u2029');
 ---
 
 <!doctype html>
@@ -72,7 +81,7 @@ const structuredData = {
     <meta name="twitter:title" content={documentTitle} />
     <meta name="twitter:description" content={metaDescription} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <script type="application/ld+json" is:inline set:html={structuredDataJson} />
     <script is:inline>
       (function () {
         try {
@@ -100,10 +109,10 @@ const structuredData = {
           <span class="nav-toggle__icon" aria-hidden="true"></span>
         </button>
         <ul id="primary-nav" class="nav-links">
-          <li><a href="/drugs">{t(locale, 'nav.drugs')}</a></li>
-          <li><a href="/companies">{t(locale, 'nav.companies')}</a></li>
-          <li><a href="/search">{t(locale, 'nav.search')}</a></li>
-          <li><a href="/about">{t(locale, 'nav.about')}</a></li>
+          <li><a href="/drugs/">{t(locale, 'nav.drugs')}</a></li>
+          <li><a href="/companies/">{t(locale, 'nav.companies')}</a></li>
+          <li><a href="/search/">{t(locale, 'nav.search')}</a></li>
+          <li><a href="/about/">{t(locale, 'nav.about')}</a></li>
         </ul>
         <button
           id="theme-toggle"

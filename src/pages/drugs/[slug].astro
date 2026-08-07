@@ -34,26 +34,35 @@ const related = relatedDrugs(allDrugs, slugOf(drug));
 
 const crumbs = [
   { label: t(locale, 'nav.home'), href: '/' },
-  { label: t(locale, 'nav.drugs'), href: '/drugs' },
+  { label: t(locale, 'nav.drugs'), href: '/drugs/' },
   { label: data.genericName },
 ];
 
 const siteBase = (Astro.site?.href ?? 'https://dongyaojun.com/').replace(/\/+$/, '');
 const drugUrl = `${siteBase}/drugs/${slugOf(drug)}/`;
 const altNames = [data.genericNameEn, data.brandName].filter(Boolean);
+const dateModified = data.updatedDate
+  ? new Date(data.updatedDate).toISOString().slice(0, 10)
+  : undefined;
 const jsonLd = [
   {
-    '@type': 'Drug',
-    name: data.genericName,
-    ...(altNames.length ? { alternateName: altNames } : {}),
-    ...(data.summary ? { description: data.summary } : {}),
-    ...(data.drugClass ? { drugClass: data.drugClass } : {}),
-    mechanismOfAction: data.mechanism.simple,
+    '@type': 'MedicalWebPage',
+    '@id': `${drugUrl}#webpage`,
     url: drugUrl,
+    name: data.genericName,
+    ...(data.summary ? { description: data.summary } : {}),
     inLanguage: 'zh-CN',
+    ...(dateModified ? { dateModified } : {}),
+    isPartOf: { '@id': `${siteBase}/#website` },
+    about: {
+      '@type': 'Thing',
+      name: data.genericName,
+      ...(altNames.length ? { alternateName: altNames } : {}),
+    },
   },
   {
     '@type': 'BreadcrumbList',
+    '@id': `${drugUrl}#breadcrumb`,
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: `${siteBase}/` },
       { '@type': 'ListItem', position: 2, name: t(locale, 'nav.drugs'), item: `${siteBase}/drugs/` },

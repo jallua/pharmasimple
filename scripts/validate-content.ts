@@ -15,7 +15,8 @@
 //                 (P7 validates the region-grouped `indications` shape; P5 media
 //                 is optional but every present item still needs a non-empty alt)
 //   P13/P14/P15   codified review checks (published drugs) via the same helper:
-//                 P13 sources (>=2 incl. >=1 authoritative regulator/gov anchor),
+//                 P13 registered source identities (>=2 distinct documents and
+//                 >=1 registry-approved official anchor),
 //                 P14 scope red-line (no dosing/usage-advice text in summary +
 //                 mechanism layers), P15 auto-review metadata (high confidence,
 //                 within its recheck window). These make the "review" a
@@ -159,7 +160,7 @@ function main(): void {
   // --- P2/P3/P5/P7 + P13/P14/P15: per-drug content invariants ---------------
   // `drugContentInvariants` runs the base invariants for every drug and, for
   // PUBLISHED (reviewed) drugs, the codified review checks:
-  //   P13 sources (>=2 incl. >=1 authoritative regulator/gov anchor),
+  //   P13 source registry + distinct document identities + official anchor,
   //   P14 scope red-line (no dosing/usage-advice text in summary + mechanism),
   //   P15 auto-review metadata (high confidence, within recheck window).
   // Each returned message already names its property + field; we prefix the file.
@@ -224,8 +225,8 @@ function main(): void {
     `Content validation passed: scanned ${scanned}; ` +
       `${publishedCompanies.length} + ${publishedDrugs.length} published, ` +
       `${records.length} search record(s). All properties (P1, P2, P3, P4, P5, P7, P8, P10) ` +
-      `and the codified review checks P13 (>=2 sources incl. an authoritative anchor), ` +
-      `P14 (scope red-line: no dosing/usage-advice) and P15 (high-confidence auto-review ` +
+      `and the codified review checks P13 (registered sources, >=2 distinct documents, official anchor), ` +
+      `P14 (scope red-line: no dosing/usage-advice) and P15 (verified evidence or legacy review ` +
       `within its recheck window) hold.`,
   );
 }

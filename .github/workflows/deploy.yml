@@ -27,7 +27,11 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Build site
+      - name: Run unit and property tests
+        run: npm test
+      - name: Run Astro type checks
+        run: npm run check
+      - name: Build and validate site
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5

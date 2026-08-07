@@ -10,7 +10,8 @@
     "validate": "node scripts/validate-content.ts",
     "prebuild": "node scripts/validate-content.ts",
     "build": "astro build",
-    "postbuild": "pagefind --site dist",
+    "postbuild": "node scripts/validate-structured-data.mjs && pagefind --site dist",
+    "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run"
