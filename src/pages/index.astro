@@ -69,7 +69,7 @@ const areaGroups = groupByTherapeuticArea(allDrugs);
           <details class="area" open={index === 0}>
             <summary class="area__summary">
               <span class="area__name">{group.area}</span>
-              <span class="area__count">{group.classes.length} 类 · {group.drugCount} 款产品</span>
+              <span class="area__count">{group.classes.length} 类 · {group.drugCount} 款药物</span>
             </summary>
             <ul class="area__list">
               {group.classes.map((classGroup) => (
