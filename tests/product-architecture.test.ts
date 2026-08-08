@@ -128,14 +128,20 @@ describe('public discovery and terminology regression coverage', () => {
     expect(aboutPage).toContain('withPublishedDrugs.has(slugOf(company))');
     expect(aboutStrings.companyProfilesLead).toContain('公司网站');
     expect(aboutStrings.companyProfilesLead).toContain('无法核验公司介绍页时，本站不展示简介');
-    expect(aboutStrings.guideCitations).toBe('参考来源：产品页列出所用资料链接，便于逐条核对。');
+    expect(aboutStrings.guideCitations).toBe('参考来源：药物页列出所用资料链接，便于逐条核对。');
     expect(aboutStrings.guideAnalogy).toMatch(/^一句话比喻：/);
     expect(aboutStrings.guideTarget).toMatch(/^作用靶点：/);
-    expect(aboutStrings.methodPoint1).toContain('部分既有记录仍在逐步拆分');
-    expect(aboutStrings.methodPoint3).toContain('页面内容不用于产品横向优劣');
-    expect(aboutStrings.methodPoint4).toContain('部分既有内容仍在持续复核和更新');
-    expect(aboutStrings.sourcesLead).toContain('目前至少列出两份相互独立的资料');
-    expect(aboutStrings.sourcesLead).not.toContain('两条相互独立的权威来源');
+    // Plain-language mission voice restored (metaphors + original animation,
+    // "大白话"), and the non-comparison safeguard is kept.
+    expect(aboutStrings.intro).toContain('通俗的比喻和原创动画');
+    expect(aboutStrings.guideSimple).toContain('大白话');
+    expect(aboutStrings.methodPoint3).toContain('不用于药物之间的优劣');
+    // Reader-facing copy must not leak internal migration/pipeline state.
+    expect(Object.values(aboutStrings).join('\n')).not.toMatch(/仍在逐步拆分|仍在持续复核/);
+    expect(aboutStrings.sourcesLead).toContain('两条相互独立的');
+    expect(aboutStrings.sourcesLead).toContain('代码强制校验');
+    expect(aboutStrings.sourcesLead).toContain('监管');
+    expect(aboutStrings.sourcesLead).not.toContain('目前至少列出');
     expect(Object.values(aboutStrings).join('\n')).not.toMatch(/官网来源|检索日期|门禁|草稿状态/);
   });
 

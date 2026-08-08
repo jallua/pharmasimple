@@ -16,7 +16,7 @@ test('P9: the default locale is zh and is part of the locale list', () => {
 
 test('P9: the default locale resolves known keys to their strings', () => {
   expect(t('zh', 'nav.companies')).toBe('公司');
-  expect(t('zh', 'nav.drugs')).toBe('产品');
+  expect(t('zh', 'nav.drugs')).toBe('药物');
   expect(t('zh', 'nav.search')).toBe('搜索');
   expect(t('zh', 'nav.about')).toBe('关于');
   expect(t('zh', 'search.noResults')).toBe('未找到相关内容');
@@ -32,7 +32,7 @@ test('P9: the default locale resolves known keys to their strings', () => {
   expect(t('zh', 'about.guideTarget')).toMatch(/^作用靶点：/);
   expect(t('zh', 'drug.indicationExample')).toBe('适应症示例');
   expect(t('zh', 'notFound.title')).toBe('找不到页面');
-  expect(t('zh', 'disclaimer.body')).toContain('不应用于判断产品优劣');
+  expect(t('zh', 'disclaimer.body')).toContain('不用于判断药物优劣');
 });
 
 test('P9: a missing locale falls back to the default locale value', () => {
