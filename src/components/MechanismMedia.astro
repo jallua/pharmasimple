@@ -21,6 +21,7 @@ interface Props {
 const { media = [], locale = 'zh', heading, subjectLabel } = Astro.props;
 const headingText = heading ?? t(locale, 'mechanism.heading');
 const pauseLabel = t(locale, 'mechanism.pauseAnimation');
+const scopeNote = t(locale, 'mechanism.mediaScope');
 
 const resolveAnimation = (item: Media) =>
   item.type === 'animation' && item.status !== 'in-progress'
@@ -39,6 +40,8 @@ const animToggleScript =
   hasRenderable && (
     <>
       <section class="mechanism-media" aria-label={headingText}>
+        <h2 class="mechanism-media__heading">{headingText}</h2>
+        <p class="mechanism-media__scope" role="note">{scopeNote}</p>
         {media.map((item) => {
           const AnimationComponent = resolveAnimation(item);
           if (!AnimationComponent && !isImage(item)) return null;

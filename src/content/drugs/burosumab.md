@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:CRYSVITA(布罗索尤单抗)"
+    id: cite-18a9811777cec22b
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=102f96a0-6e3a-4fc1-b204-34d604683af6
     sourceType: regulator
   - title: "Burosumab(Crysvita)(NCBI Bookshelf)"
+    id: cite-0ce479c5cac3f01c
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK612742/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

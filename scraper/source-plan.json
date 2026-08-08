@@ -1,0 +1,1148 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "src/content/drugs/*.md citation identities plus scraper/source-overrides.json",
+  "entries": [
+    {
+      "slug": "acalabrutinib",
+      "genericName": "acalabrutinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "acarbose",
+      "genericName": "acarbose",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=067c0adc-7322-489d-9baa-1d061b37be36"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "adalimumab",
+      "genericName": "adalimumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=608d4f0d-b19f-46d3-749a-7159aa5f933d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "adapalene",
+      "genericName": "adapalene",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ca37576a-09aa-4ee8-9dc4-8ad76b999fcf"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "albutrepenonacog-alfa",
+      "genericName": "albutrepenonacog alfa",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f74301bf-95e2-44ab-a8b6-98aa07b04683"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "amlodipine",
+      "genericName": "amlodipine / levamlodipine",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3f4703c0-0b9e-41a0-8b70-da26683d9ed2"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "amoxicillin",
+      "genericName": "amoxicillin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=d339ea0f-8797-460f-a3b7-b8455c250366"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "anlotinib",
+      "genericName": "anlotinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://www.nmpa.gov.cn/"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "apixaban",
+      "genericName": "apixaban",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "aripiprazole",
+      "genericName": "aripiprazole",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c040bd1d-45b7-49f2-93ea-aed7220b30ac"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "asparaginase-erwinia",
+      "genericName": "asparaginase erwinia chrysanthemi, recombinant",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=857e53aa-1098-4dad-b654-0276cdd43e03"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "aspirin",
+      "genericName": "aspirin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=44a08904-68b9-4d06-a28d-21aae3d6140c"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "atorvastatin",
+      "genericName": "atorvastatin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a3c08a6d-f986-4efc-9f96-3f0e652704dc"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "bictegravir",
+      "genericName": "bictegravir/emtricitabine/tenofovir alafenamide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=664cb8f0-1f65-441b-b0d9-ba3d798be309"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "brexpiprazole",
+      "genericName": "brexpiprazole",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2d301358-6291-4ec1-bd87-37b4ad9bd850"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "burosumab",
+      "genericName": "burosumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=102f96a0-6e3a-4fc1-b204-34d604683af6"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "cabozantinib",
+      "genericName": "cabozantinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3850cce2-6137-42e5-a792-d318c4a4b3b5"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "camrelizumab",
+      "genericName": "camrelizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "cefuroxime",
+      "genericName": "cefuroxime axetil",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f799137f-9676-42d4-9130-a9685cc9302c"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "cemiplimab",
+      "genericName": "cemiplimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4347ae1f-d397-4f18-8b70-03897e1c054a"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "cenobamate",
+      "genericName": "cenobamate",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=565c2126-57ae-4e29-b443-723bbe7e2072"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "cephalexin",
+      "genericName": "cephalexin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03f6f6ae-66bc-6819-8ba9-7c9c3fbef90d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "certolizumab-pegol",
+      "genericName": "certolizumab pegol",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b4c2c9dc-a0bb-4d64-a667-a67ebe88392d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "cetuximab",
+      "genericName": "cetuximab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8bc6397e-4bd8-4d37-a007-a327e4da34d9"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "chidamide",
+      "genericName": "chidamide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://www.nmpa.gov.cn/"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "convidecia",
+      "genericName": "Ad5-nCoV",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "darolutamide",
+      "genericName": "darolutamide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1a7cb212-56e4-4b9d-a73d-bfee7fe4735e"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "desmopressin",
+      "genericName": "desmopressin (DDAVP)",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f140926e-3201-4b8e-8207-14c560ddb55e"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "disitamab-vedotin",
+      "genericName": "disitamab vedotin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "dostarlimab",
+      "genericName": "dostarlimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=095eab9f-545a-4f12-bfb7-19477fb901a5"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "dupilumab",
+      "genericName": "dupilumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=595f437d-2729-40bb-9c62-c8ece1f82780"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "edoxaban",
+      "genericName": "edoxaban",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e77d3400-56ad-11e3-949a-0800200c9a66"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "eflapegrastim",
+      "genericName": "eflapegrastim",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=6e436115-62e7-4729-aeb0-ff78ea685206"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "elacestrant",
+      "genericName": "elacestrant",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=aa66ae5c-2bd2-4444-8178-b55651e054ef"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "elasomeran",
+      "genericName": "elasomeran",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f96b315c-fa57-4876-a7e5-a9b584d8e6e6"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "elexacaftor-tezacaftor-ivacaftor",
+      "genericName": "elexacaftor/tezacaftor/ivacaftor",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f354423a-85c2-41c3-a9db-0f3aee135d8d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "empagliflozin",
+      "genericName": "empagliflozin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=5777b8a8-ada6-4950-8548-43a1de11f075"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "enalapril",
+      "genericName": "enalapril",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=39631f1f-5d19-43c1-b504-bf56d991ed97"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "enzalutamide",
+      "genericName": "enzalutamide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b129fdc9-1d8e-425c-a5a9-8a2ed36dfbdf"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "etanercept",
+      "genericName": "etanercept",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=74bead6e-b746-4134-817f-0c053ef9e451"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "etonogestrel",
+      "genericName": "etonogestrel",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=487f8a62-e142-457c-97cc-2e398fde7594"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "flumatinib",
+      "genericName": "flumatinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://www.nmpa.gov.cn/"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "formoterol",
+      "genericName": "formoterol fumarate",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c77e5f67-01bc-4704-8120-0e2e3d020482"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "fremanezumab",
+      "genericName": "fremanezumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=98e344ea-5916-4947-b6f2-4a76ccc04b6b"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "fruquintinib",
+      "genericName": "fruquintinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=186d786e-dc8a-45f2-b5e1-01ac0201879f"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "ibrutinib",
+      "genericName": "ibrutinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0dfd0279-ff17-4ea9-89be-9803c71bab44"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "icotinib",
+      "genericName": "icotinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://www.nmpa.gov.cn/"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "ilaprazole",
+      "genericName": "ilaprazole",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "imatinib",
+      "genericName": "imatinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true,
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=211ef2da-2868-4a77-8055-1cb2cd78e24b"
+      },
+      "sourceOverride": {
+        "reason": "The current openFDA response has no unique newest matching label, leaving only one successful official channel. Block promotion until source selection can be reviewed without arbitrary tie-breaking.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    },
+    {
+      "slug": "immune-globulin",
+      "genericName": "immune globulin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ade6b84a-e95b-0a49-3296-f56208fdf35b"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "inetetamab",
+      "genericName": "inetetamab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://www.nmpa.gov.cn/"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "infliximab",
+      "genericName": "infliximab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a0a046c1-056d-45a9-bfd9-13b47c24f257"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "insulin-glargine",
+      "genericName": "insulin glargine",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3ac85ebb-5594-59c8-77fd-df254329d151"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "iruplinalkib",
+      "genericName": "iruplinalkib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://www.nmpa.gov.cn/"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "ivosidenib",
+      "genericName": "ivosidenib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=65d254c0-67ad-42c4-b972-ad463b755b2d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "lebrikizumab",
+      "genericName": "lebrikizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7a774ea2-acde-4aaa-9a8f-ccba5a5b1d5f",
+        "fda": true
+      },
+      "sourceOverride": {
+        "reason": "Bounded acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    },
+    {
+      "slug": "lenvatinib",
+      "genericName": "lenvatinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f4bedd21-efde-44c6-9d9c-b48b78d7ed1e"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "lurasidone",
+      "genericName": "lurasidone",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=afad3051-9df2-4c54-9684-e8262a133af8"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "metformin",
+      "genericName": "metformin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f4fc759a-057e-4b5d-b8ab-13bc5eeb24e4"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "natalizumab",
+      "genericName": "natalizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c5fdde91-1989-4dd2-9129-4f3323ea2962"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "nefecon",
+      "genericName": "budesonide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=938cada4-d6bf-4252-836f-dd40f9eadb4d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "niraparib",
+      "genericName": "niraparib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b7f675e2-159c-490c-b6f4-3f16d9492b7d"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "nivolumab",
+      "genericName": "nivolumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f570b9c4-6846-4de2-abfa-4d0a4ae4e394",
+        "fda": true
+      },
+      "sourceOverride": {
+        "reason": "Current real-network acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    },
+    {
+      "slug": "nusinersen",
+      "genericName": "nusinersen",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=dd70cd5f-b0fc-4ba4-a5ea-89a34778bd94"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "omeprazole",
+      "genericName": "omeprazole",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=63b3982a-b541-4b0d-99d4-93a673e57d46"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "orelabrutinib",
+      "genericName": "orelabrutinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "osilodrostat",
+      "genericName": "osilodrostat",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f3a5ec24-63c3-4d83-b1c0-6c550fbe7ae2"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "palbociclib",
+      "genericName": "palbociclib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e0e6412f-50b4-4fd4-9364-62818d121a07"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "pantoprazole",
+      "genericName": "pantoprazole",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9c286e5c-2b36-422b-9f74-e8c0abb3f747"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "pcv13",
+      "genericName": "pneumococcal 13-valent conjugate vaccine",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "pembrolizumab",
+      "genericName": "pembrolizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9333c79b-d487-4538-a9f0-71b91a02b287",
+        "fda": true
+      },
+      "sourceOverride": {
+        "reason": "Bounded acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    },
+    {
+      "slug": "penpulimab",
+      "genericName": "penpulimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "ponatinib",
+      "genericName": "ponatinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "propofol",
+      "genericName": "propofol",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9ba70032-40c2-41c5-9f99-d1f94032d3dc"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "prourokinase",
+      "genericName": "recombinant human prourokinase",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "retifanlimab",
+      "genericName": "retifanlimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "rivaroxaban",
+      "genericName": "rivaroxaban",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "rosuvastatin",
+      "genericName": "rosuvastatin",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=325a5d0e-9a72-4015-9fcd-1655fb504cee"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "ryaltris",
+      "genericName": "olopatadine / mometasone furoate",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=406be932-f00e-4c66-9dd1-c142090fe822"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "salbutamol",
+      "genericName": "albuterol sulfate",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b0a5da99-6553-4088-ae27-7fa194438340"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "semaglutide",
+      "genericName": "semaglutide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=38066bdf-66c7-4fae-9e72-a799372a6487"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "serplulimab",
+      "genericName": "serplulimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "ema": "https://www.ema.europa.eu/en/documents/overview/hetronifly-epar-medicine-overview_en.pdf"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "sintilimab",
+      "genericName": "sintilimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "sugemalimab",
+      "genericName": "sugemalimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "ema": "https://www.ema.europa.eu/en/documents/overview/cejemly-epar-medicine-overview_en.pdf"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tafluprost",
+      "genericName": "tafluprost",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=db529b54-2ac7-4020-9791-7333bbe6c90f"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tagitanlimab",
+      "genericName": "tagitanlimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "nmpa": "https://english.nmpa.gov.cn/2025-06/11/c_1101537.htm"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tildrakizumab",
+      "genericName": "tildrakizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c6a322bb-51b9-4f0e-8642-62a9682ffcde"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tirabrutinib",
+      "genericName": "tirabrutinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tirzepatide",
+      "genericName": "tirzepatide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=d2d7da5d-ad07-4228-955f-cf7e355c8cc0"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tislelizumab",
+      "genericName": "tislelizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true,
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=08ef1e3e-496f-4b0b-94ee-fbba3cc1985a"
+      },
+      "sourceOverride": {
+        "reason": "The FDA and DailyMed channels expose the same FDA-approved SPL labeling lineage, so they cannot satisfy the independent-lineage promotion gate.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    },
+    {
+      "slug": "tocilizumab",
+      "genericName": "tocilizumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2e5365ff-cb2a-4b16-b2c7-e35c6bf2de13"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "toripalimab",
+      "genericName": "toripalimab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "fda": true,
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82e7921a-1e84-4988-9799-0ad7d19b2a75"
+      },
+      "sourceOverride": {
+        "reason": "The EMA endpoint returned an untyped maintenance page, while FDA and DailyMed resolved to the same SPL lineage. Retain both public citations but block automated promotion until an independent official lineage is available.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    },
+    {
+      "slug": "tozinameran",
+      "genericName": "tozinameran",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=48c86164-de07-4041-b9dc-f2b5744714e5"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "tralokinumab",
+      "genericName": "tralokinumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=d8020b69-3001-44e2-9b5d-5f93d9aaf6e1"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "trastuzumab",
+      "genericName": "trastuzumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {},
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "travoprost",
+      "genericName": "travoprost",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4b5cffb0-74e0-44e4-8e18-f5d56e9db450"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "treprostinil",
+      "genericName": "treprostinil",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=cbc31ab1-a80f-4b50-a3b1-39910b0fb609"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "ustekinumab",
+      "genericName": "ustekinumab",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c77a9664-e3bb-4023-b400-127aa53bca2b"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "valbenazine",
+      "genericName": "valbenazine",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4c970164-cafb-421f-9eb5-c226ef0a3417"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "vosoritide",
+      "genericName": "vosoritide",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=228e8560-04a4-4bb1-a81f-29531a9e4d27"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "vutrisiran",
+      "genericName": "vutrisiran",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8db0facb-81b6-4006-9239-27dc6409c5d3"
+      },
+      "note": "Blocked until a second applicable official source is configured."
+    },
+    {
+      "slug": "zanubrutinib",
+      "genericName": "zanubrutinib",
+      "enabled": false,
+      "cadence": "weekly",
+      "minimumIndependentLineages": 2,
+      "sources": {
+        "dailymed": true,
+        "fda": true
+      },
+      "sourceOverride": {
+        "reason": "Bounded acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+        "reviewAfter": "2026-09-07",
+        "blockAutomation": true
+      },
+      "note": "Blocked by reviewed source override until an independent official lineage is available."
+    }
+  ]
+}

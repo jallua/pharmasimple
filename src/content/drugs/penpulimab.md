@@ -38,17 +38,26 @@ media:
     status: ready
 citations:
   - title: "FDA 批准 penpulimab-kcqx 用于非角化型鼻咽癌"
+    id: cite-92b6917355046967
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-penpulimab-kcqx-non-keratinizing-nasopharyngeal-carcinoma
     sourceType: regulator
   - title: "Drug Trials Snapshots:PENPULIMAB-KCQX(美国 FDA)"
+    id: cite-3436099af7f14dac
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/drug-approvals-and-databases/drug-trials-snapshots-penpulimab-kcqx
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

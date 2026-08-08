@@ -11,7 +11,7 @@ export interface RegisteredSource {
   allowedHosts: string[];
 }
 
-interface CitationIdentity {
+export interface CitationIdentity {
   url?: string;
   sourceId?: string;
 }
@@ -45,11 +45,25 @@ export function sourceForUrl(url: string | undefined): RegisteredSource | undefi
   return sources.find((source) => source.allowedHosts.some((allowed) => hostMatches(host, allowed)));
 }
 
-/** Resolve a citation only when an optional declared sourceId agrees with its URL. */
+/** Stable source identity: registry ID for known authorities, otherwise HTTPS host. */
+export function sourceIdentityForUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  const registered = sourceForUrl(url);
+  if (registered) return registered.id;
+  const host = normalizedHost(url);
+  return host ? `web:${host}` : undefined;
+}
+
+/** Every declared sourceId must be the deterministic identity for its URL. */
+export function citationSourceIdentityMatches(citation: CitationIdentity): boolean {
+  const expected = sourceIdentityForUrl(citation.url);
+  return expected !== undefined && citation.sourceId === expected;
+}
+
+/** Resolve a registered authority only when its required sourceId agrees with the URL. */
 export function resolveRegisteredSource(citation: CitationIdentity): RegisteredSource | undefined {
   const byUrl = sourceForUrl(citation.url);
-  if (!byUrl) return undefined;
-  if (citation.sourceId && citation.sourceId !== byUrl.id) return undefined;
+  if (!byUrl || citation.sourceId !== byUrl.id) return undefined;
   return byUrl;
 }
 
@@ -65,13 +79,14 @@ export function isRegisteredAuthoritativeSource(citation: CitationIdentity): boo
  * distinct official documents may corroborate different fields.
  */
 export function citationIndependenceGroup(citation: CitationIdentity): string | undefined {
+  if (!citationSourceIdentityMatches(citation)) return undefined;
   const registered = resolveRegisteredSource(citation);
   if (registered && citation.url) {
     const parsed = new URL(citation.url);
     parsed.hash = '';
     return `registered:${registered.independenceGroup}:${parsed.href}`;
   }
-  if (!citation.url || citation.sourceId) return undefined;
+  if (!citation.url) return undefined;
   const host = normalizedHost(citation.url);
   if (!host) return undefined;
   const parsed = new URL(citation.url);

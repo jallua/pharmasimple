@@ -36,17 +36,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:AMLODIPINE(氨氯地平)"
+    id: cite-60fc5aecefbd46d8
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3f4703c0-0b9e-41a0-8b70-da26683d9ed2
     sourceType: regulator
   - title: "氨氯地平(MedlinePlus,美国国立医学图书馆)"
+    id: cite-269a64cb34a91e9c
+    sourceId: us-medlineplus
     publisher: MedlinePlus(NLM)
     url: https://medlineplus.gov/druginfo/meds/a692044.html
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

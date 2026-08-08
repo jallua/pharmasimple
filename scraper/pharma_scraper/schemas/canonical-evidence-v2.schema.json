@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pharmasimple.local/schemas/canonical-evidence-v2.schema.json",
+  "title": "PharmaSimple Canonical Evidence v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "schemaVersion", "documents", "excerpts", "facts", "sourceAudit", "incomplete"],
+  "properties": {
+    "schema": {"const": "pharmasimple.canonical-evidence-v2"},
+    "schemaVersion": {"const": "2.0.0"},
+    "documents": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/document"}},
+    "excerpts": {"type": "array", "items": {"$ref": "#/$defs/excerpt"}},
+    "facts": {"type": "array", "items": {"$ref": "#/$defs/fact"}},
+    "sourceAudit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "status"],
+        "properties": {
+          "source": {"type": "string", "minLength": 1},
+          "status": {"enum": ["succeeded", "failed"]},
+          "errorType": {"type": "string"},
+          "error": {"type": "string", "maxLength": 500}
+        }
+      }
+    },
+    "incomplete": {"type": "boolean"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "entityId": {"type": "string", "pattern": "^(?:evidence|excerpt|fact)-[a-f0-9]{64}$"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jurisdiction", "subjectType", "subjectId"],
+      "properties": {
+        "jurisdiction": {"enum": ["GLOBAL", "US", "EU", "CN"]},
+        "subjectType": {"enum": ["active-ingredient", "medicinal-product"]},
+        "subjectId": {"type": "string", "minLength": 1, "maxLength": 300},
+        "productId": {"type": "string", "minLength": 1, "maxLength": 500}
+      }
+    },
+    "transformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "toolVersion", "inputSha256", "outputSha256", "locator"],
+      "properties": {
+        "operation": {"type": "string", "minLength": 1, "maxLength": 80},
+        "toolVersion": {"type": "string", "minLength": 1, "maxLength": 128},
+        "inputSha256": {"$ref": "#/$defs/sha256"},
+        "outputSha256": {"$ref": "#/$defs/sha256"},
+        "locator": {"type": "string", "minLength": 1, "maxLength": 500}
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceId", "sourceId", "sourceUrl", "documentId", "documentVersion", "lineageId", "jurisdiction", "activeIngredient", "productId", "documentType", "retrievedAt", "mediaType", "rawSha256", "rawObjectPath", "transformations"],
+      "properties": {
+        "evidenceId": {"type": "string", "pattern": "^evidence-[a-f0-9]{64}$"},
+        "sourceId": {"type": "string", "minLength": 1},
+        "sourceUrl": {"type": "string", "pattern": "^https://"},
+        "documentId": {"type": "string", "minLength": 1, "maxLength": 500},
+        "documentVersion": {"type": "string", "minLength": 1, "maxLength": 500},
+        "lineageId": {"type": "string", "minLength": 1, "maxLength": 500},
+        "jurisdiction": {"enum": ["US", "EU", "CN"]},
+        "activeIngredient": {"type": "string", "minLength": 1, "maxLength": 300},
+        "productId": {"type": "string", "minLength": 1, "maxLength": 500},
+        "documentType": {"enum": ["label", "regulatory-product"]},
+        "retrievedAt": {"type": "string", "format": "date-time"},
+        "mediaType": {"type": "string", "minLength": 1, "maxLength": 500},
+        "rawSha256": {"$ref": "#/$defs/sha256"},
+        "rawObjectPath": {"type": "string", "pattern": "^evidence/objects/[a-f0-9]{64}\\.bin$"},
+        "transformations": {"type": "array", "items": {"$ref": "#/$defs/transformation"}}
+      }
+    },
+    "excerpt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["excerptId", "evidenceId", "locator", "text", "purpose"],
+      "properties": {
+        "excerptId": {"type": "string", "pattern": "^excerpt-[a-f0-9]{64}$"},
+        "evidenceId": {"type": "string", "pattern": "^evidence-[a-f0-9]{64}$"},
+        "locator": {"type": "string", "minLength": 1, "maxLength": 500},
+        "text": {"type": "string", "minLength": 1, "maxLength": 50000},
+        "purpose": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    },
+    "assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["factKey", "predicate", "value", "scope", "sourceId", "lineageId", "evidenceId"],
+      "properties": {
+        "factKey": {"type": "string", "minLength": 1, "maxLength": 500},
+        "predicate": {"enum": ["identity.genericName", "product.brandName", "product.authorizationHolder", "pharmacology.class", "pharmacology.targetHint", "product.approvedIndication"]},
+        "value": {},
+        "scope": {"$ref": "#/$defs/scope"},
+        "sourceId": {"type": "string", "minLength": 1},
+        "lineageId": {"type": "string", "minLength": 1, "maxLength": 500},
+        "evidenceId": {"type": "string", "pattern": "^evidence-[a-f0-9]{64}$"},
+        "excerptId": {"type": "string", "pattern": "^excerpt-[a-f0-9]{64}$"}
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "factId", "factKey", "predicate", "value", "scope", "status", "assertions", "resolutionHash"],
+      "properties": {
+        "schemaVersion": {"const": 2},
+        "factId": {"type": "string", "pattern": "^fact-[a-f0-9]{64}$"},
+        "factKey": {"type": "string", "minLength": 1, "maxLength": 500},
+        "predicate": {"type": "string", "minLength": 1},
+        "value": {},
+        "scope": {"$ref": "#/$defs/scope"},
+        "status": {"enum": ["verified", "conflicted", "blocked", "stale"]},
+        "assertions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assertion"}},
+        "resolutionHash": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

@@ -25,6 +25,8 @@ const pathname =
   rawPathname === '/' || rawPathname.endsWith('/') || /\.[^/]+$/.test(rawPathname)
     ? rawPathname
     : `${rawPathname}/`;
+const isCurrentNav = (href: string) =>
+  href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href);
 let canonicalURL: string | undefined;
 try {
   canonicalURL = Astro.site ? new URL(pathname, Astro.site).href : undefined;
@@ -97,7 +99,9 @@ const structuredDataJson = JSON.stringify(structuredData)
     <a class="skip-link" href="#main-content">{t(locale, 'a11y.skipToContent')}</a>
     <header>
       <nav class="site-nav" aria-label={t(locale, 'nav.label')}>
-        <a href="/" class="site-title">{t(locale, 'site.title')}</a>
+        <a href="/" class="site-title" aria-current={isCurrentNav('/') ? 'page' : undefined}>
+          {t(locale, 'site.title')}
+        </a>
         <button
           id="nav-toggle"
           class="nav-toggle"
@@ -109,10 +113,10 @@ const structuredDataJson = JSON.stringify(structuredData)
           <span class="nav-toggle__icon" aria-hidden="true"></span>
         </button>
         <ul id="primary-nav" class="nav-links">
-          <li><a href="/drugs/">{t(locale, 'nav.drugs')}</a></li>
-          <li><a href="/companies/">{t(locale, 'nav.companies')}</a></li>
-          <li><a href="/search/">{t(locale, 'nav.search')}</a></li>
-          <li><a href="/about/">{t(locale, 'nav.about')}</a></li>
+          <li><a href="/companies/" aria-current={isCurrentNav('/companies/') ? 'page' : undefined}>{t(locale, 'nav.companies')}</a></li>
+          <li><a href="/drugs/" aria-current={isCurrentNav('/drugs/') ? 'page' : undefined}>{t(locale, 'nav.drugs')}</a></li>
+          <li><a href="/search/" aria-current={isCurrentNav('/search/') ? 'page' : undefined}>{t(locale, 'nav.search')}</a></li>
+          <li><a href="/about/" aria-current={isCurrentNav('/about/') ? 'page' : undefined}>{t(locale, 'nav.about')}</a></li>
         </ul>
         <button
           id="theme-toggle"

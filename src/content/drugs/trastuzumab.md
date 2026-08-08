@@ -41,17 +41,26 @@ media:
     status: ready
 citations:
   - title: "Trastuzumab(NCBI Bookshelf)"
+    id: cite-cbba7d926b5a728f
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK532246/
     sourceType: gov
   - title: "曲妥珠单抗(美国国家癌症研究所 NCI)"
+    id: cite-de2cad21566ef7a2
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://dctd.cancer.gov/drug-discovery-development/reagents-materials/formulary/about/agents/trastuzumab
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

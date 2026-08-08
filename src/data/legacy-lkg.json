@@ -1,0 +1,314 @@
+{
+  "version": 1,
+  "snapshotId": "legacy-lkg-2026-08-08",
+  "capturedAt": "2026-08-08",
+  "migrationDeadline": "2027-02-07",
+  "entries": {
+    "acalabrutinib": {
+      "contentDigest": "sha256:b0a98e790fb75ce6f93ae1996993096ea2451dcfd3afb06f033a24160221a101"
+    },
+    "acarbose": {
+      "contentDigest": "sha256:6b730bcd7a586ec780c2c6e6c2f67e66ba2ff620da9f222df38392c8351ebce4"
+    },
+    "adalimumab": {
+      "contentDigest": "sha256:41a75a168216dfc5f9c7479454d9262b82a89f813c79dd9aba81b5d420369dd8"
+    },
+    "adapalene": {
+      "contentDigest": "sha256:928bfa39e8c55cf3ff883a09fdf4c8f535583a886d85d4cefc669392e7f557f0"
+    },
+    "albutrepenonacog-alfa": {
+      "contentDigest": "sha256:48b14a0b6d9b81eefc0ec8da0962bed0dbc7e78efaa044a54bc9f14c0b233d42"
+    },
+    "amlodipine": {
+      "contentDigest": "sha256:7214e3ded8d9ba49767de5f6642cedc7b18c905abd40a22ab3aa8539c91f990f"
+    },
+    "amoxicillin": {
+      "contentDigest": "sha256:27bbaf7fcd6a45d38fb56d87c107d6cf1f22aa30aabbf7ef3024e716377f2714"
+    },
+    "anlotinib": {
+      "contentDigest": "sha256:ff6aebf2333188b1919fdc00ebce481d0142509307f59148d228229a286e1f68"
+    },
+    "apixaban": {
+      "contentDigest": "sha256:c8363e4379e9dc6037dc68f58b8b34366d2fb3894465d2ccbe1d091d9a7159c3"
+    },
+    "aripiprazole": {
+      "contentDigest": "sha256:8c661dfce7e5da64e3a58370494f4686db7c9dd91d63a00101716ab630bcdc8b"
+    },
+    "asparaginase-erwinia": {
+      "contentDigest": "sha256:d1cb9311f3979b3517fee64fa606196f048dd69b3056fce11a832db8100c57fc"
+    },
+    "aspirin": {
+      "contentDigest": "sha256:528f2a7e8073399cb1523bf4f44137ccb69f49a84d5c09527a58f277e9b779bc"
+    },
+    "atorvastatin": {
+      "contentDigest": "sha256:eb0555baf688948dc1c218883483ca437b72df37ea2d52ffc6dd4cef5e9b36c7"
+    },
+    "bictegravir": {
+      "contentDigest": "sha256:2f20458bb0c64eac95c63a48c70466576c6533e12a8d7e193a5655b4e0ee42f9"
+    },
+    "brexpiprazole": {
+      "contentDigest": "sha256:ff3950becf0c2049abfb8339e9cb98ed53c87c996cefe15b082147257fb08bb0"
+    },
+    "burosumab": {
+      "contentDigest": "sha256:f13bb45e8a60a0b5bdd74e56025ef730e5462aecb886d28452e114265269f601"
+    },
+    "cabozantinib": {
+      "contentDigest": "sha256:5b5fb71f02965915908cbd8319269ab9bc38883b3524c281a708147452fe876c"
+    },
+    "camrelizumab": {
+      "contentDigest": "sha256:411d23401ed1a461499a5863d802908311c60c9d7085e338a6b98bf8c5d345de"
+    },
+    "cefuroxime": {
+      "contentDigest": "sha256:0a936c311e7977a4f2f57cb8090f2dc9ddd4de0bf2518b0fba0296c03d3349b8"
+    },
+    "cemiplimab": {
+      "contentDigest": "sha256:6216d1873573828e827e76314b87f25828c995ae37e4e1399349a5330e788b7e"
+    },
+    "cenobamate": {
+      "contentDigest": "sha256:843805d79037e768c05df6a5e6559632d74b9e47dea0ba9aebce8f6d49f9ef38"
+    },
+    "cephalexin": {
+      "contentDigest": "sha256:3d534162a9aa5847a0755986b1fc2df00e4b691d053827c1a1b758c16838b5cf"
+    },
+    "certolizumab-pegol": {
+      "contentDigest": "sha256:c5c07b2cc47fbcae80782a825c5a91e1e55edd0e897896da396bef0b1aa813ac"
+    },
+    "cetuximab": {
+      "contentDigest": "sha256:29c81880a98b5255b333c4044e278f02038ea2910ba60375bbdc42a49a8df975"
+    },
+    "chidamide": {
+      "contentDigest": "sha256:9f6975fc42df9e0f802a70e1da1b983f1a711b4ad3ae74b14bc9bc5a360e0ddc"
+    },
+    "convidecia": {
+      "contentDigest": "sha256:2dab518f1b70ce524a68a08dda116a0f5adb9bded9c01dcf36f494b1da2cf9dd"
+    },
+    "darolutamide": {
+      "contentDigest": "sha256:3baf799215fec85193dfd42c15e5349f464f0f0e48580241bab54a26c34e8587"
+    },
+    "desmopressin": {
+      "contentDigest": "sha256:66cfa6aa46ab2354464ad2019600b752b8e9cdaf20da472d9a5f5eb623ac3f7a"
+    },
+    "disitamab-vedotin": {
+      "contentDigest": "sha256:7534d047028638a544eac9ada6dcb745c693e24b53cddd1ae1f90068850ccb25"
+    },
+    "dostarlimab": {
+      "contentDigest": "sha256:20686748f99b4a8ef32ec7b74c5023a71aef251f056e96114919d0aec7a4e750"
+    },
+    "dupilumab": {
+      "contentDigest": "sha256:ac7408d14842839b44e3655fea062c312b71c8f0b642ab92aada8c0e69bfb8f9"
+    },
+    "edoxaban": {
+      "contentDigest": "sha256:4b7170abd0bea8e9334f9463ffd3279587843c404a329a48bebac73ba2a6a739"
+    },
+    "eflapegrastim": {
+      "contentDigest": "sha256:c0867650953ea1d285f71d5625aed545fddd9b608f6fada91ff5aa5f0399492c"
+    },
+    "elacestrant": {
+      "contentDigest": "sha256:16106e38733cc196d2c3f1ee0673a9740c0f12759ec9dfda68fd6a5e0fcb61ae"
+    },
+    "elasomeran": {
+      "contentDigest": "sha256:4edc45da445a5623143a67c37d5eda18482efedda619bb10d1950064aaff6720"
+    },
+    "elexacaftor-tezacaftor-ivacaftor": {
+      "contentDigest": "sha256:d1579f720c391823a54307752247140d341dc55f3e6aab2dd658bec35c01b4f6"
+    },
+    "empagliflozin": {
+      "contentDigest": "sha256:2c99bfdef605992513034009113c231f53d56ed0afcb86643f31f4c1b868fed5"
+    },
+    "enalapril": {
+      "contentDigest": "sha256:a76ab28ea52e551e9d195cba5c1b259fe8a6bf03fe621c6f6f9f546fdf61f1ad"
+    },
+    "enzalutamide": {
+      "contentDigest": "sha256:97da6f7ea4493041078b2e7c1ed81b2baa3fb271841f9b451c69b7959be2fadc"
+    },
+    "etanercept": {
+      "contentDigest": "sha256:3c2a496cac3d50bc65bed2230922045dc6b4c52dd9d68737efd7ae6a9a79d5d2"
+    },
+    "etonogestrel": {
+      "contentDigest": "sha256:81bd57cb7959b2332f877b9bc60eca6da34faa021d46a81c7f16a5dc018d687f"
+    },
+    "flumatinib": {
+      "contentDigest": "sha256:09f7e37e9d073988baae8664a245fdef620968a9a18fee7ba35d43493481ae52"
+    },
+    "formoterol": {
+      "contentDigest": "sha256:46da0be0a98694c34183091f73a55ecc8eaf5d6a4ed360c05cefe5537aebb9dc"
+    },
+    "fremanezumab": {
+      "contentDigest": "sha256:8ebc38d35b4572ac2bf5a56b25e710f888fc120c742f7c9e82f4a76653a567e3"
+    },
+    "fruquintinib": {
+      "contentDigest": "sha256:cf77dfac3a758f76acdca3d43646f5d858e8b41a6adb9615d83568172d2dcb14"
+    },
+    "ibrutinib": {
+      "contentDigest": "sha256:f4cb572e53fed4bbcfb49819f5d3c9894561b3fb1f7a228e486ff8e4abab41c4"
+    },
+    "icotinib": {
+      "contentDigest": "sha256:b2ebbbc36c9add9a0d95960a6195ad0be67128e12169195e26b5811b07655814"
+    },
+    "ilaprazole": {
+      "contentDigest": "sha256:2159ca2d1db2c84d624e77b08ed112e8a2bbf1952d8d3e67115c1b03fe37eb26"
+    },
+    "imatinib": {
+      "contentDigest": "sha256:c1b3edbbf140e288d5f012ffabc99bb6d4158af54fed9e3aa6200913b2f35970"
+    },
+    "immune-globulin": {
+      "contentDigest": "sha256:aef8faad35c2dafe04ba049e689a58a72e592e5007d8febc8450153a70176db2"
+    },
+    "inetetamab": {
+      "contentDigest": "sha256:400ab08e058fdbb8fbd4c3cbce08125dd105b89855c12172486edc865f29207f"
+    },
+    "infliximab": {
+      "contentDigest": "sha256:db52f26a39a4f7682470f9b9e5e070b3709e816c8493f8c5438b246a84f69519"
+    },
+    "insulin-glargine": {
+      "contentDigest": "sha256:b1808d8caacdc70589b8419251d60563d79457f0110921bbd23d41a1db994978"
+    },
+    "iruplinalkib": {
+      "contentDigest": "sha256:0f3218ec430c6c2bbe3d18ec154b0ced80625d788039f2b3079da9971aaed949"
+    },
+    "ivosidenib": {
+      "contentDigest": "sha256:6f9f6ec3750371d8e16e6a655e13091461de8fda3ff8b693ca704d3bf99185d2"
+    },
+    "lebrikizumab": {
+      "contentDigest": "sha256:fb6c614c3d9f151d5fcb18f05bc8ce470dde14f784a27495f7f3b18a80d35827"
+    },
+    "lenvatinib": {
+      "contentDigest": "sha256:7f74ea87707e01c82f1b21cbf1afb5d131ecdc8243169eb0a357f5896de7c1f7"
+    },
+    "lurasidone": {
+      "contentDigest": "sha256:46be7c72e9eb5bca6d94d8244bda0a5c2ad109c1db250eb60aeb70dcc05f608d"
+    },
+    "metformin": {
+      "contentDigest": "sha256:89cab22c496f52454e4f506ebea7cc65ca76a2febc52581a15b4b29e6d3e7f15"
+    },
+    "natalizumab": {
+      "contentDigest": "sha256:424a0303e70bf6c5a9ac39ad356132f1ce665f478e4aae9e90b36f7f519fb203"
+    },
+    "nefecon": {
+      "contentDigest": "sha256:99186acbc1fb9e77f762c0436f41fa08dc921c942740ec5c820cb7612d0cd599"
+    },
+    "niraparib": {
+      "contentDigest": "sha256:70eeaa7c8919fd37b574b0e7b8610309a809aab7a623e79e2656af3b3bf6c910"
+    },
+    "nivolumab": {
+      "contentDigest": "sha256:49c1f9d530c741116c0053f19f50e94dc6953fd36881f37167c406d5dc66aeaa"
+    },
+    "nusinersen": {
+      "contentDigest": "sha256:cad0256312341bf20e08efe5f3cdcc32ce907f808338344890db22dafe534ee6"
+    },
+    "omeprazole": {
+      "contentDigest": "sha256:dbb380b79c0a875182b71d022bbb4f18ac893b67ffedf8071110353f27db774e"
+    },
+    "orelabrutinib": {
+      "contentDigest": "sha256:d868fd31f275f077393c150efd2a8c666650c1e95045159440425b187aea299d"
+    },
+    "osilodrostat": {
+      "contentDigest": "sha256:79ec3953b28e089684d55f6bbab56ca585454e5c508b7126f7fbb748f16802f1"
+    },
+    "palbociclib": {
+      "contentDigest": "sha256:243759f385e66a7bd84087177a4a9babfe12f7bc197a2e3b50d04d52e650a56d"
+    },
+    "pantoprazole": {
+      "contentDigest": "sha256:e091205cb310c632daab8d8e44a9d9c477f8780dfcb80a89a606e99bd361a86e"
+    },
+    "pcv13": {
+      "contentDigest": "sha256:04bec4624c46482e010089a7f2f1617b171f8fc1134bde57c15019c097c81e07"
+    },
+    "pembrolizumab": {
+      "contentDigest": "sha256:f10f5fbd3856fe96d461eed326aa40ac0f35e0350059b96a9e32fa3885dba4a2"
+    },
+    "penpulimab": {
+      "contentDigest": "sha256:0657c02d0ec6df41c687231e267adcb7b7461e31ffd66032c812503d1bed80b6"
+    },
+    "ponatinib": {
+      "contentDigest": "sha256:097160e2b067c906359df6e9d7026a459a8a4aa89e6d80a0333c1e8ef69a193d"
+    },
+    "propofol": {
+      "contentDigest": "sha256:89e398b9065c8e9d14b8c40dad6358ee9699433ab6ff53c9579fbe164dcf9cae"
+    },
+    "prourokinase": {
+      "contentDigest": "sha256:c9f3051f633681fa0a425b6e371c556aa251df699c4e8109abe1cb79daafec2e"
+    },
+    "retifanlimab": {
+      "contentDigest": "sha256:621b395a0a625ba8e1611cd00dfafede32eedcb630f5649667b858f9364fb2d0"
+    },
+    "rivaroxaban": {
+      "contentDigest": "sha256:4c131eca921650e024d1c066a0c6a2558a8fa53fdb6d6c3cbeca9e87bca49fb3"
+    },
+    "rosuvastatin": {
+      "contentDigest": "sha256:3bf21183e11622af024ade75e44cfcae66b94328c16558bfaf55c0b48a78bdf7"
+    },
+    "ryaltris": {
+      "contentDigest": "sha256:b4a75023accf146c30b4c4e58c178fb3c2925179954b97be6cd31e3b41498e00"
+    },
+    "salbutamol": {
+      "contentDigest": "sha256:ea7302b1b1995071a369f94ede4aad95448f3353e95901db8ea43b8f0bac18ff"
+    },
+    "semaglutide": {
+      "contentDigest": "sha256:b097309b32a1b148cedaa949a6103489c329635246e3af627485d0d569428db2"
+    },
+    "serplulimab": {
+      "contentDigest": "sha256:6cc10807ec803ff6fa2b43ca56f27258ab0a27cdd55d0d482c73f1dcaca8069b"
+    },
+    "sintilimab": {
+      "contentDigest": "sha256:1ee42e953266128271e0f11d4c2782cecc98fc891bb8e049e67dcd5085cf9344"
+    },
+    "sugemalimab": {
+      "contentDigest": "sha256:5029fbe01285aeadf73a9a0188be85520b8173a684c57a6d6021e9fba067be90"
+    },
+    "tafluprost": {
+      "contentDigest": "sha256:761d8391e96542c1de9fd4329b9a4afb8b21a44d0481b4636446708ec54fb93a"
+    },
+    "tagitanlimab": {
+      "contentDigest": "sha256:513559342e978ea5bae9034570c2facc236ac1949c3f01a6de77271af35ef4a9"
+    },
+    "tildrakizumab": {
+      "contentDigest": "sha256:1a98d56226222af713dc14c96f70c2f0e72f4087631a698fd9d55f3b4012b5b0"
+    },
+    "tirabrutinib": {
+      "contentDigest": "sha256:d8b1470a44de17122e2811aa186c346d4d34e841e53bf10a0db22da49c781393"
+    },
+    "tirzepatide": {
+      "contentDigest": "sha256:0eb29042b2e287ba06660b86f92914fcfc06654594c82d57e619883cdecfa218"
+    },
+    "tislelizumab": {
+      "contentDigest": "sha256:57b3cb4edf45a44285e4f15175e1ce49cf62346d7592b86201ecfb3ef67893d8"
+    },
+    "tocilizumab": {
+      "contentDigest": "sha256:85418e4a21cf0424b174d72e5b9d87b616d5eb8107a680da0eb56bd7645e5044"
+    },
+    "toripalimab": {
+      "contentDigest": "sha256:39779dcd86d5bce4d9c45adbe6dfd9a184ab839227146175be9e6ca4fa8bbe14"
+    },
+    "tozinameran": {
+      "contentDigest": "sha256:a7d354e41475eafcb09b9729cb338d87e997b51845e38d8b629dd1fece18e5a9"
+    },
+    "tralokinumab": {
+      "contentDigest": "sha256:cd7658ee99bf3e569abda75bf3aedc03b968077641267c447ffa9fb49c51d6b2"
+    },
+    "trastuzumab": {
+      "contentDigest": "sha256:a6456d1178e77cc295d2d0e8904c93b3bb20b7139244d0c0200ee20fd77301e8"
+    },
+    "travoprost": {
+      "contentDigest": "sha256:4c4a33993912980261ddb6269e2e19372431faebbca1c833daac712da92ec481"
+    },
+    "treprostinil": {
+      "contentDigest": "sha256:949cb9295f3227196761a2d2f6ff6351796d8ae5ff8254fcebeddce8180d3896"
+    },
+    "ustekinumab": {
+      "contentDigest": "sha256:c729f37397da1cafd1e054ed598d07819174b4e03fbdf25da18ac0ee505f2d70"
+    },
+    "valbenazine": {
+      "contentDigest": "sha256:a33867b0d1e946d385a55938a4ec5b99edf873df62963357e2323e364480ed7b"
+    },
+    "vosoritide": {
+      "contentDigest": "sha256:4ccbcdc1071fe94799fc9792d26ac99366b2134ad83f2a3774095cd43099166a"
+    },
+    "vutrisiran": {
+      "contentDigest": "sha256:e23b2895d659ac1d5ff2fcd18b6a59a9cf5a59915737c95ea74334326bf8ec1f"
+    },
+    "zanubrutinib": {
+      "contentDigest": "sha256:255a085f5e0450946d22cc7c6a3beda24285c317a0f08888c6ed323fd3976ed2"
+    }
+  }
+}

@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "Disitamab Vedotin(美国国家癌症研究所 NCI)"
+    id: cite-78d58530452b0ea2
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/research/participate/clinical-trials/intervention/C169918
     sourceType: gov
   - title: "A Study of Disitamab Vedotin in Previously Treated Solid Tumors That Express HER2(NCI)"
+    id: cite-1b4f08615fcbae98
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/clinicaltrials/NCI-2023-08584
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

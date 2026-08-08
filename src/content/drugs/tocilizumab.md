@@ -47,17 +47,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ACTEMRA(托珠单抗)"
+    id: cite-2229792f7189cdf4
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2e5365ff-cb2a-4b16-b2c7-e35c6bf2de13
     sourceType: regulator
   - title: "Tocilizumab(NCBI Bookshelf)"
+    id: cite-033e6e53a9da4aca
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK548243/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

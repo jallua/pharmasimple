@@ -154,9 +154,10 @@ main > * + * {
 }
 
 /* ===========================================================================
- * Header / navigation (sticky, white, bordered).
+ * Site header / navigation (sticky, white, bordered).
+ * Scope to the direct child of <body> so article headers never become sticky.
  * ======================================================================== */
-header {
+body > header {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -166,7 +167,7 @@ header {
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 }
-header nav {
+body > header nav {
   max-width: var(--container);
   margin-inline: auto;
   padding: 0.7rem var(--gutter);
@@ -187,7 +188,7 @@ header nav {
 .site-title:hover {
   color: var(--brand-hover);
 }
-header nav ul {
+body > header nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -196,7 +197,7 @@ header nav ul {
   gap: clamp(0.75rem, 2vw, 1.6rem);
   flex-wrap: wrap;
 }
-header nav ul a {
+body > header nav ul a {
   display: inline-block;
   color: var(--text);
   font-weight: 600;
@@ -206,7 +207,7 @@ header nav ul a {
   border-bottom: 2px solid transparent;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
-header nav ul a:hover {
+body > header nav ul a:hover {
   color: var(--brand-strong);
   border-bottom-color: var(--brand);
 }
@@ -325,732 +326,6 @@ a.card:focus-visible,
   border-radius: var(--radius);
   padding: 1.75rem 1.5rem;
   text-align: center;
-}
-
-/* ===========================================================================
- * Home page.
- * ======================================================================== */
-.hero {
-  text-align: center;
-  background: linear-gradient(180deg, var(--brand-50) 0%, var(--surface) 100%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
-}
-.hero h1 {
-  font-size: clamp(1.9rem, 4.8vw, 2.9rem);
-  margin-bottom: 0.5rem;
-}
-.hero__tagline {
-  max-width: 44rem;
-  margin: 0 auto;
-  color: var(--text);
-  font-size: clamp(1.02rem, 2.2vw, 1.2rem);
-}
-
-.home-search {
-  text-align: center;
-}
-.home-search > h2 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-}
-.pagefind-search-wrapper {
-  max-width: 42rem;
-  margin-inline: auto;
-  text-align: left;
-}
-/* Theme the runtime Pagefind default UI to match the brand. */
-.pagefind-search {
-  --pagefind-ui-primary: var(--brand-strong);
-  --pagefind-ui-text: var(--text);
-  --pagefind-ui-background: var(--surface);
-  --pagefind-ui-border: var(--border);
-  --pagefind-ui-tag: var(--brand-50);
-  --pagefind-ui-border-width: 1px;
-  --pagefind-ui-border-radius: 10px;
-  --pagefind-ui-font: var(--font-sans);
-}
-
-/* Section headings that lead a grid get a small brand accent bar. */
-.featured > h2,
-.by-class > h2,
-.home-entries > h2,
-.drug-class-group__title {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 1.35rem;
-}
-.featured > h2::before,
-.by-class > h2::before,
-.home-entries > h2::before,
-.drug-class-group__title::before {
-  content: "";
-  width: 0.3rem;
-  height: 1.1em;
-  border-radius: var(--radius-pill);
-  background: var(--brand);
-}
-
-.featured__lead {
-  margin: -0.2rem 0 1rem;
-  color: var(--muted-strong);
-}
-
-/* Featured drugs + browse entries share a responsive card grid. */
-.featured__list,
-.home-entries ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
-}
-
-.featured__card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  height: 100%;
-}
-.featured__name {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-.featured__brand {
-  color: var(--muted-strong);
-  font-size: 0.92rem;
-}
-.featured__card .chip {
-  align-self: flex-start;
-  margin-top: 0.1rem;
-}
-.featured__summary {
-  color: var(--text);
-  font-size: 0.95rem;
-  margin-top: 0.15rem;
-}
-.featured__cta {
-  margin-top: auto;
-  padding-top: 0.5rem;
-  color: var(--brand-strong);
-  font-weight: 600;
-  font-size: 0.92rem;
-}
-a.card:hover .featured__cta {
-  color: var(--brand-hover);
-}
-
-/* Browse entry cards (公司 / 关于). */
-.home-entries a {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  height: 100%;
-}
-.home-entries__title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-.home-entries__desc {
-  color: var(--muted-strong);
-  font-size: 0.95rem;
-}
-
-/* Browse-by-mechanism-class chips (home) — a wrap of interactive brand chips. */
-.by-class__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-a.by-class__chip {
-  font-size: 0.95rem;
-  padding: 0.4em 1em;
-  text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-a.by-class__chip:hover,
-a.by-class__chip:focus-visible {
-  background: var(--brand-200);
-  color: var(--brand-hover);
-  border-color: var(--brand);
-}
-
-/* ===========================================================================
- * Drugs index — drug-class groups reuse the .drug-list card grid.
- * ======================================================================== */
-.drugs-index__lead {
-  color: var(--muted-strong);
-}
-.drug-class-group + .drug-class-group {
-  margin-top: 2rem;
-}
-.drug-list__summary {
-  margin: 0;
-  color: var(--muted-strong);
-  font-size: 0.92rem;
-}
-
-/* ===========================================================================
- * Drug page.
- * ======================================================================== */
-.drug__header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.drug__name {
-  font-size: clamp(1.8rem, 4vw, 2.3rem);
-  margin: 0;
-}
-.drug__brand {
-  color: var(--muted-strong);
-  font-size: 1.05rem;
-  margin: 0;
-}
-.drug__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.2rem;
-}
-.drug__summary {
-  margin: 0.4rem 0 0;
-  font-size: 1.08rem;
-  color: var(--text);
-}
-
-/* Indications rendered as a checklist of pills. */
-.drug__indications ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-.drug__indications li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  padding: 0.4em 0.95em;
-  font-size: 0.95rem;
-  color: var(--text);
-}
-.drug__indications li::before {
-  content: "✓";
-  color: var(--brand-strong);
-  font-weight: 800;
-}
-
-/* Region-grouped indications: a header per regulatory region, then that
-   region's checklist (the ✓ pills above), and a closing note. */
-.drug__indication-group {
-  margin-top: 1.1rem;
-}
-.drug__indication-group:first-of-type {
-  margin-top: 0.4rem;
-}
-.drug__indication-region {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem;
-  margin: 0 0 0.55rem;
-  font-size: 1rem;
-  color: var(--ink);
-}
-.drug__indication-asof {
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--muted);
-}
-.drug__indications-note {
-  margin: 1.1rem 0 0;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--muted);
-}
-
-/* Target rendered as an info card. */
-.drug__target {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 1.2rem 1.35rem;
-}
-.drug__target-name {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0 0 0.5rem;
-}
-.drug__target-name strong {
-  font-size: 1.15rem;
-  color: var(--ink);
-}
-.drug__target-role {
-  margin: 0;
-  color: var(--text);
-}
-
-/* ===========================================================================
- * MechanismLayers — three visually distinct layers.
- * ======================================================================== */
-.mechanism__heading {
-  font-size: 1.4rem;
-}
-.mechanism__layer + .mechanism__layer {
-  margin-top: 1rem;
-}
-.mechanism__text {
-  margin: 0;
-}
-
-/* analogy: highlighted callout with a 💡 marker + brand left border. */
-.mechanism__layer--analogy {
-  background: var(--brand-50);
-  border: 1px solid var(--brand-100);
-  border-left: 4px solid var(--brand);
-  border-radius: var(--radius);
-  padding: 1rem 1.2rem;
-}
-.mechanism__layer--analogy .mechanism__label {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0 0 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.mechanism__layer--analogy .mechanism__label::before {
-  content: "💡";
-  font-size: 1.05rem;
-}
-.mechanism__layer--analogy .mechanism__text {
-  font-size: 1.08rem;
-  font-weight: 500;
-  color: var(--ink);
-}
-
-/* simple: clean card. */
-.mechanism__layer--simple {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 1rem 1.2rem;
-}
-.mechanism__layer--simple .mechanism__label {
-  margin: 0 0 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--muted-strong);
-}
-
-/* advanced: plain, always-visible card with a subtly distinct neutral tint so
-   it reads as the "deeper" layer without hiding behind a collapse. Its label is
-   styled like the simple layer's label. */
-.mechanism__layer--advanced {
-  background: var(--surface-2); /* subtly distinct from white simple card + page bg */
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.2rem;
-}
-.mechanism__layer--advanced .mechanism__label {
-  margin: 0 0 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--muted-strong);
-}
-.mechanism__layer--advanced .mechanism__text {
-  color: var(--text);
-}
-
-/* ===========================================================================
- * MechanismMedia — the animation is the framed centerpiece.
- * ======================================================================== */
-.mechanism-media__item {
-  margin: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  padding: clamp(1rem, 3vw, 2rem);
-  text-align: center;
-}
-.mechanism-media__item + .mechanism-media__item {
-  margin-top: 1.5rem;
-}
-.mechanism-media__image {
-  border-radius: var(--radius);
-}
-.mechanism-media__caption {
-  margin-top: 1rem;
-  color: var(--muted-strong);
-  font-size: 0.9rem;
-  text-align: center;
-}
-.media-placeholder {
-  display: grid;
-  place-items: center;
-  min-height: 12rem;
-  padding: 1.5rem;
-  background: var(--brand-50);
-  border: 2px dashed var(--brand-200);
-  border-radius: var(--radius);
-  color: var(--muted-strong);
-}
-.media-placeholder__text {
-  font-weight: 600;
-}
-
-/* ===========================================================================
- * Citations — clean ordered list with an external-link affordance.
- * ======================================================================== */
-.citations__heading {
-  font-size: 1.4rem;
-}
-.citations__list {
-  list-style: decimal;
-  margin: 0;
-  padding-left: 1.5rem;
-  display: grid;
-  gap: 0.55rem;
-}
-.citations__item {
-  color: var(--text);
-  padding-left: 0.25rem;
-}
-.citations__item a {
-  color: var(--brand-strong);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-}
-.citations__item a:hover {
-  color: var(--brand-hover);
-  border-bottom-color: currentColor;
-}
-.citations__item a[target="_blank"]::after {
-  content: "↗";
-  margin-left: 0.25em;
-  font-size: 0.85em;
-  color: var(--muted);
-}
-
-/* ===========================================================================
- * Disclaimer — prominent warning callout.
- * ======================================================================== */
-.disclaimer--prominent {
-  background: var(--warn-bg);
-  border: 1px solid var(--warn-border);
-  border-left: 5px solid var(--warn-border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-}
-.disclaimer--prominent .disclaimer__title {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--warn-ink);
-  font-weight: 800;
-  font-size: 1.02rem;
-  margin-bottom: 0.35rem;
-}
-.disclaimer--prominent .disclaimer__title::before {
-  content: "⚠";
-  font-size: 1.05rem;
-}
-.disclaimer--prominent .disclaimer__body {
-  margin: 0;
-  color: var(--warn-ink);
-}
-
-/* ===========================================================================
- * Companies index + detail — responsive grids of cards.
- * ======================================================================== */
-.company-list,
-.drug-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
-}
-.company-list__item,
-.drug-list__item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 1.2rem 1.3rem;
-  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
-}
-.company-list__item:hover,
-.company-list__item:focus-within,
-.drug-list__item:hover,
-.drug-list__item:focus-within {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-  border-color: var(--brand-200);
-}
-.company-list__link,
-.drug-list__item a {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--brand-strong);
-  text-decoration: none;
-}
-.company-list__link:hover,
-.drug-list__item a:hover {
-  color: var(--brand-hover);
-}
-.company-list__summary {
-  margin: 0;
-  color: var(--muted-strong);
-  font-size: 0.95rem;
-}
-.company-list__item .badge--prep {
-  align-self: flex-start;
-}
-
-/* Company detail meta. */
-.back-link {
-  margin: 0;
-}
-.back-link a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  color: var(--brand-strong);
-  font-weight: 600;
-  text-decoration: none;
-}
-.back-link a:hover {
-  color: var(--brand-hover);
-}
-.company__country {
-  margin: 0.4rem 0 0;
-  color: var(--muted-strong);
-  font-size: 0.95rem;
-}
-.company__summary {
-  margin: 0.9rem 0 0;
-  font-size: 1.08rem;
-  color: var(--text);
-  max-width: var(--reading);
-}
-.company__drugs {
-  margin-top: 2.25rem;
-}
-.company__drugs > h2 {
-  font-size: 1.4rem;
-}
-
-/* ===========================================================================
- * About page.
- * ======================================================================== */
-.reading section p {
-  color: var(--text);
-}
-
-/* ===========================================================================
- * Accessibility affordances (preserved from the original file, unchanged).
- * ======================================================================== */
-
-/* Visible focus indicator for keyboard users on every interactive element
- * (links, buttons, summaries, form controls, and the focusable <main>). */
-a:focus-visible,
-button:focus-visible,
-summary:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-/* The focusable <main> receives focus after activating the skip link; it should
- * not draw a persistent outline when focused programmatically (not via keyboard). */
-main:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* Screen-reader-only: visually hidden but available to assistive tech. */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Skip-to-content link: off-screen until focused, then pinned to the top-left
- * so a keyboard user can jump straight to <main>. */
-.skip-link {
-  position: absolute;
-  left: 0.5rem;
-  top: -3rem;
-  z-index: 1000;
-  padding: 0.5rem 0.9rem;
-  background: var(--color-bg);
-  color: var(--color-link);
-  border: 2px solid var(--color-focus);
-  border-radius: 0 0 4px 4px;
-  transition: top 0.15s ease-in-out;
-}
-
-.skip-link:focus {
-  top: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .skip-link {
-    transition: none;
-  }
-  /* Neutralize the card lift/hover motion for users who prefer reduced motion. */
-  a.card,
-  .card--interactive,
-  .company-list__item,
-  .drug-list__item,
-  a.by-class__chip,
-  header nav ul a {
-    transition: none;
-  }
-  a.card:hover,
-  .card--interactive:hover,
-  .company-list__item:hover,
-  .drug-list__item:hover {
-    transform: none;
-  }
-}
-
-/* ===========================================================================
- * Home "按作用机制浏览" — therapeutic-area accordion of class chips.
- * ======================================================================== */
-.by-class__lead {
-  margin: -0.2rem 0 1rem;
-  color: var(--muted-strong);
-}
-.by-class__areas {
-  display: grid;
-  gap: 0.75rem;
-}
-.area {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 0.35rem 1.1rem;
-}
-.area[open] {
-  border-color: var(--brand-200);
-}
-.area__summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.6rem 0;
-  cursor: pointer;
-  list-style: none;
-  font-weight: 700;
-  color: var(--ink);
-}
-.area__summary::-webkit-details-marker {
-  display: none;
-}
-.area__summary::after {
-  content: "▸";
-  color: var(--brand);
-  transition: transform 0.15s ease;
-}
-.area[open] .area__summary::after {
-  transform: rotate(90deg);
-}
-.area__name {
-  font-size: 1.05rem;
-}
-.area__count {
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-.area__list {
-  list-style: none;
-  margin: 0;
-  padding: 0.15rem 0 0.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-a.area__chip {
-  gap: 0.5em;
-  padding: 0.35em 0.4em 0.35em 0.9em;
-  font-size: 0.9rem;
-  white-space: normal;
-  text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-a.area__chip:hover,
-a.area__chip:focus-visible {
-  background: var(--brand-200);
-  color: var(--brand-hover);
-  border-color: var(--brand);
-}
-.area__chip-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.4em;
-  height: 1.4em;
-  padding: 0 0.35em;
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  border: 1px solid var(--brand-200);
-  color: var(--brand-strong);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-.by-class__all {
-  margin-top: 0.9rem;
-}
-.by-class__all a {
-  font-weight: 600;
-  color: var(--brand-strong);
-  text-decoration: none;
-}
-.by-class__all a:hover {
-  color: var(--brand-hover);
 }
 
 /* ===========================================================================
@@ -1173,26 +448,6 @@ a.area__chip:focus-visible {
 .breadcrumbs a:hover { color: var(--brand-hover); }
 .breadcrumbs [aria-current="page"] { color: var(--muted-strong); }
 
-/* --- Related drugs (drug page) -------------------------------------------- */
-.related-drugs__lead { margin: -0.2rem 0 1rem; color: var(--muted-strong); }
-.related-drugs__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
-}
-.related-drugs__card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  height: 100%;
-}
-.related-drugs__name { font-weight: 700; color: var(--ink); }
-.related-drugs__brand { color: var(--muted-strong); font-size: 0.9rem; }
-.related-drugs__card .chip { align-self: flex-start; }
-
 /* --- English (INN) secondary names ---------------------------------------- */
 .drug__inn {
   margin: -0.15rem 0 0;
@@ -1201,8 +456,7 @@ a.area__chip:focus-visible {
   font-weight: 500;
   letter-spacing: 0.01em;
 }
-.featured__en,
-.related-drugs__en {
+.featured__en {
   color: var(--muted);
   font-size: 0.88rem;
 }
@@ -1210,6 +464,12 @@ a.area__chip:focus-visible {
   margin: 0.1rem 0 0;
   color: var(--muted);
   font-size: 0.85rem;
+}
+.drug-list__mechanism {
+  margin: 0.65rem 0 0;
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.6;
 }
 
 /* --- About page ----------------------------------------------------------- */
@@ -1322,4 +582,774 @@ a.drugs-toc__chip:focus-visible {
   flex-wrap: wrap;
   gap: 0.75rem;
   justify-content: center;
+}
+
+/* ===========================================================================
+ * Product-first information architecture.
+ * Public pages lead with the product/trade name; generic identity and reusable
+ * mechanism material remain clearly scoped supporting information.
+ * ======================================================================== */
+.drug__eyebrow {
+  margin: 0;
+  color: var(--brand-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.drug__name,
+.drug-list__product {
+  overflow-wrap: anywhere;
+}
+.drug__generic {
+  display: grid;
+  justify-items: start;
+  gap: 0.15rem;
+  margin: 0;
+  color: var(--text);
+}
+.drug__generic-label,
+.drug-list__label,
+.featured__generic-label {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.drug__generic-name {
+  color: var(--ink);
+  font-size: 1.12rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.drug__generic-en,
+.featured__generic,
+.drug-list__generic {
+  overflow-wrap: anywhere;
+}
+.drug__generic-en {
+  color: var(--muted-strong);
+  font-size: 0.95rem;
+}
+.mechanism__scope,
+.mechanism-media__scope {
+  margin: -0.2rem 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-left: 3px solid var(--brand-200);
+  background: var(--brand-50);
+  color: var(--muted-strong);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.mechanism__heading,
+.mechanism-media__heading { margin-bottom: 0.8rem; }
+.mechanism__layer {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.mechanism__layer + .mechanism__layer { margin-top: 0.8rem; }
+.mechanism__layer--advanced { background: var(--surface-2); }
+.mechanism__label { margin-bottom: 0.35rem; }
+.mechanism__text { margin: 0; }
+.mechanism-media__item { margin: 1rem 0 0; }
+.mechanism-media__caption {
+  margin-top: 0.65rem;
+  color: var(--muted-strong);
+  font-size: 0.88rem;
+}
+.drug-list__generic {
+  display: grid;
+  gap: 0.12rem;
+  margin: 0;
+  color: var(--text);
+  font-size: 0.92rem;
+}
+.drug-list__generic strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+.featured__generic {
+  display: grid;
+  gap: 0.1rem;
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+}
+.product-company-group + .product-company-group {
+  margin-top: 2.25rem;
+}
+.product-company-group__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+}
+.product-company-group__title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.product-company-group__title a:hover {
+  color: var(--brand-strong);
+}
+.product-company-group__count {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ===========================================================================
+ * Public discovery pages, company identity, and accessibility.
+ * ======================================================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  inset: 0 auto auto 1rem;
+  transform: translateY(calc(-100% - 1rem));
+  padding: 0.65rem 1rem;
+  border: 2px solid var(--color-focus);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+}
+.skip-link:focus-visible { transform: translateY(1rem); }
+:where(a, button, input, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+body > header nav ul a[aria-current="page"] {
+  color: var(--brand-strong);
+  border-bottom-color: var(--brand);
+}
+.site-title[aria-current="page"] { color: var(--brand-hover); }
+
+.home-hero {
+  text-align: center;
+  padding: clamp(2.25rem, 6vw, 4.5rem) clamp(1rem, 4vw, 3rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--brand-50) 0%, var(--surface) 100%);
+  box-shadow: var(--shadow-sm);
+}
+.home-hero h1 {
+  max-width: 48rem;
+  margin-inline: auto;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+.home-hero__lead {
+  max-width: 42rem;
+  margin: 0.5rem auto 0;
+  color: var(--muted-strong);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+}
+.home-search { margin-top: 1.5rem; }
+.pagefind-search-wrapper {
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: left;
+}
+.pagefind-search {
+  --pagefind-ui-primary: var(--brand-strong);
+  --pagefind-ui-text: var(--text);
+  --pagefind-ui-background: var(--surface);
+  --pagefind-ui-border: var(--border);
+  --pagefind-ui-tag: var(--brand-50);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 10px;
+  --pagefind-ui-font: var(--font-sans);
+}
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.section-heading h2,
+.home-entries > h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+.section-heading h2::before,
+.home-entries > h2::before {
+  content: "";
+  flex: 0 0 0.3rem;
+  width: 0.3rem;
+  height: 1.1em;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+}
+.section-heading > a { flex: none; font-weight: 600; }
+
+.featured__list,
+.home-entries ul,
+.company-list,
+.drug-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.featured__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.featured__list > li { min-width: 0; }
+a.featured__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  height: 100%;
+  min-width: 0;
+}
+.featured__name {
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.featured__indication {
+  display: grid;
+  gap: 0.15rem;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+.featured__indication > span:last-child,
+.drug-list__indication > span:last-child {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.featured__company {
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted-strong);
+  font-size: 0.85rem;
+}
+.featured__cta {
+  margin-top: auto;
+  color: var(--brand-strong);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.featured__card:hover .featured__cta { color: var(--brand-hover); }
+
+.home-entries ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.home-entries a { height: 100%; }
+.home-entries__title { color: var(--ink); font-size: 1.05rem; font-weight: 700; }
+
+.company-name {
+  display: inline-grid;
+  gap: 0.1rem;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.company-name__primary {
+  color: inherit;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.company-name__secondary {
+  color: var(--muted-strong);
+  font-size: 0.8em;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.company-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 0.85rem;
+}
+.company-list__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.company-list__link {
+  color: var(--ink);
+  font-size: 1.02rem;
+  text-decoration: none;
+}
+.company-list__link:hover { color: var(--brand-hover); }
+.company-list__count { margin-top: auto; }
+.company__name .company-name__primary { font: inherit; }
+.company__name .company-name__secondary { margin-top: 0.2rem; font-size: 1rem; }
+.company__country { margin-top: -0.4rem; color: var(--muted-strong); }
+.company-list__summary {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.company__profile {
+  margin-top: 1.5rem;
+  padding: 1.2rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.company__profile h2 { margin-bottom: 0.55rem; font-size: 1.3rem; }
+.company__summary { margin: 0; color: var(--text); font-size: 1.02rem; line-height: 1.75; }
+.company__website { margin: 0.75rem 0 0; }
+.company__website a {
+  color: var(--brand-strong);
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.company__website a:hover { color: var(--brand-hover); }
+.company__drugs { margin-top: 2rem; }
+
+.product-company-group { scroll-margin-top: 5rem; }
+.product-company-group__title .company-name__secondary { font-size: 0.72em; }
+.drug-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 0.85rem;
+}
+.drug-list__item {
+  min-width: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.drug-list__item > a {
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.drug-list__item > a:hover { color: var(--brand-hover); }
+.drug-list__indication {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.65rem 0 0;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.86rem;
+}
+.drugs-index__lead { max-width: 44rem; color: var(--muted-strong); }
+.drug__header {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.drug__meta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+.drug__summary { margin-top: 1rem; color: var(--muted-strong); }
+.drug__indication-group + .drug__indication-group { margin-top: 1.25rem; }
+.drug__indication-region {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+}
+.drug__indication-asof { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+.drug__indications-note { color: var(--muted-strong); font-size: 0.86rem; }
+
+@media (max-width: 960px) {
+  .featured__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  main { padding-top: 1.35rem; }
+  .home-hero { padding: 2rem 1rem; }
+  .section-heading { align-items: flex-start; }
+  .section-heading > a { font-size: 0.86rem; }
+  .featured__list,
+  .home-entries ul,
+  .company-list,
+  .drug-list { grid-template-columns: minmax(0, 1fr); }
+  .product-company-group__title { align-items: flex-start; }
+  .company-name__secondary { white-space: normal; }
+  .nav-links a { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .skip-link,
+  a.card,
+  .card--interactive { transition: none; }
+}
+
+/* Original mechanism-first homepage and product detail. */
+.hero {
+  text-align: center;
+  background: linear-gradient(180deg, var(--brand-50) 0%, var(--surface) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
+}
+.hero h1 {
+  font-size: clamp(1.9rem, 4.8vw, 2.9rem);
+  margin-bottom: 0.5rem;
+}
+.hero__tagline {
+  max-width: 44rem;
+  margin: 0 auto;
+  color: var(--text);
+  font-size: clamp(1.02rem, 2.2vw, 1.2rem);
+}
+.home-search { margin-top: clamp(1.5rem, 3vw, 2.25rem); text-align: center; }
+.home-search > h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+.pagefind-search-wrapper { max-width: 42rem; margin-inline: auto; text-align: left; }
+
+.featured > h2,
+.by-class > h2,
+.home-entries > h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.35rem;
+}
+.featured > h2::before,
+.by-class > h2::before,
+.home-entries > h2::before {
+  content: "";
+  width: 0.3rem;
+  height: 1.1em;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+}
+.featured__lead,
+.by-class__lead {
+  margin: -0.2rem 0 1rem;
+  color: var(--muted-strong);
+}
+.featured__list,
+.home-entries ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+a.featured__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  height: 100%;
+}
+.featured__name { color: var(--ink); font-size: 1.2rem; font-weight: 700; }
+.featured__generic { margin-bottom: 0.1rem; }
+.featured__card .chip { align-self: flex-start; margin-top: 0.1rem; }
+.featured__summary {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-top: 0.15rem;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.featured__cta {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  color: var(--brand-strong);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+a.card:hover .featured__cta { color: var(--brand-hover); }
+
+.by-class__areas { display: grid; gap: 0.75rem; }
+.area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 0.35rem 1.1rem;
+}
+.area[open] { border-color: var(--brand-200); }
+.area__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  color: var(--ink);
+}
+.area__summary::-webkit-details-marker { display: none; }
+.area__summary::after {
+  content: "▸";
+  color: var(--brand);
+  transition: transform 0.15s ease;
+}
+.area[open] .area__summary::after { transform: rotate(90deg); }
+.area__name { font-size: 1.05rem; }
+.area__count {
+  margin-left: auto;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.area__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.15rem 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+.area__chip { text-decoration: none; }
+.area__chip-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.35em;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1px solid var(--brand-200);
+  color: var(--brand-strong);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.by-class__all { margin-top: 0.9rem; }
+.by-class__all a { color: var(--brand-strong); font-weight: 600; text-decoration: none; }
+.by-class__all a:hover { color: var(--brand-hover); }
+
+.home-entries a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+}
+.home-entries__title { color: var(--ink); font-size: 1.15rem; font-weight: 700; }
+.home-entries__desc { color: var(--muted-strong); font-size: 0.95rem; }
+
+.drug__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.drug__name { margin: 0; font-size: clamp(1.8rem, 4vw, 2.3rem); }
+.drug__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+.drug__summary { margin: 0.4rem 0 0; color: var(--text); font-size: 1.08rem; }
+
+.disclaimer--prominent {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  border-left: 5px solid var(--warn-border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+.disclaimer--prominent .disclaimer__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+  color: var(--warn-ink);
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+.disclaimer--prominent .disclaimer__title::before { content: "⚠"; font-size: 1.05rem; }
+.disclaimer--prominent .disclaimer__body { margin: 0; color: var(--warn-ink); }
+
+.mechanism__heading,
+.mechanism-media__heading,
+.citations__heading { font-size: 1.4rem; }
+.mechanism__scope,
+.mechanism-media__scope {
+  margin: -0.2rem 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-left: 3px solid var(--brand-200);
+  background: var(--brand-50);
+  color: var(--muted-strong);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.mechanism__layer + .mechanism__layer { margin-top: 1rem; }
+.mechanism__text { margin: 0; }
+.mechanism__layer--analogy {
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--brand-100);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius);
+  background: var(--brand-50);
+}
+.mechanism__layer--analogy .mechanism__label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.4rem;
+  color: var(--brand-strong);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.mechanism__layer--analogy .mechanism__label::before { content: "💡"; font-size: 1.05rem; }
+.mechanism__layer--analogy .mechanism__text { color: var(--ink); font-size: 1.08rem; font-weight: 500; }
+.mechanism__layer--simple {
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.mechanism__layer--simple .mechanism__label,
+.mechanism__layer--advanced .mechanism__label {
+  margin: 0 0 0.4rem;
+  color: var(--muted-strong);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.mechanism__layer--advanced {
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.mechanism__layer--advanced .mechanism__text { color: var(--text); }
+.mechanism-media__item {
+  margin: 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+.mechanism-media__item + .mechanism-media__item { margin-top: 1.5rem; }
+.mechanism-media__image { border-radius: var(--radius); }
+.mechanism-media__caption {
+  margin-top: 1rem;
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.drug__indications ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.drug__indications li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  max-width: 100%;
+  padding: 0.4em 0.95em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+.drug__indications li::before { content: "✓"; color: var(--brand-strong); font-weight: 800; }
+.drug__indication-group { margin-top: 1.1rem; }
+.drug__indication-group:first-of-type { margin-top: 0.4rem; }
+.drug__indication-region {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin: 0 0 0.55rem;
+  color: var(--ink);
+  font-size: 1rem;
+}
+.drug__indication-asof { color: var(--muted); font-size: 0.85rem; font-weight: 400; }
+.drug__indications-note { margin: 1.1rem 0 0; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+
+.drug__target {
+  padding: 1.2rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.drug__target-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.5rem;
+}
+.drug__target-name strong { color: var(--ink); font-size: 1.15rem; }
+.drug__target-role { margin: 0; color: var(--text); }
+.citations__list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: decimal;
+}
+.citations__item { padding-left: 0.25rem; color: var(--text); }
+.citations__item a {
+  color: var(--brand-strong);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.citations__item a:hover { color: var(--brand-hover); border-bottom-color: currentColor; }
+.citations__item a[target="_blank"]::after {
+  content: "↗";
+  margin-left: 0.25em;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+@media (max-width: 640px) {
+  .hero { padding: 2.25rem 1rem; }
+  .area__summary { align-items: flex-start; flex-wrap: wrap; }
+  .area__count { margin-left: 0; white-space: normal; }
+  .area__summary::after { margin-left: auto; }
+  .drug__indications li { border-radius: var(--radius-sm); }
 }

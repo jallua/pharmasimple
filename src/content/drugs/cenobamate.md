@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:XCOPRI(塞诺巴美)"
+    id: cite-c680d9614140152c
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=565c2126-57ae-4e29-b443-723bbe7e2072
     sourceType: regulator
   - title: "Cenobamate(美国国立卫生研究院 NCBI Bookshelf · LiverTox)"
+    id: cite-0bfd4f81cc707a85
+    sourceId: us-ncbi
     publisher: 美国国立卫生研究院(NIH·NCBI Bookshelf)
     url: https://www.ncbi.nlm.nih.gov/books/NBK573220/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zanubrutinib - drug facts (test fixture)</title>
+</head>
+<body>
+  <article class="drug">
+    <h1 class="drug-generic">Zanubrutinib</h1>
+    <p class="drug-brand">Brukinsa</p>
+
+    <dl class="facts">
+      <dt>Company</dt>
+      <dd data-field="company">BeiGene</dd>
+      <dt>Drug class</dt>
+      <dd data-field="drug-class">BTK inhibitor</dd>
+    </dl>
+
+    <section class="indications-section">
+      <h2>Approved indications</h2>
+      <ul class="indications">
+        <li>Mantle cell lymphoma (MCL)</li>
+        <li>Chronic lymphocytic leukemia (CLL)</li>
+        <li>Waldenstrom macroglobulinemia (WM)</li>
+      </ul>
+    </section>
+
+    <section class="target-section">
+      <h2>Molecular target</h2>
+      <p data-field="target">Bruton tyrosine kinase (BTK)</p>
+      <p data-field="target">B-cell receptor (BCR) signaling pathway</p>
+    </section>
+
+    <!-- The following two nodes represent copyrighted assets. There is NO
+         selector for them in the parser, so they must never reach staging. -->
+    <img class="hero" src="https://cdn.example.com/copyrighted-hero.png" alt="promotional artwork">
+    <p class="marketing-copy">This is a long block of copyrighted marketing prose that the
+      data-gathering pipeline must never store verbatim, because reproducing it would
+      infringe copyright; only short factual fields plus the source link may be kept.</p>
+  </article>
+</body>
+</html>

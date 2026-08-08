@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pharmasimple.local/schemas/canonical-evidence-v1.schema.json",
+  "title": "PharmaSimple Canonical Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "schemaVersion", "claimPath", "claimValue", "sourceId",
+    "sourceUrl", "documentId", "documentVersion", "retrievedAt",
+    "parserVersion", "rawSha256"
+  ],
+  "properties": {
+    "schema": {"const": "pharmasimple.canonical-evidence"},
+    "schemaVersion": {"const": "1.0.0"},
+    "claimPath": {
+      "enum": ["/company", "/genericName", "/brandName", "/drugClass", "/indications", "/targetHints"]
+    },
+    "claimValue": {
+      "oneOf": [
+        {"type": "string", "minLength": 1, "maxLength": 300},
+        {"type": "array", "maxItems": 20, "items": {"type": "string", "minLength": 1, "maxLength": 300}, "uniqueItems": true}
+      ]
+    },
+    "sourceId": {"type": "string", "minLength": 1},
+    "sourceUrl": {"type": "string", "pattern": "^https://"},
+    "documentId": {"type": "string", "minLength": 1, "maxLength": 300},
+    "documentVersion": {"type": "string", "minLength": 1, "maxLength": 300},
+    "retrievedAt": {"type": "string", "format": "date-time"},
+    "parserVersion": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "rawSha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+  }
+}

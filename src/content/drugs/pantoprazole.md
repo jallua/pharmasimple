@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:PANTOPRAZOLE SODIUM(泮托拉唑)"
+    id: cite-8ac267aac1124488
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9c286e5c-2b36-422b-9f74-e8c0abb3f747
     sourceType: regulator
   - title: "泮托拉唑(MedlinePlus,美国国立医学图书馆)"
+    id: cite-56ede60b3227bf32
+    sourceId: us-medlineplus
     publisher: MedlinePlus(NLM)
     url: https://medlineplus.gov/druginfo/meds/a601246.html
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -55,17 +55,26 @@ media:
     status: ready
 citations:
   - title: "OPDIVO (nivolumab) 处方信息(DailyMed)"
+    id: cite-fb1986c65167ccb5
+    sourceId: us-dailymed
     publisher: 美国国家医学图书馆 DailyMed
     url: https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f570b9c4-6846-4de2-abfa-4d0a4ae4e394
     sourceType: label
   - title: "FDA 批准 nivolumab 相关适应症"
+    id: cite-03066e671090971e
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-nivolumab-and-hyaluronidase-nvhy-subcutaneous-injection
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

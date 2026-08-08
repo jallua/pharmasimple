@@ -1,7 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { publishedDrugDetailPaths, relatedDrugs, slugOf, toCompanyUrl, toDrugUrl } from '../../lib/catalog';
+import {
+  companyDisplayNameOf,
+  companyNameParts,
+  productNameOf,
+  publishedDrugDetailPaths,
+  slugOf,
+  toCompanyUrl,
+} from '../../lib/catalog';
 import MechanismLayers from '../../components/MechanismLayers.astro';
 import MechanismMedia from '../../components/MechanismMedia.astro';
 import Citations from '../../components/Citations.astro';
@@ -17,6 +24,9 @@ export async function getStaticPaths() {
 const locale = 'zh';
 const { drug } = Astro.props;
 const { data } = drug;
+const productName = productNameOf(data);
+const mechanismHeading = t(locale, 'mechanism.heading');
+const mediaHeading = t(locale, 'mechanism.mediaHeading');
 
 const companyRefValue = data.company as unknown;
 const companyRefId =
@@ -27,20 +37,24 @@ const companyRefId =
        '');
 
 const companies = await getCollection('companies');
-const companyName = companies.find((c) => slugOf(c) === companyRefId)?.data.name;
-
-const allDrugs = await getCollection('drugs');
-const related = relatedDrugs(allDrugs, slugOf(drug));
+const companyEntry = companies.find((company) => slugOf(company) === companyRefId);
+const companyName = companyEntry ? companyNameParts(companyEntry.data).primary : undefined;
+const companyDisplayName = companyEntry ? companyDisplayNameOf(companyEntry.data) : undefined;
 
 const crumbs = [
   { label: t(locale, 'nav.home'), href: '/' },
-  { label: t(locale, 'nav.drugs'), href: '/drugs/' },
-  { label: data.genericName },
+  { label: t(locale, 'nav.companies'), href: '/companies/' },
+  ...(companyRefId && companyName
+    ? [{ label: companyName, href: toCompanyUrl(companyRefId) }]
+    : []),
+  { label: productName },
 ];
 
 const siteBase = (Astro.site?.href ?? 'https://dongyaojun.com/').replace(/\/+$/, '');
 const drugUrl = `${siteBase}/drugs/${slugOf(drug)}/`;
-const altNames = [data.genericNameEn, data.brandName].filter(Boolean);
+const altNames = [data.genericName, data.genericNameEn].filter(
+  (name): name is string => Boolean(name && name !== productName),
+);
 const dateModified = data.updatedDate
   ? new Date(data.updatedDate).toISOString().slice(0, 10)
   : undefined;
@@ -49,40 +63,48 @@ const jsonLd = [
     '@type': 'MedicalWebPage',
     '@id': `${drugUrl}#webpage`,
     url: drugUrl,
-    name: data.genericName,
+    name: productName,
     ...(data.summary ? { description: data.summary } : {}),
     inLanguage: 'zh-CN',
     ...(dateModified ? { dateModified } : {}),
     isPartOf: { '@id': `${siteBase}/#website` },
     about: {
       '@type': 'Thing',
-      name: data.genericName,
+      name: productName,
       ...(altNames.length ? { alternateName: altNames } : {}),
     },
   },
   {
     '@type': 'BreadcrumbList',
     '@id': `${drugUrl}#breadcrumb`,
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: `${siteBase}/` },
-      { '@type': 'ListItem', position: 2, name: t(locale, 'nav.drugs'), item: `${siteBase}/drugs/` },
-      { '@type': 'ListItem', position: 3, name: data.genericName, item: drugUrl },
-    ],
+    itemListElement: crumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.label,
+      ...(crumb.href ? { item: `${siteBase}${crumb.href}` } : { item: drugUrl }),
+    })),
   },
 ];
 ---
 
-<BaseLayout title={data.genericName} description={data.summary} locale={locale} jsonLd={jsonLd}>
+<BaseLayout title={productName} description={data.summary} locale={locale} jsonLd={jsonLd}>
   <Breadcrumbs items={crumbs} />
   <article class="drug">
     <header class="drug__header">
-      <h1 class="drug__name">{data.genericName}</h1>
-      {data.genericNameEn && <p class="drug__inn">{data.genericNameEn}</p>}
-      {data.brandName && <p class="drug__brand">{data.brandName}</p>}
+      <h1 class="drug__name">{productName}</h1>
+      <p class="drug__generic">
+        <span class="drug__generic-label">{t(locale, 'drug.genericName')}</span>
+        <span class="drug__generic-name">{data.genericName}</span>
+        {data.genericNameEn && <span class="drug__generic-en" lang="en">{data.genericNameEn}</span>}
+      </p>
       <div class="drug__meta">
         {data.drugClass && <span class="chip drug__class">{data.drugClass}</span>}
         {companyRefId && (
-          <a class="btn btn--ghost drug__company" href={toCompanyUrl(companyRefId)}>
+          <a
+            class="btn btn--ghost drug__company"
+            href={toCompanyUrl(companyRefId)}
+            aria-label={companyDisplayName ?? t(locale, 'drug.company')}
+          >
             {companyName ?? t(locale, 'drug.company')}
           </a>
         )}
@@ -92,9 +114,19 @@ const jsonLd = [
 
     <Disclaimer locale={locale} variant="prominent" />
 
-    <MechanismLayers mechanism={data.mechanism} locale={locale} />
+    <MechanismLayers
+      mechanism={data.mechanism}
+      locale={locale}
+      heading={mechanismHeading}
+      scopeNote={t(locale, 'mechanism.productScope')}
+    />
 
-    <MechanismMedia media={data.media} locale={locale} subjectLabel={data.genericName} />
+    <MechanismMedia
+      media={data.media}
+      locale={locale}
+      heading={mediaHeading}
+      subjectLabel={productName}
+    />
 
     <section class="drug__indications" aria-label={t(locale, 'drug.indicationsByRegion')}>
       <h2>{t(locale, 'drug.indicationsByRegion')}</h2>
@@ -126,25 +158,6 @@ const jsonLd = [
       </p>
       <p class="drug__target-role">{data.target.role}</p>
     </section>
-
-    {related.length > 0 && (
-      <section class="related-drugs" aria-label={t(locale, 'drug.relatedTitle')}>
-        <h2>{t(locale, 'drug.relatedTitle')}</h2>
-        <p class="related-drugs__lead">{t(locale, 'drug.relatedLead')}</p>
-        <ul class="related-drugs__list">
-          {related.map((r) => (
-            <li class="related-drugs__item">
-              <a class="card related-drugs__card" href={toDrugUrl(slugOf(r))}>
-                <span class="related-drugs__name">{r.data.genericName}</span>
-                {r.data.genericNameEn && <span class="related-drugs__en">{r.data.genericNameEn}</span>}
-                {r.data.brandName && <span class="related-drugs__brand">{r.data.brandName}</span>}
-                {r.data.drugClass && <span class="chip">{r.data.drugClass}</span>}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
 
     <Citations citations={data.citations} locale={locale} />
   </article>

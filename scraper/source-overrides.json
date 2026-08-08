@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "imatinib": {
+      "omit": [],
+      "add": {},
+      "blockAutomation": true,
+      "reason": "The current openFDA response has no unique newest matching label, leaving only one successful official channel. Block promotion until source selection can be reviewed without arbitrary tie-breaking.",
+      "reviewAfter": "2026-09-07"
+    },
+    "lebrikizumab": {
+      "omit": [],
+      "add": {},
+      "blockAutomation": true,
+      "reason": "Bounded acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+      "reviewAfter": "2026-09-07"
+    },
+    "pembrolizumab": {
+      "omit": [],
+      "add": {},
+      "blockAutomation": true,
+      "reason": "Bounded acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+      "reviewAfter": "2026-09-07"
+    },
+    "nivolumab": {
+      "omit": [],
+      "add": {},
+      "blockAutomation": true,
+      "reason": "Current real-network acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+      "reviewAfter": "2026-09-07"
+    },
+    "tislelizumab": {
+      "omit": [],
+      "add": {},
+      "blockAutomation": true,
+      "reason": "The FDA and DailyMed channels expose the same FDA-approved SPL labeling lineage, so they cannot satisfy the independent-lineage promotion gate.",
+      "reviewAfter": "2026-09-07"
+    },
+    "toripalimab": {
+      "omit": [
+        "ema"
+      ],
+      "add": {
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82e7921a-1e84-4988-9799-0ad7d19b2a75"
+      },
+      "blockAutomation": true,
+      "reason": "The EMA endpoint returned an untyped maintenance page, while FDA and DailyMed resolved to the same SPL lineage. Retain both public citations but block automated promotion until an independent official lineage is available.",
+      "reviewAfter": "2026-09-07"
+    },
+    "zanubrutinib": {
+      "omit": [],
+      "add": {},
+      "blockAutomation": true,
+      "reason": "Bounded acceptance resolved the FDA and DailyMed channels to the same SPL lineage, so they cannot satisfy the independent-lineage promotion gate.",
+      "reviewAfter": "2026-09-07"
+    }
+  }
+}

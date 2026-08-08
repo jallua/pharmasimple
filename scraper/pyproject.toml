@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pharmasimple-scraper"
+version = "1.0.0"
+description = "Fail-closed official pharmaceutical evidence ingestion"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "cssselect==1.5.0",
+  "lxml==6.1.1",
+  "scrapling==0.4.12",
+]
+
+[project.optional-dependencies]
+test = [
+  "hypothesis==6.165.2",
+  "pytest==9.1.1",
+]
+
+[tool.setuptools]
+packages = ["pharma_scraper", "pharma_scraper.sources"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+pharma_scraper = ["schemas/*.json"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

@@ -16,11 +16,23 @@ test('P9: the default locale is zh and is part of the locale list', () => {
 
 test('P9: the default locale resolves known keys to their strings', () => {
   expect(t('zh', 'nav.companies')).toBe('公司');
+  expect(t('zh', 'nav.drugs')).toBe('产品');
   expect(t('zh', 'nav.search')).toBe('搜索');
   expect(t('zh', 'nav.about')).toBe('关于');
   expect(t('zh', 'search.noResults')).toBe('未找到相关内容');
-  expect(t('zh', 'mechanism.advanced')).toBe('进阶版');
-  expect(t('zh', 'disclaimer.body').length).toBeGreaterThan(0);
+  expect(t('zh', 'mechanism.advanced')).toBe('进一步了解');
+  expect(t('zh', 'mechanism.analogy')).toBe('一句话比喻');
+  expect(t('zh', 'drug.target')).toBe('作用靶点');
+  expect(t('zh', 'home.browseTitle')).toBe('开始浏览');
+  expect(t('zh', 'home.popularLead')).toBe('从这些常用药物直接了解它们怎么起作用：');
+  expect(t('zh', 'company.website')).toBe('公司网站');
+  expect(t('zh', 'about.companyProfilesTitle')).toBe('公司简介怎么整理');
+  expect(t('zh', 'about.companyProfilesLead')).toContain('公司网站');
+  expect(t('zh', 'about.guideAnalogy')).toMatch(/^一句话比喻：/);
+  expect(t('zh', 'about.guideTarget')).toMatch(/^作用靶点：/);
+  expect(t('zh', 'drug.indicationExample')).toBe('适应症示例');
+  expect(t('zh', 'notFound.title')).toBe('找不到页面');
+  expect(t('zh', 'disclaimer.body')).toContain('不应用于判断产品优劣');
 });
 
 test('P9: a missing locale falls back to the default locale value', () => {

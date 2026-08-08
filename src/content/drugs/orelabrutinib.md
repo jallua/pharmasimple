@@ -38,17 +38,26 @@ media:
     status: ready
 citations:
   - title: "澳大利亚 TGA 批准奥布替尼(宜诺凯 / HIBRUKA)治疗复发/难治性套细胞淋巴瘤"
+    id: cite-8e41a76c4f3624be
+    sourceId: au-tga
     publisher: 澳大利亚药品管理局(TGA)
     url: https://www.tga.gov.au/
     sourceType: regulator
   - title: "诺诚健华:奥布替尼在中国获批(R/R CLL/SLL 与 R/R MCL)"
+    id: cite-c86fec48b237a535
+    sourceId: web:businesswire.com
     publisher: 诺诚健华(InnoCare)
     url: https://www.businesswire.com/news/home/20201227005017/en/InnoCare-Announces-the-Approval-of-Orelabrutinib-in-China-for-Patients-with-RelapsedRefractory-Chronic-Lymphocytic-Leukemia-or-Small-Lymphocytic-Lymphoma-and-RelapsedRefractory-Mantle-Cell-Lymphoma
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

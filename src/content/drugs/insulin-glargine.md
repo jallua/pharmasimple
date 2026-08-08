@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:SEMGLEE / INSULIN GLARGINE-yfgn(甘精胰岛素)"
+    id: cite-eae51880bf15731b
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3ac85ebb-5594-59c8-77fd-df254329d151
     sourceType: regulator
   - title: "甘精胰岛素(MedlinePlus,美国国立医学图书馆)"
+    id: cite-0f5eaa5ba4017e74
+    sourceId: us-medlineplus
     publisher: MedlinePlus(NLM)
     url: https://medlineplus.gov/druginfo/meds/a600027.html
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

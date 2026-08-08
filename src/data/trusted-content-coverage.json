@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-08",
+  "migrationDeadline": "2027-02-07",
+  "drugs": {
+    "total": 102,
+    "verified": 0,
+    "conflicted": 0,
+    "stale": 102,
+    "blocked": 0,
+    "legacyLkg": 102,
+    "needsOnlineVerification": 102
+  },
+  "citations": {
+    "total": 212,
+    "withStableId": 212,
+    "withStableSourceId": 212
+  },
+  "evidence": {
+    "mappedClaims": 0,
+    "note": "No field evidence was inferred. Claims require explicit source-to-field mapping."
+  }
+}

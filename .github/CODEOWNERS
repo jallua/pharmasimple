@@ -1,0 +1,11 @@
+* @jallua
+
+/.github/ @jallua
+/scraper/ @jallua
+/package.json @jallua
+/package-lock.json @jallua
+/SECURITY.md @jallua
+/docs/operations.md @jallua
+
+/src/lib/trust-policy.ts @jallua
+/src/data/legacy-lkg.json @jallua

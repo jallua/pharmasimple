@@ -1,0 +1,16 @@
+---
+import { companyNameParts, type CompanyData } from '../lib/catalog';
+
+interface Props {
+  data: Pick<CompanyData, 'name' | 'nameEn'>;
+  compact?: boolean;
+}
+
+const { data, compact = false } = Astro.props;
+const { primary, secondary } = companyNameParts(data);
+---
+
+<span class:list={['company-name', { 'company-name--compact': compact }]}>
+  <span class="company-name__primary">{primary}</span>
+  {secondary && <span class="company-name__secondary" lang="en">{secondary}</span>}
+</span>

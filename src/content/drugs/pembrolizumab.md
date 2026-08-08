@@ -59,21 +59,32 @@ media:
     status: ready
 citations:
   - title: "KEYTRUDA (pembrolizumab) 处方信息(DailyMed)"
+    id: cite-59fe4d32de36b8c9
+    sourceId: us-dailymed
     publisher: 美国国家医学图书馆 DailyMed
     url: https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9333c79b-d487-4538-a9f0-71b91a02b287
     sourceType: label
   - title: "KEYTRUDA 美国 FDA 说明书"
+    id: cite-f0bc8f0012edd0a9
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/761467s009lbl.pdf
     sourceType: regulator
   - title: "KEYTRUDA 官方信息(默沙东)"
+    id: cite-8d079f3a2328d2c7
+    sourceId: web:merck.com
     publisher: 默沙东(Merck)
     url: https://www.merck.com/product/keytruda/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

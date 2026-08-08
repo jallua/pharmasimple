@@ -36,21 +36,32 @@ media:
     status: ready
 citations:
   - title: "CALQUENCE (acalabrutinib) 美国 FDA 说明书"
+    id: cite-1b735d028455e574
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.accessdata.fda.gov/drugsatfda_docs/label/2022/216387Orig2s000Correctedlbl.pdf
     sourceType: regulator
   - title: "FDA 批准 acalabrutinib 联合维奈克拉治疗 CLL/SLL"
+    id: cite-780fc7ea02804fd8
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-acalabrutinib-venetoclax-chronic-lymphocytic-leukemia-or-small-lymphocytic-lymphoma
     sourceType: regulator
   - title: "CALQUENCE 处方信息(阿斯利康)"
+    id: cite-5bbc48b16a887fbb
+    sourceId: web:medicalinformation.astrazeneca-us.com
     publisher: 阿斯利康(AstraZeneca)
     url: https://medicalinformation.astrazeneca-us.com/home/prescribing-information/calquence.html
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -36,17 +36,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:CABOMETYX(卡博替尼)"
+    id: cite-9cec12d95a52807d
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3850cce2-6137-42e5-a792-d318c4a4b3b5
     sourceType: regulator
   - title: "Cabozantinib-S-Malate(美国国家癌症研究所 NCI)"
+    id: cite-4d5f54473e7a59dc
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/cabozantinib-s-malate
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

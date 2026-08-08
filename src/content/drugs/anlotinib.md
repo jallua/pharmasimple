@@ -33,17 +33,26 @@ media:
     status: ready
 citations:
   - title: "国家药品监督管理局(NMPA)药品信息"
+    id: cite-9190036d510a75a3
+    sourceId: cn-nmpa
     publisher: 国家药品监督管理局(NMPA)
     url: https://www.nmpa.gov.cn/
     sourceType: regulator
   - title: "正大天晴 / 中国生物制药:安罗替尼(福可维)产品信息"
+    id: cite-fce55e847bdea262
+    sourceId: web:sinobiopharm.com
     publisher: 正大天晴(中国生物制药)
     url: https://www.sinobiopharm.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ISTURISA(奥西洛司他)"
+    id: cite-ca267907e8999e3b
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f3a5ec24-63c3-4d83-b1c0-6c550fbe7ae2
     sourceType: regulator
   - title: "Osilodrostat(美国国立卫生研究院 NCBI Bookshelf · LiverTox)"
+    id: cite-0ab386eebb8fa018
+    sourceId: us-ncbi
     publisher: 美国国立卫生研究院(NIH·NCBI Bookshelf)
     url: https://www.ncbi.nlm.nih.gov/books/NBK605686/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

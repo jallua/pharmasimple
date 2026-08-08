@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "质子泵抑制剂(PPI)机制(NCBI Bookshelf / StatPearls)"
+    id: cite-9006e064240cc3b5
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK547892/
     sourceType: gov
   - title: "Ilaprazole(IUPHAR/BPS Guide to Pharmacology)"
+    id: cite-c0933dc706212f76
+    sourceId: web:guidetopharmacology.org
     publisher: IUPHAR/BPS Guide to Pharmacology
     url: https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=10512
     sourceType: other
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -1,9 +1,7 @@
 ---
-// GipGlp1Coagonist.astro — schematic SVG + CSS animation of how a dual GIP/GLP-1
-// receptor co-agonist (e.g. 替尔泊肽 / tirzepatide) uses a single molecule to
-// activate BOTH the GIP receptor and the GLP-1 receptor, so glucose-dependent
-// insulin release and appetite suppression run through two incretin pathways at
-// once — stronger than a GLP-1-only agonist (需求 4, 13). SCHEMATIC labelled
+// GipGlp1Coagonist.astro — schematic SVG + CSS animation of GIP and GLP-1
+// receptor activation by tirzepatide. It presents label-supported downstream
+// effects without making comparative efficacy claims. SCHEMATIC labelled
 // shapes, inline SVG + scoped CSS, NO JavaScript. Five storyboard steps cycle on
 // a shared 15s timeline (3s each). Under prefers-reduced-motion all motion stops.
 interface Props {
@@ -13,16 +11,16 @@ interface Props {
 }
 
 const {
-  alt = '动画演示替尔泊肽用一个分子同时激活 GIP 与 GLP-1 两种受体,双通道促进胰岛素分泌、降低食欲,血糖与体重双双下降。',
+  alt = '动画演示替尔泊肽同时激活 GIP 与 GLP-1 受体，并呈现胰岛素分泌、胰高血糖素水平及胃排空相关作用。',
   subject,
 } = Astro.props;
 
 const steps = [
-  '餐后血糖升高、常伴超重',
-  '肠道靠 GLP-1、GIP 两种"肠促胰素"提醒降糖、带来饱腹感',
-  '替尔泊肽一个分子,同时激活 GIP 与 GLP-1 两种受体',
-  '双通道一起发力:胰岛素分泌更多、食欲压得更低',
-  '血糖下降,体重也明显下降(强于只激活一种)',
+  '替尔泊肽可同时激活 GIP 与 GLP-1 受体',
+  'GIP 与 GLP-1 受体参与葡萄糖相关信号调节',
+  'GIP 受体通路促进葡萄糖依赖性胰岛素分泌',
+  'GLP-1 受体通路降低胰高血糖素水平并减慢胃排空',
+  '两类受体通路共同参与血糖相关调节',
 ];
 ---
 
@@ -40,7 +38,7 @@ const steps = [
 
     <g class="gip__harm">
       <polygon points="208,74 216,96 238,96 220,110 228,132 208,118 188,132 196,110 178,96 200,96" />
-      <text class="gip__t gip__t--harm" x="208" y="66" text-anchor="middle">餐后血糖高 · 超重</text>
+      <text class="gip__t gip__t--harm" x="208" y="66" text-anchor="middle">餐后血糖升高</text>
     </g>
 
     <g class="gip__dots">
@@ -67,7 +65,7 @@ const steps = [
 
     <g class="gip__resolved">
       <rect x="200" y="30" width="150" height="30" rx="15" />
-      <text class="gip__t gip__t--resolved" x="275" y="50" text-anchor="middle">血糖 · 体重双降</text>
+      <text class="gip__t gip__t--resolved" x="275" y="50" text-anchor="middle">受体相关作用</text>
     </g>
   </svg>
 

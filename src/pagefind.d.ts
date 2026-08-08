@@ -6,5 +6,6 @@ declare module '@pagefind/default-ui' {
   /** Pagefind's default search UI widget. */
   export class PagefindUI {
     constructor(options: Record<string, unknown>);
+    triggerSearch(term: string): void;
   }
 }

@@ -38,17 +38,26 @@ media:
     status: ready
 citations:
   - title: "Hetronifly(斯鲁利单抗)欧盟 EMA 药品概览"
+    id: cite-2189bfb36e1cecda
+    sourceId: eu-ema
     publisher: 欧洲药品管理局(EMA)
     url: https://www.ema.europa.eu/en/documents/overview/hetronifly-epar-medicine-overview_en.pdf
     sourceType: regulator
   - title: "复宏汉霖:斯鲁利单抗(汉斯状 / HANSIZHUANG)产品信息"
+    id: cite-91a2709cee222d2b
+    sourceId: web:henlius.com
     publisher: 复宏汉霖(Henlius)
     url: https://www.henlius.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

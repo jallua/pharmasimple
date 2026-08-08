@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "Camrelizumab 定义(美国国家癌症研究所 NCI 药物词典)"
+    id: cite-04f83560830acdae
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/publications/dictionaries/cancer-drug/def/camrelizumab
     sourceType: gov
   - title: "恒瑞医药:卡瑞利珠单抗(艾瑞卡)获批信息"
+    id: cite-ed47e630362fb007
+    sourceId: web:hengrui.com
     publisher: 江苏恒瑞医药
     url: https://www.hengrui.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

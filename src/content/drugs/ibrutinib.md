@@ -44,17 +44,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:IMBRUVICA(伊布替尼)"
+    id: cite-41fbd6f0c4d8c446
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0dfd0279-ff17-4ea9-89be-9803c71bab44
     sourceType: regulator
   - title: "Ibrutinib(美国国家癌症研究所 NCI)"
+    id: cite-a3efd5d5e38e0b2e
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/ibrutinib
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

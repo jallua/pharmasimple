@@ -44,17 +44,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ELIQUIS(阿哌沙班)"
+    id: cite-2b9b559296a1d581
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.accessdata.fda.gov/drugsatfda_docs/label/2019/202155s024lbl.pdf
     sourceType: regulator
   - title: "Apixaban(NCBI Bookshelf)"
+    id: cite-428c30341ee59944
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK507910/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

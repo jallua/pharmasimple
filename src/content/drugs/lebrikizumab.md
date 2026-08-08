@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:EBGLYSS(lebrikizumab)"
+    id: cite-c4e0a72d7bb6c5ee
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7a774ea2-acde-4aaa-9a8f-ccba5a5b1d5f
     sourceType: regulator
   - title: "Drug Trials Snapshots:EBGLYSS(美国 FDA)"
+    id: cite-75bcb9e837a74307
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/drug-approvals-and-databases/drug-trials-snapshots-ebglyss
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

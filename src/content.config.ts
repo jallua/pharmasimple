@@ -1,60 +1,140 @@
-// site/src/content.config.ts
-//
-// Astro 7 Content Layer API: collections are defined with a `loader` (the glob
-// loader reads Markdown from the content directories) plus a Zod `schema` that
-// is validated at build time. Any entry that violates the schema fails the
-// build (fail fast), which is how many correctness constraints (P1-P12 in the
-// design) are enforced at "compile time".
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
-// Astro 7 bundles Zod v4 and deprecates the `z` re-export from `astro:content`
-// (its own compiler recommends this exact import). The schema below is otherwise
-// identical to the design doc.
 import { z } from 'astro/zod';
+import { citationSourceIdentityMatches } from './lib/source-registry.ts';
 
-const reviewStatus = z.enum(['draft', 'reviewed']); // 需求 8
-const locale = z.enum(['zh']); // 后续扩展 'en' 等(需求 10)
+const reviewStatus = z.enum(['draft', 'reviewed']);
+const locale = z.enum(['zh']);
+const sha256 = z.string().regex(/^sha256:[a-f0-9]{64}$/);
+const factId = z.string().regex(/^fact-[a-f0-9]{64}$/);
+const evidenceId = z.string().regex(/^evidence-[a-f0-9]{64}$/);
+const excerptId = z.string().regex(/^excerpt-[a-f0-9]{64}$/);
 
-const citation = z.object({
-  id: z.string().min(1).optional(), // 字段级证据使用的稳定 ID
-  title: z.string().min(1),
-  publisher: z.string().optional(),
-  url: z.url().optional(),
-  retrievedDate: z.coerce.date().optional(), // 采集来源日期(需求 11.2)
-  sourceId: z.string().min(1).optional(), // 若提供,必须与官方来源注册表和 URL 一致
-  // 兼容已有内容的展示元数据;权威性只由来源注册表 + HTTPS URL 判定。
-  sourceType: z.enum(['regulator', 'label', 'gov', 'company', 'other']).optional(),
-});
+const citation = z
+  .object({
+    id: z.string().regex(/^cite-[a-f0-9]{16}$/),
+    sourceId: z.string().min(1),
+    title: z.string().min(1),
+    publisher: z.string().optional(),
+    url: z.url(),
+    retrievedDate: z.coerce.date().optional(),
+    sourceType: z.enum(['regulator', 'label', 'gov', 'company', 'other']).optional(),
+  })
+  .superRefine((value, context) => {
+    if (!citationSourceIdentityMatches(value)) {
+      context.addIssue({
+        code: 'custom',
+        message: 'sourceId must be the deterministic registered-source or HTTPS-host identity for url',
+        path: ['sourceId'],
+      });
+    }
+  });
 
+/** v1 compatibility only; new verified content uses factRefs. */
 const evidenceLink = z.object({
-  claim: z.string().min(1),
-  citationIds: z.array(z.string().min(1)).min(1),
+  claimPath: z
+    .string()
+    .regex(/^\/(company|genericName|genericNameEn|brandName|drugClass|summary|indications|target|mechanism)(\/.*)?$/),
+  claimValue: z.unknown().refine((value) => value !== undefined, 'claimValue is required'),
+  citationIds: z.array(z.string().regex(/^cite-[a-f0-9]{16}$/)).min(1),
 });
 
-const verification = z.object({
-  status: z.enum(['verified', 'conflicted', 'stale', 'blocked']),
+const verificationBase = {
   checkedAt: z.coerce.date(),
+  nextCheckAt: z.coerce.date(),
   pipelineVersion: z.string().min(1),
-  evidenceBundleHash: z.string().regex(/^sha256:[a-f0-9]{64}$/),
-  recheckBy: z.coerce.date().optional(),
+};
+const verification = z.discriminatedUnion('status', [
+  z.object({ status: z.literal('verified'), schemaVersion: z.literal(2), ...verificationBase, bundleHash: sha256 }),
+  z.object({ status: z.literal('conflicted'), schemaVersion: z.union([z.literal(1), z.literal(2)]).optional(), ...verificationBase, bundleHash: sha256.optional() }),
+  z.object({ status: z.literal('stale'), schemaVersion: z.union([z.literal(1), z.literal(2)]).optional(), ...verificationBase, bundleHash: sha256.optional() }),
+  z.object({ status: z.literal('blocked'), schemaVersion: z.union([z.literal(1), z.literal(2)]).optional(), ...verificationBase, bundleHash: sha256.optional() }),
+]);
+
+const contentPath = z
+  .string()
+  .regex(/^\/(company|genericName|genericNameEn|brandName|drugClass|summary|indications|target|mechanism)(\/.*)?$/);
+
+const factScope = z.object({
+  jurisdiction: z.enum(['GLOBAL', 'US', 'EU', 'CN']),
+  subjectType: z.enum(['active-ingredient', 'medicinal-product']),
+  subjectId: z.string().min(1),
+  productId: z.string().min(1).optional(),
 });
 
-// 自动审核元数据(P15 / 需求 8.7):审核者恒为 auto,记录核对日期与置信等级,
-// 可选复核到期日(缺省则按 checkedOn + 12 个月计算)。
-const review = z.object({
-  reviewer: z.literal('auto').default('auto'),
-  checkedOn: z.coerce.date(),
-  confidence: z.enum(['high', 'medium', 'low']),
-  recheckBy: z.coerce.date().optional(),
+const factAssertion = z.object({
+  factKey: z.string().min(1),
+  predicate: z.string().min(1),
+  value: z.unknown().refine((value) => value !== undefined, 'assertion value is required'),
+  scope: factScope,
+  sourceId: z.string().min(1),
+  lineageId: z.string().min(1),
+  evidenceId,
+  excerptId: excerptId.optional(),
+});
+
+const transformation = z.object({
+  operation: z.string().min(1),
+  toolVersion: z.string().min(1),
+  inputSha256: sha256,
+  outputSha256: sha256,
+  locator: z.string().min(1),
+});
+
+const evidenceDocument = z.object({
+  evidenceId,
+  sourceId: z.string().min(1),
+  sourceUrl: z.url().refine((url) => url.startsWith('https://'), 'evidence source must use HTTPS'),
+  documentId: z.string().min(1),
+  documentVersion: z.string().min(1),
+  lineageId: z.string().min(1),
+  jurisdiction: z.enum(['US', 'EU', 'CN']),
+  activeIngredient: z.string().min(1),
+  productId: z.string().min(1),
+  documentType: z.enum(['label', 'regulatory-product']),
+  retrievedAt: z.iso.datetime({ offset: true }),
+  mediaType: z.string().min(1),
+  rawSha256: sha256,
+  rawObjectPath: z.string().regex(/^evidence\/objects\/[a-f0-9]{64}\.bin$/),
+  transformations: z.array(transformation),
+});
+
+const atomicFact = z.object({
+  schemaVersion: z.literal(2),
+  factId,
+  factKey: z.string().min(1),
+  predicate: z.string().min(1),
+  value: z.unknown().refine((value) => value !== undefined, 'fact value is required'),
+  scope: factScope,
+  status: z.enum(['verified', 'conflicted', 'stale', 'blocked']),
+  assertions: z.array(factAssertion).min(1),
+  resolutionHash: sha256,
+  evidenceDocuments: z.array(evidenceDocument).min(1),
+  importHash: sha256,
+});
+
+const factRef = z.object({
+  contentPath,
+  factIds: z.array(factId).min(1),
+  relation: z.enum(['supports', 'contextualizes', 'derived-from']),
+  boundFactHashes: z.record(factId, sha256),
+  copyHash: sha256,
+  reviewStatus: z.enum(['pending', 'reviewed', 'stale']),
+});
+
+const legacyLkg = z.object({
+  snapshotId: z.string().min(1),
+  capturedAt: z.coerce.date(),
+  migrateBy: z.coerce.date(),
 });
 
 const media = z.object({
   type: z.enum(['image', 'animation', 'placeholder']),
-  src: z.string().optional(), // 原创图片路径
-  animationKey: z.string().optional(), // 引用动画注册表中的组件
-  alt: z.string().min(1), // 必填替代文本(需求 4.3 / 13.1)
+  src: z.string().optional(),
+  animationKey: z.string().optional(),
+  alt: z.string().min(1),
   caption: z.string().optional(),
-  status: z.enum(['ready', 'in-progress']).default('ready'), // 动画制作中 -> 占位(需求 4.4)
+  status: z.enum(['ready', 'in-progress']).default('ready'),
 });
 
 const companies = defineCollection({
@@ -63,12 +143,33 @@ const companies = defineCollection({
     slug: z.string().min(1),
     locale,
     name: z.string().min(1),
+    nameEn: z.string().min(1).optional(),
+    aliases: z.array(z.string().min(1)).optional(),
+    identitySource: z
+      .object({
+        title: z.string().min(1),
+        url: z.url(),
+        retrievedDate: z.coerce.date(),
+      })
+      .optional(),
     logo: z.string().optional(),
     country: z.string().optional(),
     summary: z.string().optional(),
-    order: z.number().optional(), // 稳定排序(需求 1.2)
+    summarySource: z
+      .object({
+        title: z.string().min(1),
+        url: z.url(),
+        retrievedDate: z.coerce.date(),
+      })
+      .optional(),
+    order: z.number().optional(),
     reviewStatus,
   }),
+});
+
+const facts = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/facts' }),
+  schema: atomicFact,
 });
 
 const drugs = defineCollection({
@@ -77,63 +178,73 @@ const drugs = defineCollection({
     .object({
       slug: z.string().min(1),
       locale,
-      company: reference('companies'), // 引用完整性(需求 2)
+      company: reference('companies'),
       genericName: z.string().min(1),
-      genericNameEn: z.string().optional(), // 英文通用名/INN(作为副标题展示)
+      genericNameEn: z.string().optional(),
       brandName: z.string().optional(),
       drugClass: z.string().optional(),
-      // 首页「热门药物」排序权重:数值越大越靠前;缺省时排在最后(需求 1 / 9)。
       popularity: z.number().optional(),
       summary: z.string().optional(),
-      // 适应症按监管地区分组:同一药品在不同地区获批的适应症不同(需求 5.1)。
       indications: z
         .array(
           z.object({
-            region: z.string().min(1), // 地区,如「中国」「美国」「欧盟」
-            regulator: z.string().optional(), // 监管机构,如 NMPA / FDA / EMA
-            items: z.array(z.string().min(1)).min(1), // 该地区的适应症条目(至少一条)
-            asOf: z.string().optional(), // 数据参考时间,如 "2025"
+            region: z.string().min(1),
+            regulator: z.string().optional(),
+            items: z.array(z.string().min(1)).min(1),
+            asOf: z.string().optional(),
           }),
         )
-        .min(1), // 至少包含一个地区分组
+        .min(1),
       target: z.object({
-        // 作用靶点(需求 5.2)
         name: z.string().min(1),
         type: z.enum(['receptor', 'enzyme', 'ion-channel', 'pathway', 'protein', 'other']),
         role: z.string().min(1),
       }),
       mechanism: z.object({
-        // 分层讲解(需求 3.1)
-        analogy: z.string().min(1), // 一句话比喻
-        simple: z.string().min(1), // 通俗版
-        advanced: z.string().min(1), // 进阶版
+        analogy: z.string().min(1).optional(),
+        simple: z.string().min(1),
+        advanced: z.string().min(1),
       }),
-      media: z.array(media).optional(), // 图/动画可选:无已制作素材时不展示(需求 4)
+      media: z.array(media).optional(),
       citations: z.array(citation),
-      // 后台字段级证据;前端仍只在页面底部统一展示 citations。
       evidence: z.array(evidenceLink).optional(),
-      // 新自动流水线写入的机器验证结果;旧内容迁移期间仍兼容 review。
+      factRefs: z.array(factRef).optional(),
       verification: verification.optional(),
-      review: review.optional(), // 旧自动审核元数据(P15),待内容迁移后移除
+      legacyLkg: legacyLkg.optional(),
+      review: z.never().optional(),
       reviewStatus,
       updatedDate: z.coerce.date().optional(),
     })
-    // 已评审的药品必须至少有一条来源(需求 6.4 / 8.4)
-    .refine((d) => d.reviewStatus !== 'reviewed' || d.citations.length >= 1, {
-      message: '已评审的药品必须至少包含一条来源引用',
-      path: ['citations'],
-    })
-    // 发布内容必须由新流水线验证通过;迁移期间兼容已有的 high review 元数据。
-    .refine(
-      (d) =>
-        d.reviewStatus !== 'reviewed' ||
-        d.verification?.status === 'verified' ||
-        (d.review !== undefined && d.review.confidence === 'high'),
-      {
-        message: '已发布的药品必须通过自动验证(verification=verified)或具有迁移期 high review 元数据',
-        path: ['verification'],
-      },
-    ),
+    .superRefine((data, context) => {
+      if (data.reviewStatus !== 'reviewed') return;
+      if (data.citations.length < 1) {
+        context.addIssue({ code: 'custom', message: '已评审的药品必须至少包含一条来源引用', path: ['citations'] });
+      }
+      const verified = data.verification?.status === 'verified';
+      const explicitLegacy = data.verification?.status === 'stale' && data.legacyLkg !== undefined;
+      if (!verified && !explicitLegacy) {
+        context.addIssue({
+          code: 'custom',
+          message: '发布内容必须为 verified，或属于受清单约束且未到期的 stale legacy LKG',
+          path: ['verification'],
+        });
+      }
+      if (verified) {
+        if (!data.factRefs?.length) {
+          context.addIssue({ code: 'custom', message: 'verified v2 内容必须包含 factRefs', path: ['factRefs'] });
+        } else if (data.factRefs.some((ref) => ref.reviewStatus !== 'reviewed')) {
+          context.addIssue({ code: 'custom', message: 'verified v2 的 factRefs 必须全部完成编辑复核', path: ['factRefs'] });
+        }
+      }
+      if (verified && data.legacyLkg) {
+        context.addIssue({ code: 'custom', message: 'verified 内容不得继续声明 legacyLkg', path: ['legacyLkg'] });
+      }
+      if (explicitLegacy && data.verification && 'bundleHash' in data.verification && data.verification.bundleHash) {
+        context.addIssue({ code: 'custom', message: '未联网验证的 legacy/stale 内容不得声明 bundleHash', path: ['verification', 'bundleHash'] });
+      }
+    }),
 });
 
-export const collections = { companies, drugs };
+export const collections = { companies, facts, drugs };
+export const VERIFICATION_STATUSES = ['verified', 'conflicted', 'stale', 'blocked'] as const;
+export type VerificationStatus = (typeof VERIFICATION_STATUSES)[number];

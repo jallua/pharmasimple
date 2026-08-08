@@ -38,17 +38,26 @@ media:
     status: ready
 citations:
   - title: "Cejemly(舒格利单抗)欧盟 EMA 药品概览"
+    id: cite-4bb7dada674bb4c4
+    sourceId: eu-ema
     publisher: 欧洲药品管理局(EMA)
     url: https://www.ema.europa.eu/en/documents/overview/cejemly-epar-medicine-overview_en.pdf
     sourceType: regulator
   - title: "基石药业:舒格利单抗(择捷美)产品信息"
+    id: cite-915984c43fb7c243
+    sourceId: web:cstonepharma.com
     publisher: 基石药业(CStone)
     url: https://www.cstonepharma.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

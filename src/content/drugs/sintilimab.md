@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "Sintilimab 定义(美国国家癌症研究所 NCI 药物词典)"
+    id: cite-e3b069db2fae7e66
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/publications/dictionaries/cancer-drug/def/sintilimab
     sourceType: gov
   - title: "信迪利单抗(达伯舒)中国获批信息(信达生物 / 礼来)"
+    id: cite-cf5f1cf223f43270
+    sourceId: web:investor.lilly.com
     publisher: 信达生物 / 礼来
     url: https://investor.lilly.com/news-releases/news-release-details/innovent-and-lilly-announce-successful-expansion-sintilimab
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

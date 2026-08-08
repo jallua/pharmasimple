@@ -20,6 +20,17 @@ test.log
 .env.production
 
 # macOS-specific files
+
+# Python / scraper runtime artifacts
+**/__pycache__/
+**/*.py[cod]
+scraper/.venv/
+scraper/.pytest_cache/
+scraper/.hypothesis/
+scraper/data/staging/
+scraper/data/refresh-report.json
+scraper/data/refresh-*-v2.json
+
 .DS_Store
 
 # jetbrains setting folder

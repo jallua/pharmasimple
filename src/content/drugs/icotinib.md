@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "国家药品监督管理局(NMPA)药品信息"
+    id: cite-9190036d510a75a3
+    sourceId: cn-nmpa
     publisher: 国家药品监督管理局(NMPA)
     url: https://www.nmpa.gov.cn/
     sourceType: regulator
   - title: "贝达药业:埃克替尼(凯美纳)产品信息"
+    id: cite-3db3f5e4e9d89c7f
+    sourceId: web:bettapharma.com
     publisher: 贝达药业(Betta Pharmaceuticals)
     url: https://www.bettapharma.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

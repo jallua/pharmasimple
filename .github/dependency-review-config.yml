@@ -1,0 +1,11 @@
+fail-on-severity: high
+fail-on-scopes:
+  - runtime
+  - development
+vulnerability-check: true
+license-check: true
+deny-licenses:
+  - AGPL-3.0
+  - GPL-3.0
+show-openssf-scorecard: true
+warn-only: false

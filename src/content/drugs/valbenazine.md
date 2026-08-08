@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:INGREZZA(缬苯那嗪)"
+    id: cite-16829fbcb4847769
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4c970164-cafb-421f-9eb5-c226ef0a3417
     sourceType: regulator
   - title: "囊泡单胺转运体 2(VMAT2)抑制剂(NCBI Bookshelf / LiverTox)"
+    id: cite-628eb07b61606439
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK548187/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -1,12 +1,12 @@
 {
   "site": {
     "title": "懂药君",
-    "tagline": "用通俗的比喻和原创动画,讲清药物如何在体内起作用。"
+    "tagline": "用通俗的比喻和原创动画，讲清药物如何在体内起作用。"
   },
   "nav": {
     "label": "主导航",
     "home": "首页",
-    "drugs": "药物",
+    "drugs": "产品",
     "companies": "公司",
     "search": "搜索",
     "about": "关于",
@@ -15,81 +15,91 @@
   },
   "disclaimer": {
     "title": "免责声明",
-    "body": "本站为科普内容,不构成医疗建议,如有用药与诊疗需求请咨询专业医疗人员。"
+    "body": "本站仅用于产品适应症与作用机制科普，不构成医疗建议。页面内容不应用于判断产品优劣、替代关系或个体用药选择。具体获批用途和使用要求请以当地最新说明书及专业医疗人员意见为准。"
   },
   "search": {
-    "placeholder": "搜索药品、公司或适应症",
+    "title": "查找药物",
+    "placeholder": "输入商品名、通用名称、公司或适应症",
+    "clear": "清除搜索",
     "noResults": "未找到相关内容",
-    "label": "站内搜索",
-    "pageLead": "搜索药品、公司或适应症,直达它们的作用机制说明。"
+    "label": "查找药物",
+    "pageLead": "输入商品名、通用名称、公司或适应症，查找已收录内容。"
   },
   "a11y": {
     "skipToContent": "跳到主要内容"
   },
   "home": {
+    "title": "查找药物，了解适应症与作用机制",
+    "lead": "输入商品名、通用名称、公司或适应症。",
+    "popularTitle": "热门药物",
     "browseTitle": "开始浏览",
     "companiesEntry": "按公司浏览药品",
-    "aboutEntry": "了解内容方法与免责声明",
-    "searchHint": "搜索功能即将上线。",
-    "featuredTitle": "示例药物",
-    "featuredLead": "从这些已发布的药物机制开始了解:",
-    "popularTitle": "热门药物",
-    "popularLead": "从这些常用药物直接了解它们怎么起作用:",
+    "productsEntry": "浏览全部产品",
+    "viewProduct": "查看详情",
+    "viewAllDrugs": "查看全部药物",
+    "aboutEntry": "了解公司简介、产品内容方法与免责声明",
+    "popularLead": "从这些常用药物直接了解它们怎么起作用：",
     "byClassTitle": "按作用机制浏览",
-    "byClassLead": "按治疗领域分组,点开可展开该领域下的药物类别;点击任一类别可跳转到对应的药物列表。",
-    "viewMechanism": "查看作用机制",
-    "viewAllDrugs": "查看全部药物"
+    "byClassLead": "按治疗领域分组，点开可展开该领域下的药物类别；点击任一类别可直接查看对应药物。",
+    "viewMechanism": "查看作用机制"
   },
   "about": {
     "title": "关于本站",
-    "intro": "懂药君用通俗的比喻和原创动画,把药物在体内如何起作用讲清楚。内容按“公司 → 药品 → 作用机制”组织,面向想快速理解用药原理的普通读者。",
-    "guideTitle": "如何看懂一个药物页",
-    "guideLead": "每个药物页都按同样的结构展开,你可以这样一层层往下读:",
-    "guideAnalogy": "一句话比喻:用生活化的类比,先给你一个直觉印象。",
-    "guideSimple": "通俗版:用大白话讲清楚它到底怎么起作用。",
-    "guideAdvanced": "进阶版:为想深入的人提供更严谨的机制描述。",
-    "guideAnimation": "原创动画:分步骤演示作用过程,可随时暂停,并支持系统的“减少动态”设置。",
-    "guideIndications": "适应症(按地区):同一药物在中国、美国、欧盟等地获批的适应症可能不同,分地区分别列出。",
-    "guideTarget": "作用靶点:药物直接作用的关键蛋白、受体或酶。",
-    "guideCitations": "参考来源:每个条目都附带权威来源,可点开逐条核对。",
+    "intro": "懂药君按公司与具体产品组织药物科普信息。公司页介绍公司及其已收录产品；每个产品页独立呈现产品名称、通用名称、适应症、作用机制和参考来源。",
+    "companyProfilesTitle": "公司简介怎么整理",
+    "companyProfilesLead": "公司简介只采用公司网站上的公司自述原文或忠实翻译，不自行补充公司网站未作出的描述。无法核验公司介绍页时，本站不展示简介；公司详情页只提供“公司网站”链接。",
+    "guideTitle": "如何看懂一个产品页",
+    "guideLead": "每个产品页都按同样的结构展开，你可以这样一层层往下读：",
+    "guideAnalogy": "一句话比喻：仅在准确且有帮助时，用简短类比建立直觉。",
+    "guideSimple": "通俗解释：结合产品成分、适应症和作用部位说明主要过程。",
+    "guideAdvanced": "进一步了解：补充更严谨的分子或细胞机制。",
+    "guideAnimation": "原创动画：演示本页涉及的生物学环节；共享动画不表示不同产品相同或可互换。",
+    "guideIndications": "适应症：按地区和监管机构列出说明书中的适应症。",
+    "guideTarget": "作用靶点：说明相关蛋白、受体、酶或生物学过程。",
+    "guideCitations": "参考来源：产品页列出所用资料链接，便于逐条核对。",
     "methodologyTitle": "内容方法",
-    "methodologyLead": "内容的组织与制作遵循以下原则:",
-    "methodPoint1": "按“公司 → 药品 → 作用机制”分层组织,便于层层深入。",
-    "methodPoint2": "所有机制示意图与动画均为原创制作。",
-    "methodPoint3": "采用固定的自动审核流程:核对权威来源、通过全部一致性与范围检查后才自动发布,不满足则保持草稿状态。",
+    "methodologyLead": "内容的组织与制作遵循以下原则：",
+    "methodPoint1": "本站按“公司 → 产品”组织内容；部分既有记录仍在逐步拆分并规范商品名。",
+    "methodPoint2": "每个产品独立核对适应症和整体机制；基础通路或动画可以复用，但必须逐产品确认适用范围。",
+    "methodPoint3": "页面内容不用于产品横向优劣、疗效、安全性、适用人群或替代关系判断，也不提供个体用药建议。",
+    "methodPoint4": "产品页列出核对所用资料；部分既有内容仍在持续复核和更新。",
     "coverageTitle": "内容覆盖",
-    "coverageUnitCompanies": "家制药公司",
-    "coverageUnitDrugs": "种药物机制",
+    "coverageUnitCompanies": "家已收录公司",
+    "coverageUnitDrugs": "款已收录产品",
     "sourcesTitle": "来源与准确性",
-    "sourcesLead": "每个已发布的药物机制,在发布前至少核对两条相互独立的权威来源(其中至少一条为监管机构或政府/权威机构),并在构建时以代码强制校验。常用的权威来源包括:",
-    "sourcesNote": "各地区获批适应症以当地最新官方说明书为准;本站尽力保证准确,但科普内容不能替代专业医疗建议。"
+    "sourcesLead": "每个已发布产品目前至少列出两份相互独立的资料，其中至少一份来自监管机构、政府机构或官方药品标签。产品内容常用资料包括：",
+    "sourcesNote": "各地区获批适应症以当地最新官方说明书为准。机制解释不代表疗效大小、产品优劣、可相互替代或适合某位具体读者。"
   },
   "mechanism": {
     "heading": "作用机制",
+    "mediaHeading": "作用机制示意",
+    "productScope": "以下内容说明本页产品在所列适应症中的主要作用过程。相同成分或靶点并不意味着不同产品具有相同适应症或可以相互替代。",
+    "mediaScope": "示意图或动画只展示本页涉及的生物学环节，不代表其他产品具有相同适应症、给药特征或效果。",
     "analogy": "一句话比喻",
-    "simple": "通俗版",
-    "advanced": "进阶版",
+    "simple": "通俗解释",
+    "advanced": "进一步了解",
     "pauseAnimation": "暂停动画"
   },
   "citations": {
     "heading": "参考来源"
   },
   "drug": {
+    "productName": "产品名称",
+    "genericName": "通用名称",
     "indications": "适应症",
-    "indicationsByRegion": "适应症(按获批地区)",
-    "indicationsNote": "各地区获批适应症以当地最新官方说明书为准;本页为科普性归纳,不代表在所有地区均可获得。",
-    "asOf": "截至",
+    "indicationExample": "适应症示例",
+    "indicationsByRegion": "适应症",
+    "indicationsNote": "适应症可能因地区和时间变化，请以当地最新官方说明书为准。",
+    "asOf": "资料截至",
     "target": "作用靶点",
     "drugClass": "药物类别",
     "company": "所属公司",
-    "updated": "更新于",
-    "relatedTitle": "同类药物",
-    "relatedLead": "点开对比同一类别下其它药物的差异:"
+    "updated": "更新于"
   },
   "drugs": {
-    "indexTitle": "全部药物",
-    "indexLead": "按作用机制分类浏览所有已收录的药物。",
-    "empty": "暂无已发布的药物内容,敬请期待。",
+    "indexTitle": "全部产品",
+    "indexLead": "浏览本站已收录的产品。",
+    "empty": "暂无已发布的产品内容，敬请期待。",
     "tocTitle": "按治疗领域快速跳转"
   },
   "targetType": {
@@ -102,21 +112,23 @@
   },
   "company": {
     "backToIndex": "返回公司索引",
-    "relatedDrugs": "相关药品",
-    "empty": "暂无已发布的公司内容,敬请期待。",
-    "indexLead": "按总部所在国家 / 地区分组,浏览已收录的制药公司及其药品。",
+    "products": "已收录产品",
+    "empty": "暂无已发布的公司内容，敬请期待。",
+    "indexLead": "浏览已收录公司及其产品。",
+    "profile": "公司简介",
     "recorded": "收录",
-    "countUnit": "种药物"
+    "countUnit": "款产品",
+    "website": "公司网站"
   },
   "meta": {
-    "companiesDesc": "已收录制药公司及其药品的通俗作用机制说明,按总部国家 / 地区分组。",
-    "aboutDesc": "了解本站的内容方法、来源与免责声明。"
+    "companiesDesc": "按公司浏览已收录产品及其适应症和通俗作用机制说明。",
+    "aboutDesc": "了解本站的公司简介与产品内容方法、信息来源、机制素材复用边界和免责声明。"
   },
   "notFound": {
-    "title": "页面走丢了",
-    "body": "抱歉,没有找到这个页面。它可能已被移动,或从未存在。",
+    "title": "找不到页面",
+    "body": "抱歉，没有找到这个页面。它可能已被移动，或从未存在。",
     "home": "返回首页",
-    "drugs": "浏览全部药物",
+    "drugs": "浏览全部产品",
     "search": "去搜索"
   },
   "language": {

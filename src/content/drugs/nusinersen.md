@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:SPINRAZA(nusinersen 注射液)"
+    id: cite-fdda62363fedad66
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=dd70cd5f-b0fc-4ba4-a5ea-89a34778bd94
     sourceType: regulator
   - title: "Nusinersen(Spinraza)与脊髓性肌萎缩症(美国 NINDS)"
+    id: cite-010971b037843261
+    sourceId: us-nih
     publisher: 美国国立神经疾病与卒中研究所(NINDS)
     url: https://www.ninds.nih.gov/about-ninds/what-we-do/impact/ninds-contributions-approved-therapies/nusinersen-spinrazar-spinal-muscular-atrophy-sma
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

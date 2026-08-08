@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:LATUDA(鲁拉西酮)"
+    id: cite-a07ca9b609975a03
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=afad3051-9df2-4c54-9684-e8262a133af8
     sourceType: regulator
   - title: "Lurasidone(美国国立医学图书馆 NCBI Bookshelf · StatPearls)"
+    id: cite-60ce20a0769c6f29
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf·StatPearls)
     url: https://www.ncbi.nlm.nih.gov/books/NBK541057/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

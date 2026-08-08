@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "国家药品监督管理局(NMPA)药品信息"
+    id: cite-9190036d510a75a3
+    sourceId: cn-nmpa
     publisher: 国家药品监督管理局(NMPA)
     url: https://www.nmpa.gov.cn/
     sourceType: regulator
   - title: "齐鲁制药:伊鲁阿克(启欣可)产品信息"
+    id: cite-4420bd99cc9c1435
+    sourceId: web:qilu-pharma.com
     publisher: 齐鲁制药(Qilu Pharmaceutical)
     url: https://www.qilu-pharma.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

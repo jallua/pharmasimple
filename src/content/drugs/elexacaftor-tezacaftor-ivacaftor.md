@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:TRIKAFTA(依来卡托/替扎卡托/伊伐卡托)"
+    id: cite-c3d2a21da008888a
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=f354423a-85c2-41c3-a9db-0f3aee135d8d
     sourceType: regulator
   - title: "Elexacaftor-Tezacaftor-Ivacaftor(Trikafta)(NCBI Bookshelf / StatPearls)"
+    id: cite-2b7e193d769f2f18
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK603345/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

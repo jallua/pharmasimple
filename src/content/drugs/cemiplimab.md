@@ -38,17 +38,26 @@ media:
     status: ready
 citations:
   - title: "Cemiplimab-rwlc(美国国家癌症研究所 NCI)"
+    id: cite-d1c413638d9bec2f
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/cemiplimab-rwlc
     sourceType: gov
   - title: "FDA 说明书:LIBTAYO(西米普利单抗)"
+    id: cite-a044213178fdb345
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4347ae1f-d397-4f18-8b70-03897e1c054a
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

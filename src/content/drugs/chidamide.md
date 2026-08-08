@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "国家药品监督管理局(NMPA)药品信息"
+    id: cite-9190036d510a75a3
+    sourceId: cn-nmpa
     publisher: 国家药品监督管理局(NMPA)
     url: https://www.nmpa.gov.cn/
     sourceType: regulator
   - title: "微芯生物:西达本胺(爱谱沙)产品信息"
+    id: cite-ed7d1d1a79811880
+    sourceId: web:chipscreen.com
     publisher: 微芯生物(Chipscreen)
     url: https://www.chipscreen.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

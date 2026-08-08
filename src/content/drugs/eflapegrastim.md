@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ROLVEDON(艾氟培格司亭)"
+    id: cite-6b2f55474d7bf0e5
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=6e436115-62e7-4729-aeb0-ff78ea685206
     sourceType: regulator
   - title: "Colony Stimulating Factors(美国国立医学图书馆 NCBI Bookshelf · StatPearls)"
+    id: cite-64b71059b2beb59f
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf·StatPearls)
     url: https://www.ncbi.nlm.nih.gov/books/NBK548056/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

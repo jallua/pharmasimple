@@ -2,8 +2,19 @@
 slug: beigene
 locale: zh
 name: 百济神州
+nameEn: BeOne Medicines
+aliases:
+  - BeiGene
+identitySource:
+  title: BeOne Medicines official website
+  url: https://beonemedicines.com/
+  retrievedDate: 2026-08-08
 country: 中国
-summary: 百济神州(BeiGene / BeOne Medicines)是一家全球性生物科技公司,专注抗肿瘤创新药的研发与商业化,代表产品包括 BTK 抑制剂泽布替尼与抗 PD-1 抗体替雷利珠单抗。
+summary: "百济神州正在打造一家以卓越科学和非凡速度为驱动力的全球领先肿瘤公司，以惠及比以往更多的患者。"
+summarySource:
+  title: "About Us — BeOne Medicines"
+  url: https://beonemedicines.com/about/about-us/
+  retrievedDate: 2026-08-08
 order: 26
 reviewStatus: reviewed
 ---

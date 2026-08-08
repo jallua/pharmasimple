@@ -19,9 +19,9 @@ target:
   type: receptor
   role: 过敏时肥大细胞释放组胺,组胺激活 H1 受体,引起打喷嚏、流涕、鼻痒;局部炎症则让鼻塞、肿胀加重。
 mechanism:
-  analogy: 过敏性鼻炎发作,是身体接触花粉等过敏原后,免疫细胞放出大量“组胺”,组胺一按到鼻子上的“组胺开关(H1 受体)”,就让人打喷嚏、流鼻涕、鼻子痒。这个鼻喷雾是“二人组”:奥洛他定抢先按住组胺开关,让组胺按不动;糠酸莫米松则给发炎的鼻黏膜“消消火”。一个挡信号、一个消炎,配合起来更管用。
-  simple: 季节性过敏性鼻炎主要由组胺等介质引起。Ryaltris 是鼻喷雾复方,含两种成分:奥洛他定是选择性组胺 H1 受体拮抗剂(兼有稳定肥大细胞的作用),阻断组胺引起的打喷嚏、流涕、鼻痒;糠酸莫米松是鼻用糖皮质激素,抑制鼻黏膜的过敏性炎症、减轻鼻塞肿胀。两种机制互补,比单用更全面地控制鼻部症状。由印度格兰马克(Glenmark)研发。
-  advanced: Ryaltris 为奥洛他定盐酸盐与糠酸莫米松的鼻用固定复方。奥洛他定是选择性组胺 H1 受体拮抗剂,并可抑制肥大细胞释放组胺、白三烯等炎性介质,阻断组胺-H1 通路介导的喷嚏、鼻痒与流涕;糠酸莫米松是强效局部糖皮质激素,通过下调多种促炎基因与介质,抑制鼻黏膜的过敏性炎症、缓解鼻塞。二者作用机制互补,协同改善季节性过敏性鼻炎症状。由印度格兰马克(Glenmark)研发,商品名 Ryaltris。
+  analogy: 过敏性鼻炎时，组胺会激活鼻黏膜上的 H1 受体，引起打喷嚏、流涕和鼻痒，炎症反应也会造成鼻塞。Ryaltris 中的奥洛他定抑制 H1 受体信号，糠酸莫米松抑制鼻黏膜炎症。
+  simple: Ryaltris 是奥洛他定与糠酸莫米松组成的鼻喷雾复方。奥洛他定是 H1 受体抑制剂，可抑制组胺相关信号；糠酸莫米松是糖皮质激素，可调节参与炎症的多类细胞和介质。两种成分分别作用于组胺信号和鼻黏膜炎症。
+  advanced: Ryaltris 是奥洛他定盐酸盐与糠酸莫米松组成的鼻用固定复方。奥洛他定抑制组胺 H1 受体信号；糠酸莫米松通过糖皮质激素受体调节参与炎症反应的多类细胞和介质。
 media:
   - type: animation
     animationKey: antihistamine
@@ -30,18 +30,27 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:RYALTRIS(奥洛他定 / 糠酸莫米松鼻喷雾)"
+    id: cite-dc0b6182082bdb48
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=406be932-f00e-4c66-9dd1-c142090fe822
     sourceType: regulator
   - title: "Olopatadine Hydrochloride and Mometasone Furoate Nasal Spray(Ryaltris)临床评估(NCBI Bookshelf · CADTH)"
+    id: cite-97e5ccda5254f32a
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf)
     url: https://www.ncbi.nlm.nih.gov/books/NBK617240/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
-updatedDate: 2026-08-03
+updatedDate: 2026-08-08
 ---
 Ryaltris(奥洛他定 / 糠酸莫米松鼻喷雾)是印度格兰马克(Glenmark)研发的抗组胺 + 糖皮质激素复方,用于季节性过敏性鼻炎。

@@ -1,36 +1,27 @@
 ---
 slug: fruquintinib
 locale: zh
-company: hutchmed
+company: takeda
 genericName: 呋喹替尼
 genericNameEn: fruquintinib
-brandName: 爱优特(Elunate) / Fruzaqla
+brandName: Fruzaqla
 drugClass: VEGFR 抑制剂(高选择性)
 popularity: 52
-summary: 一种高选择性 VEGFR 抑制剂:掐断肿瘤"拉血管补给线"的信号,用于晚期结直肠癌;由和黄医药研发。
+summary: Fruzaqla 是含呋喹替尼的 VEGFR-1、VEGFR-2 和 VEGFR-3 酪氨酸激酶抑制剂，用于既往接受过治疗的转移性结直肠癌成人患者。
 indications:
   - region: 美国
     regulator: FDA
     items:
-      - 既往经治的转移性结直肠癌(mCRC)
-    asOf: "2025"
-  - region: 中国
-    regulator: NMPA
-    items:
-      - 既往经治的转移性结直肠癌(mCRC)
-    asOf: "2025"
-  - region: 日本
-    regulator: PMDA
-    items:
-      - 不可切除的晚期或复发结直肠癌 等
+      - 既往接受过氟嘧啶、奥沙利铂和伊立替康化疗及相应靶向治疗的转移性结直肠癌成人患者
+    asOf: "2026"
 target:
   name: 血管内皮生长因子受体(VEGFR-1/2/3)
   type: receptor
   role: 血管细胞上的"长血管信号接收器";被激活后促使长出新血管,给肿瘤供血供养。
 mechanism:
   analogy: 肿瘤要长大,得先给自己"拉几条供血的管道"(新血管)。血管细胞上有个叫 VEGFR 的"信号接收器",收到"长血管"的信号就开工。呋喹替尼卡住这个接收器,新血管长不出来,肿瘤就像被断了补给线,难以壮大。
-  simple: 肿瘤长大需要新长出的血管来输送氧气和养分(血管新生)。促血管信号接上血管细胞上的 VEGFR 受体后,就会催生新血管。呋喹替尼是一种高选择性的 VEGFR 抑制剂,它卡住 VEGFR-1、2、3,让"长血管"的信号传不下去,新血管长不出来,从而抑制肿瘤生长。它的特点是高度"专一"——主要只抑制 VEGFR1/2/3、很少碰别的激酶,因此脱靶副作用较少;主要用于转移性结直肠癌。
-  advanced: 呋喹替尼是一种口服、高选择性的血管内皮生长因子受体(VEGFR-1、2、3)酪氨酸激酶抑制剂。它抑制 VEGFR 信号、阻断肿瘤血管新生;因选择性高,脱靶作用相对较少。由和黄医药研发,在中国以"爱优特"上市、在美国与日本以 Fruzaqla 上市,用于既往经治的转移性结直肠癌。
+  simple: 呋喹替尼抑制 VEGFR-1、VEGFR-2 和 VEGFR-3 的酪氨酸激酶活性，从而抑制内皮细胞增殖、迁移和肿瘤血管形成。
+  advanced: 呋喹替尼是 VEGFR-1、VEGFR-2 和 VEGFR-3 的小分子酪氨酸激酶抑制剂。抑制这些受体可减少 VEGF 介导的血管生成信号。
 media:
   - type: animation
     animationKey: vegfr-inhibitor
@@ -39,18 +30,27 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:FRUZAQLA(呋喹替尼)"
+    id: cite-184a43c0e23c01f2
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=186d786e-dc8a-45f2-b5e1-01ac0201879f
     sourceType: regulator
   - title: "Fruquintinib(NCBI Bookshelf)"
+    id: cite-e8e29dced702b48e
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK613515/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
-updatedDate: 2026-08-03
+updatedDate: 2026-08-08
 ---
-呋喹替尼(爱优特 / Fruzaqla)是和黄医药研发的高选择性 VEGFR 抑制剂。
+Fruzaqla 是武田在美国供应的呋喹替尼胶囊，适应症按美国标签整理。

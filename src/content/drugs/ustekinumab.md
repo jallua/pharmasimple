@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:STELARA(乌司奴单抗)"
+    id: cite-39f58f62e8472b11
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c77a9664-e3bb-4023-b400-127aa53bca2b
     sourceType: regulator
   - title: "乌司奴单抗(MedlinePlus,美国国立医学图书馆)"
+    id: cite-b8e79f21032e372e
+    sourceId: us-medlineplus
     publisher: MedlinePlus(NLM)
     url: https://medlineplus.gov/druginfo/meds/a611013.html
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

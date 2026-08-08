@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ORSERDU(艾拉司群)"
+    id: cite-d71b693d727deb10
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=aa66ae5c-2bd2-4444-8178-b55651e054ef
     sourceType: regulator
   - title: "Elacestrant Dihydrochloride(美国国家癌症研究所 NCI)"
+    id: cite-a34ca2a6cc4a4f6d
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/elacestrant-dihydrochloride
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

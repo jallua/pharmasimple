@@ -39,7 +39,7 @@ target:
   role: 长在 T 细胞(免疫卫兵)表面的一个"刹车";被癌细胞按下后,卫兵就会停止攻击。
 mechanism:
   analogy: 身体里有专门追杀癌细胞的"免疫卫兵"(T 细胞),可癌细胞会偷偷给卫兵"踩刹车",让它停手不打。替雷利珠单抗的作用就是松开这个刹车,让免疫卫兵重新去清除癌细胞。
-  simple: T 细胞是免疫系统里专门清除癌细胞的"卫兵"。它身上有个叫 PD-1 的"刹车",本来是防止它误伤正常细胞的。狡猾的癌细胞会打出一个叫 PD-L1 的"信号"去踩住这个刹车,让卫兵误以为"是自己人"而停手。替雷利珠单抗是一种抗 PD-1 抗体,它挡在刹车上,癌细胞就踩不动了,卫兵重新清醒过来,继续攻击癌细胞。与早期同类相比,它特意改造了抗体的 Fc"尾巴"、减少与巨噬细胞的结合,避免刚起效的 T 细胞反被巨噬细胞"吃掉"(清除)。
+  simple: 替雷利珠单抗是一种经 Fc 工程改造的人源化 IgG4κ 抗 PD-1 单克隆抗体，可结合 PD-1 并阻断 PD-1 与 PD-L1、PD-L2 的相互作用，从而解除 PD-1 通路对免疫反应的抑制。
   advanced: 替雷利珠单抗是一种抗 PD-1 的单克隆抗体(一种能精准找到目标的蛋白质药物)。它结合在 T 细胞表面的 PD-1 上,挡住肿瘤细胞用 PD-L1、PD-L2 去踩这个"刹车",从而解除对 T 细胞的压制,让免疫系统重新识别并杀死肿瘤。它在设计上特意减少了与巨噬细胞上一个受体的结合,避免起效的 T 细胞被误清除。
 media:
   - type: animation
@@ -49,18 +49,34 @@ media:
     status: ready
 citations:
   - title: "Drug Trials Snapshots:TEVIMBRA"
+    id: cite-905f94241aa7f3b8
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/drug-approvals-and-databases/drug-trials-snapshots-tevimbra
     sourceType: regulator
   - title: "Tislelizumab-jsgr(美国国家癌症研究所 NCI)"
+    id: cite-94eb0f3188945618
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/tislelizumab-jsgr
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+  - title: "DailyMed：TEVIMBRA（替雷利珠单抗）处方信息"
+    id: cite-4b19bdc8ae83dde7
+    sourceId: us-dailymed
+    publisher: 美国国家医学图书馆 DailyMed
+    url: https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=08ef1e3e-496f-4b0b-94ee-fbba3cc1985a
+    retrievedDate: 2026-08-08
+    sourceType: label
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
-updatedDate: 2026-08-03
+updatedDate: 2026-08-08
 ---
 替雷利珠单抗(百泽安 / Tevimbra)是百济神州研发的抗 PD-1 单克隆抗体。

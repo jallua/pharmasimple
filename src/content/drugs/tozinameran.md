@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:COMIRNATY(COVID-19 mRNA 疫苗)"
+    id: cite-fe03c5630e21d442
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=48c86164-de07-4041-b9dc-f2b5744714e5
     sourceType: regulator
   - title: "mRNA 疫苗如何工作(MedlinePlus Genetics)"
+    id: cite-28bfcfe30f1b4fa4
+    sourceId: us-medlineplus
     publisher: 美国国立医学图书馆 MedlinePlus
     url: https://medlineplus.gov/genetics/understanding/therapy/mrnavaccines/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

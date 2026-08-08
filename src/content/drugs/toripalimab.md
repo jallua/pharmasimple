@@ -44,17 +44,26 @@ media:
     status: ready
 citations:
   - title: "FDA 批准特瑞普利单抗(Loqtorzi)用于鼻咽癌"
+    id: cite-a096d75103988bf2
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-toripalimab-tpzi-nasopharyngeal-carcinoma
     sourceType: regulator
   - title: "Loqtorzi(toripalimab)欧洲 EMA 药品页"
+    id: cite-066d053a7a2daaf8
+    sourceId: eu-ema
     publisher: 欧洲药品管理局(EMA)
     url: https://www.ema.europa.eu/en/medicines/human/EPAR/loqtorzi
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

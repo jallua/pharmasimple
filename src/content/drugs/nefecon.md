@@ -39,17 +39,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:TARPEYO(budesonide 延迟释放胶囊,用于 IgA 肾病)"
+    id: cite-eeb685ca9a1cd1e3
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=938cada4-d6bf-4252-836f-dd40f9eadb4d
     sourceType: regulator
   - title: "云顶新耀:耐赋康(Nefecon)获中国 NMPA 批准治疗原发性 IgA 肾病"
+    id: cite-20660a681526e111
+    sourceId: web:everestmedicines.com
     publisher: 云顶新耀(Everest Medicines)
     url: https://www.everestmedicines.com/
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

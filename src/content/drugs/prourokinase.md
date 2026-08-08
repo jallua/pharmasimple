@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "Physiology, Plasminogen Activation(美国国立医学图书馆 NCBI Bookshelf · StatPearls)"
+    id: cite-2918e245d2fc0629
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf·StatPearls)
     url: https://www.ncbi.nlm.nih.gov/books/NBK539745/
     sourceType: gov
   - title: "Thrombolytic Therapy(美国国立医学图书馆 NCBI Bookshelf · StatPearls)"
+    id: cite-aed2673985fd4953
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf·StatPearls)
     url: https://www.ncbi.nlm.nih.gov/books/NBK557411/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

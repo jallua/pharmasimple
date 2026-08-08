@@ -1,0 +1,39 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:00'
+      timezone: UTC
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:15'
+      timezone: UTC
+    versioning-strategy: increase
+    groups:
+      npm-minor-patch:
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: pip
+    directory: /scraper
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:30'
+      timezone: UTC
+    groups:
+      python-minor-patch:
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5

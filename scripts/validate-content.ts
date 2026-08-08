@@ -28,6 +28,7 @@
 //
 // Run directly with Node's native TypeScript support: `node scripts/validate-content.ts`.
 
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,6 +41,23 @@ import {
   publishedOnly,
 } from '../src/lib/catalog.ts';
 import type { CompanyData, CompanyEntry, DrugData, DrugEntry } from '../src/lib/catalog.ts';
+import {
+  assertionEvidenceMatches,
+  atomicFactHash,
+  atomicFactId,
+  canonicalHash,
+  canonicalJson,
+  evidenceDocumentId,
+  factBundleHash,
+  factResolutionMatchesAssertions,
+  importedFactHash,
+  requiredTrustedFactPaths,
+  trustedFactPayload,
+  validateFactRef,
+  type AtomicFact,
+} from '../src/lib/trusted-content.ts';
+import { resolveRegisteredSource } from '../src/lib/source-registry.ts';
+import { LEGACY_LKG_POLICY } from '../src/lib/trust-policy.ts';
 
 // ---------------------------------------------------------------------------
 // Locate the content directories relative to this script.
@@ -49,12 +67,55 @@ const scriptDir = fileURLToPath(new URL('.', import.meta.url));
 const siteRoot = join(scriptDir, '..');
 const companiesDir = join(siteRoot, 'src', 'content', 'companies');
 const drugsDir = join(siteRoot, 'src', 'content', 'drugs');
+const factsDir = join(siteRoot, 'src', 'content', 'facts');
+const legacyManifestPath = join(siteRoot, 'src', 'data', 'legacy-lkg.json');
+const coverageReportPath = join(siteRoot, 'src', 'data', 'trusted-content-coverage.json');
+const verifiedProvenancePath = join(siteRoot, 'src', 'data', 'verified-provenance.json');
+
+interface LegacyManifest {
+  version: number;
+  snapshotId: string;
+  capturedAt: string;
+  migrationDeadline: string;
+  entries: Record<string, { contentDigest: string }>;
+}
+
+const sha256 = (value: string): string =>
+  `sha256:${createHash('sha256').update(value, 'utf8').digest('hex')}`;
+
+function readVerifiedProvenance(violations: string[]): ReadonlyMap<string, string> {
+  if (!existsSync(verifiedProvenancePath)) return new Map();
+  try {
+    const provenance = JSON.parse(readFileSync(verifiedProvenancePath, 'utf8')) as Record<string, any>;
+    if (provenance.schemaVersion !== 1 || !provenance.files || typeof provenance.files !== 'object') {
+      throw new Error('invalid schema');
+    }
+    const files = new Map<string, string>();
+    for (const [relativePath, expected] of Object.entries(provenance.files as Record<string, unknown>)) {
+      if (!/^(?:scraper\/source-plan\.json|src\/(?:content\/facts\/fact-[a-f0-9]{64}\.json|data\/verified-import-report\.json))$/.test(relativePath) ||
+          !/^sha256:[a-f0-9]{64}$/.test(String(expected))) {
+        throw new Error(`invalid provenance entry ${relativePath}`);
+      }
+      const full = join(siteRoot, ...relativePath.split('/'));
+      if (existsSync(full)) {
+        const actual = `sha256:${createHash('sha256').update(readFileSync(full)).digest('hex')}`;
+        if (actual !== expected) throw new Error(`digest mismatch for ${relativePath}`);
+      }
+      files.set(relativePath, String(expected));
+    }
+    return files;
+  } catch (error) {
+    violations.push(`[facts] verified provenance is invalid: ${error instanceof Error ? error.message : String(error)}.`);
+    return new Map();
+  }
+}
 
 /** An entry-like object plus the source file, so violations can point to it. */
 interface FileEntry<T> {
   id: string;
   slug: string;
   file: string; // path relative to the site root, forward-slashed
+  body: string;
   data: T;
 }
 
@@ -75,6 +136,67 @@ function listMarkdown(dir: string): string[] {
   return out.sort();
 }
 
+function listJson(dir: string): string[] {
+  if (!existsSync(dir)) return [];
+  const out: string[] = [];
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    const st = statSync(full);
+    if (st.isDirectory()) out.push(...listJson(full));
+    else if (st.isFile() && name.toLowerCase().endsWith('.json')) out.push(full);
+  }
+  return out.sort();
+}
+
+function readFactIndex(violations: string[]): Map<string, AtomicFact> {
+  const facts = new Map<string, AtomicFact>();
+  for (const full of listJson(factsDir)) {
+    const file = relative(siteRoot, full).split(sep).join('/');
+    try {
+      const fact = JSON.parse(readFileSync(full, 'utf8')) as AtomicFact;
+      if (fact.schemaVersion !== 2 || !/^fact-[a-f0-9]{64}$/.test(String(fact.factId ?? ''))) {
+        violations.push(`[facts] ${file}: invalid v2 fact identity.`);
+        continue;
+      }
+      if (facts.has(fact.factId)) {
+        violations.push(`[facts] ${file}: duplicate factId ${fact.factId}.`);
+        continue;
+      }
+      if (atomicFactId(fact) !== fact.factId) {
+        violations.push(`[facts] ${file}: factId does not match canonical factKey + scope identity.`);
+      }
+      if (atomicFactHash(fact) !== fact.resolutionHash) {
+        violations.push(`[facts] ${file}: resolutionHash does not match canonical fact content.`);
+      }
+      if (!factResolutionMatchesAssertions(fact)) {
+        violations.push(`[facts] ${file}: fact value/status does not resolve from its assertions.`);
+      }
+      const documents = new Map((fact.evidenceDocuments ?? []).map((document) => [document.evidenceId, document]));
+      if (documents.size < 1 || fact.importHash !== importedFactHash(fact)) {
+        violations.push(`[facts] ${file}: importHash or embedded evidence documents are invalid.`);
+      }
+      for (const document of documents.values()) {
+        if (evidenceDocumentId(document) !== document.evidenceId) {
+          violations.push(`[facts] ${file}: evidenceId does not match immutable document metadata.`);
+        }
+        if (resolveRegisteredSource({ sourceId: document.sourceId, url: document.sourceUrl })?.authoritative !== true) {
+          violations.push(`[facts] ${file}: embedded evidence is not a registered authoritative source.`);
+        }
+      }
+      for (const assertion of fact.assertions ?? []) {
+        const document = documents.get(assertion.evidenceId);
+        if (!document || !assertionEvidenceMatches(assertion, document)) {
+          violations.push(`[facts] ${file}: assertion is detached from its embedded evidence document scope or lineage.`);
+        }
+      }
+      facts.set(fact.factId, fact);
+    } catch (error) {
+      violations.push(`[facts] ${file}: ${error instanceof Error ? error.message : String(error)}.`);
+    }
+  }
+  return facts;
+}
+
 function readEntries<T>(dir: string): FileEntry<T>[] {
   return listMarkdown(dir).map((full) => {
     const raw = readFileSync(full, 'utf8');
@@ -86,7 +208,7 @@ function readEntries<T>(dir: string): FileEntry<T>[] {
     // to the filename so the pure helpers still have a stable identifier.
     const slug =
       typeof data.slug === 'string' && data.slug.length > 0 ? data.slug : fileBase;
-    return { id: slug, slug, file: relPath, data: data as unknown as T };
+    return { id: slug, slug, file: relPath, body: parsed.content, data: data as unknown as T };
   });
 }
 
@@ -115,6 +237,25 @@ function main(): void {
 
   const companies = readEntries<CompanyData>(companiesDir);
   const drugs = readEntries<DrugData>(drugsDir);
+  const facts = readFactIndex(violations);
+  const verifiedProvenance = readVerifiedProvenance(violations);
+  if (!existsSync(legacyManifestPath)) {
+    violations.push(`[P15] Missing legacy LKG manifest: ${relative(siteRoot, legacyManifestPath)}.`);
+  }
+  const legacyManifest = existsSync(legacyManifestPath)
+    ? (JSON.parse(readFileSync(legacyManifestPath, 'utf8')) as LegacyManifest)
+    : { version: 0, snapshotId: '', capturedAt: '', migrationDeadline: '', entries: {} };
+  if (existsSync(legacyManifestPath)) {
+    if (canonicalHash(legacyManifest) !== LEGACY_LKG_POLICY.manifestHash) {
+      violations.push('[P15] Legacy LKG manifest differs from the immutable policy baseline.');
+    }
+    if (legacyManifest.snapshotId !== LEGACY_LKG_POLICY.snapshotId ||
+        legacyManifest.capturedAt !== LEGACY_LKG_POLICY.capturedAt ||
+        legacyManifest.migrationDeadline !== LEGACY_LKG_POLICY.migrationDeadline ||
+        Object.keys(legacyManifest.entries).length !== LEGACY_LKG_POLICY.entryCount) {
+      violations.push('[P15] Legacy LKG snapshot identity, deadline, or entry set violates policy.');
+    }
+  }
 
   // These casts are safe: FileEntry structurally satisfies catalog's Entry<T>
   // (id/slug/data), and the extra `file` field is ignored by the helpers.
@@ -168,6 +309,112 @@ function main(): void {
     const result = drugContentInvariants(drug as unknown as DrugEntry);
     for (const v of result.violations) {
       violations.push(`[content] Drug "${drug.slug}" (${drug.file}) — ${v}.`);
+    }
+
+    if (drug.data.verification?.status === 'verified') {
+      const referenced = new Map<string, AtomicFact>();
+      const reviewedPaths = new Set<string>();
+      for (const ref of drug.data.factRefs ?? []) {
+        const errors = validateFactRef(
+          drug.data,
+          ref,
+          facts,
+          String(drug.data.genericNameEn ?? ''),
+        );
+        for (const error of errors) {
+          violations.push(`[facts] Drug "${drug.slug}" (${drug.file}) ${ref.contentPath}: ${error}.`);
+        }
+        if (ref.reviewStatus === 'reviewed' && errors.length === 0) reviewedPaths.add(ref.contentPath);
+        for (const factId of ref.factIds) {
+          const fact = facts.get(factId);
+          if (fact) referenced.set(factId, fact);
+        }
+      }
+      for (const contentPath of requiredTrustedFactPaths(drug.data)) {
+        if (!reviewedPaths.has(contentPath)) {
+          violations.push(`[facts] Drug "${drug.slug}" (${drug.file}): verified v2 field ${contentPath} has no valid reviewed factRef.`);
+        }
+      }
+      for (const factId of referenced.keys()) {
+        const factPath = `src/content/facts/${factId}.json`;
+        if (!verifiedProvenance.has(factPath)) {
+          violations.push(`[facts] Drug "${drug.slug}" (${drug.file}): ${factId} lacks protected refresh provenance.`);
+        }
+      }
+      const expectedBundleHash = factBundleHash(referenced.values());
+      if (drug.data.verification.bundleHash !== expectedBundleHash) {
+        violations.push(`[facts] Drug "${drug.slug}" (${drug.file}): verification.bundleHash does not match referenced facts.`);
+      }
+    }
+
+    const legacy = drug.data.legacyLkg;
+    if (legacy) {
+      const catalogEntry = legacyManifest.entries[drug.slug];
+      const currentDigest = sha256(
+        canonicalJson(trustedFactPayload(drug.data as unknown as Record<string, unknown>, drug.body)),
+      );
+      if (!catalogEntry) {
+        violations.push(`[P15] Drug "${drug.slug}" (${drug.file}) is not one of the explicit legacy LKG entries.`);
+      } else if (catalogEntry.contentDigest !== currentDigest) {
+        violations.push(
+          `[P15] Drug "${drug.slug}" (${drug.file}) changed from its legacy LKG snapshot; ` +
+            `remove legacyLkg and provide verified field evidence + bundleHash.`,
+        );
+      }
+      const migrateBy = new Date(legacy.migrateBy).toISOString().slice(0, 10);
+      if (legacy.snapshotId !== legacyManifest.snapshotId || migrateBy !== legacyManifest.migrationDeadline) {
+        violations.push(`[P15] Drug "${drug.slug}" (${drug.file}) legacy metadata disagrees with the migration manifest.`);
+      }
+    }
+  }
+
+  const statusCounts = { verified: 0, conflicted: 0, stale: 0, blocked: 0 };
+  let legacyCount = 0;
+  let citationCount = 0;
+  let citedWithId = 0;
+  let citedWithSourceId = 0;
+  let evidenceClaimCount = 0;
+  for (const drug of drugs) {
+    const status = drug.data.verification?.status;
+    if (status) statusCounts[status] += 1;
+    if (drug.data.legacyLkg) legacyCount += 1;
+    citationCount += drug.data.citations?.length ?? 0;
+    citedWithId += drug.data.citations?.filter((citation) => !!citation.id).length ?? 0;
+    citedWithSourceId += drug.data.citations?.filter((citation) => !!citation.sourceId).length ?? 0;
+    evidenceClaimCount += drug.data.evidence?.length ?? 0;
+  }
+  const coverage = {
+    total: drugs.length,
+    ...statusCounts,
+    legacyLkg: legacyCount,
+    needsOnlineVerification: drugs.length - statusCounts.verified,
+    citations: citationCount,
+    citationsWithId: citedWithId,
+    citationsWithSourceId: citedWithSourceId,
+    evidenceClaims: evidenceClaimCount,
+  };
+  if (!existsSync(coverageReportPath)) {
+    violations.push(`[P15] Missing trusted-content coverage report: ${relative(siteRoot, coverageReportPath)}.`);
+  } else {
+    const report = JSON.parse(readFileSync(coverageReportPath, 'utf8')) as any;
+    if (report.migrationDeadline !== LEGACY_LKG_POLICY.migrationDeadline) {
+      violations.push('[P15] trusted-content coverage report changes the immutable migration deadline.');
+    }
+    const reportCoverage = {
+      total: report.drugs?.total,
+      verified: report.drugs?.verified,
+      conflicted: report.drugs?.conflicted,
+      stale: report.drugs?.stale,
+      blocked: report.drugs?.blocked,
+      legacyLkg: report.drugs?.legacyLkg,
+      needsOnlineVerification: report.drugs?.needsOnlineVerification,
+      citations: report.citations?.total,
+      citationsWithId: report.citations?.withStableId,
+      citationsWithSourceId: report.citations?.withStableSourceId,
+      evidenceClaims: report.evidence?.mappedClaims,
+    };
+    if (canonicalJson(reportCoverage) !== canonicalJson(coverage)) {
+      violations.push('[P15] trusted-content coverage report is stale; regenerate it from current content.');
     }
   }
 
@@ -224,10 +471,12 @@ function main(): void {
   console.log(
     `Content validation passed: scanned ${scanned}; ` +
       `${publishedCompanies.length} + ${publishedDrugs.length} published, ` +
-      `${records.length} search record(s). All properties (P1, P2, P3, P4, P5, P7, P8, P10) ` +
-      `and the codified review checks P13 (registered sources, >=2 distinct documents, official anchor), ` +
-      `P14 (scope red-line: no dosing/usage-advice) and P15 (verified evidence or legacy review ` +
-      `within its recheck window) hold.`,
+      `${records.length} search record(s). Trust coverage: ${coverage.verified}/${coverage.total} verified, ` +
+      `${coverage.legacyLkg} explicit legacy LKG (${coverage.stale} stale), ` +
+      `${coverage.evidenceClaims} mapped field claim(s), ${coverage.citationsWithId}/${coverage.citations} citations ` +
+      `with stable id and ${coverage.citationsWithSourceId}/${coverage.citations} with sourceId. ` +
+      `Online verification remaining: ${coverage.needsOnlineVerification}; migration deadline: ` +
+      `${legacyManifest.migrationDeadline}. P13/P14/P15 hold; high-review metadata grants no publication bypass.`,
   );
 }
 

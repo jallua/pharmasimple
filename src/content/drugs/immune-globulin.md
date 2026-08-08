@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:GAMUNEX-C(人免疫球蛋白)"
+    id: cite-7f15560e3bd3eb60
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ade6b84a-e95b-0a49-3296-f56208fdf35b
     sourceType: regulator
   - title: "Intravenous Immunoglobulin (IVIG)(美国国立医学图书馆 NCBI Bookshelf · StatPearls)"
+    id: cite-613e9912df507e63
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf·StatPearls)
     url: https://www.ncbi.nlm.nih.gov/books/NBK554446/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

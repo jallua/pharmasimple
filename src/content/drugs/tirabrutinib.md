@@ -31,17 +31,26 @@ media:
     status: ready
 citations:
   - title: "日本 PMDA:替拉鲁替尼(Velexbru)审评信息"
+    id: cite-6fd488e214df6d62
+    sourceId: jp-pmda
     publisher: 日本医药品医疗器械综合机构(PMDA)
     url: https://www.pmda.go.jp/files/000241167.pdf
     sourceType: regulator
   - title: "小野制药:Velexbru(tirabrutinib)获批信息"
+    id: cite-c0328bd644f7a3e7
+    sourceId: web:ono-pharma.com
     publisher: 小野制药(Ono)
     url: https://www.ono-pharma.com/en/news/20211108.html
     sourceType: company
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:NEXPLANON(依托孕烯埋植剂)"
+    id: cite-b5570495c99c7145
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=487f8a62-e142-457c-97cc-2e398fde7594
     sourceType: regulator
   - title: "Etonogestrel Subdermal Implant(Nexplanon)临床评估报告(NCBI Bookshelf · CADTH)"
+    id: cite-197f799599368d7f
+    sourceId: us-ncbi
     publisher: 美国国立医学图书馆(NCBI Bookshelf)
     url: https://www.ncbi.nlm.nih.gov/books/NBK567605/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

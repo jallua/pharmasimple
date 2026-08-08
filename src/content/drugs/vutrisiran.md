@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:AMVUTTRA(vutrisiran 注射液)"
+    id: cite-7767fa38f418b6be
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8db0facb-81b6-4006-9239-27dc6409c5d3
     sourceType: regulator
   - title: "Vutrisiran(NCBI Bookshelf)"
+    id: cite-049f200d1f88b7c8
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK588655/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

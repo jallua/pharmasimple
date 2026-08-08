@@ -1,8 +1,6 @@
 ---
-// Companies index: published companies that have >=1 published drug, grouped by
-// headquarters country (largest groups first), each card showing the company's
-// published-drug count. Ordering/counting come from the pure catalog helpers.
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CompanyName from '../../components/CompanyName.astro';
 import { getCollection } from 'astro:content';
 import {
   publishedOnly,
@@ -39,33 +37,31 @@ const countryGroups = [...byCountry.entries()]
   <h1>{t(locale, 'nav.companies')}</h1>
   <p class="drugs-index__lead">{t(locale, 'company.indexLead')}</p>
 
-  {
-    companies.length === 0 ? (
-      <p class="empty-state">{t(locale, 'company.empty')}</p>
-    ) : (
-      countryGroups.map((group) => (
-        <section class="company-country-group" aria-label={group.country}>
-          <h2 class="company-country-group__title">
-            {group.country}
-            <span class="company-country-group__count">{group.list.length} 家</span>
-          </h2>
-          <ul class="company-list">
-            {group.list.map((company) => (
-              <li class="company-list__item">
-                <a class="company-list__link" href={toCompanyUrl(slugOf(company))}>
-                  {company.data.name}
-                </a>
-                {company.data.summary && (
-                  <p class="company-list__summary">{company.data.summary}</p>
-                )}
-                <span class="company-list__count">
-                  {t(locale, 'company.recorded')} {counts.get(slugOf(company)) ?? 0} {t(locale, 'company.countUnit')}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    )
-  }
+  {companies.length === 0 ? (
+    <p class="empty-state">{t(locale, 'company.empty')}</p>
+  ) : (
+    countryGroups.map((group) => (
+      <section class="company-country-group" aria-label={group.country}>
+        <h2 class="company-country-group__title">
+          {group.country}
+          <span class="company-country-group__count">{group.list.length} 家</span>
+        </h2>
+        <ul class="company-list">
+          {group.list.map((company) => (
+            <li class="company-list__item">
+              <a class="company-list__link" href={toCompanyUrl(slugOf(company))}>
+                <CompanyName data={company.data} />
+              </a>
+              {company.data.summary && company.data.summarySource && (
+                <p class="company-list__summary">{company.data.summary}</p>
+              )}
+              <span class="company-list__count">
+                {t(locale, 'company.recorded')} {counts.get(slugOf(company)) ?? 0} {t(locale, 'company.countUnit')}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  )}
 </BaseLayout>

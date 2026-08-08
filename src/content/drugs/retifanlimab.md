@@ -32,17 +32,26 @@ media:
     status: ready
 citations:
   - title: "Retifanlimab-dlwr(美国国家癌症研究所 NCI)"
+    id: cite-9a665b77efe80775
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/retifanlimab-dlwr
     sourceType: gov
   - title: "FDA 加速批准 retifanlimab-dlwr 用于默克尔细胞癌"
+    id: cite-bfb56458889890a6
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/resources-information-approved-drugs/fda-grants-accelerated-approval-retifanlimab-dlwr-metastatic-or-recurrent-locally-advanced-merkel
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -48,21 +48,32 @@ media:
     status: ready
 citations:
   - title: "BRUKINSA (zanubrutinib) 处方信息(DailyMed)"
+    id: cite-cbee3b7b68a480de
+    sourceId: us-dailymed
     publisher: 美国国家医学图书馆 DailyMed
     url: https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=human&query=Zanubrutinib
     sourceType: label
   - title: "Zanubrutinib(NCBI Bookshelf / LiverTox)"
+    id: cite-287baeae223d000d
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK553313/
     sourceType: gov
   - title: "FDA 加速批准泽布替尼用于复发/难治性滤泡性淋巴瘤"
+    id: cite-c900f21e3166dca1
+    sourceId: us-fda
     publisher: 美国 FDA
     url: https://www.fda.gov/drugs/resources-information-approved-drugs/fda-grants-accelerated-approval-zanubrutinib-relapsed-or-refractory-follicular-lymphoma
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

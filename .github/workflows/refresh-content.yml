@@ -1,0 +1,206 @@
+name: Refresh verified content
+
+on:
+  schedule:
+    - cron: '17 3 * * 0' # weekly incremental, UTC
+    - cron: '47 4 1 * *' # monthly full, UTC
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Refresh scope
+        required: true
+        type: choice
+        options:
+          - incremental
+          - full
+        default: incremental
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scraper-refresh
+  cancel-in-progress: false
+
+env:
+  REFRESH_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || (github.event.schedule == '47 4 1 * *' && 'full' || 'incremental') }}
+
+jobs:
+  generate:
+    name: Fetch and validate with read-only repository access
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout main without push credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: scraper/requirements.lock
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install hash-locked dependencies
+        run: |
+          python -m pip install --require-hashes -r scraper/requirements.lock
+          npm ci
+      - name: Regenerate versioned source plan
+        run: node scripts/generate-source-plan.ts
+      - name: Run fail-closed refresh and importer
+        shell: pwsh
+        run: ./run-scraper.ps1 -Mode $env:REFRESH_MODE
+      - name: Upload refresh audit report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: content-refresh-audit-${{ github.run_id }}
+          path: |
+            scraper/data/refresh-report.json
+            scraper/data/staging/version-manifest.json
+            scraper/data/staging/v2/fact-manifest.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Validate generated changes
+        run: |
+          python -m pytest scraper/tests
+          npm test
+          npm run check
+          npm run validate
+          npm run build
+      - name: Prepare whitelisted publish artifact and provenance
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          rm -rf _refresh-output
+          mkdir -p _refresh-output/scraper _refresh-output/src/content/facts _refresh-output/src/data
+          cp scraper/source-plan.json _refresh-output/scraper/source-plan.json
+          find src/content/facts -maxdepth 1 -type f -name 'fact-*.json' -exec cp {} _refresh-output/src/content/facts/ \;
+          cp src/data/verified-import-report.json _refresh-output/src/data/verified-import-report.json
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path('_refresh-output')
+          files = {}
+          for path in sorted(item for item in root.rglob('*') if item.is_file()):
+              relative = path.relative_to(root).as_posix()
+              files[relative] = f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
+          provenance = {
+              'schemaVersion': 1,
+              'sourceCommit': os.environ['SOURCE_COMMIT'],
+              'workflowRunId': os.environ['WORKFLOW_RUN_ID'],
+              'files': files,
+          }
+          (root / 'src/data/verified-provenance.json').write_text(
+              json.dumps(provenance, ensure_ascii=False, sort_keys=True, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+          (cd _refresh-output && find . -type f ! -name artifact.sha256 -print0 | sort -z | xargs -0 sha256sum > artifact.sha256)
+      - name: Upload immutable publish artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: verified-content-${{ github.run_id }}
+          path: _refresh-output/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-pr:
+    name: Publish validated artifact without executing project code
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout main without push credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Download same-run publish artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: verified-content-${{ github.run_id }}
+          path: _refresh-output
+      - name: Verify artifact digest, provenance, and path allowlist
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          (cd _refresh-output && sha256sum -c artifact.sha256)
+          while IFS= read -r path; do
+            case "$path" in
+              _refresh-output/artifact.sha256|\
+              _refresh-output/scraper/source-plan.json|\
+              _refresh-output/src/data/verified-import-report.json|\
+              _refresh-output/src/data/verified-provenance.json|\
+              _refresh-output/src/content/facts/fact-*.json) ;;
+              *) echo "Unexpected publish artifact path: $path" >&2; exit 1 ;;
+            esac
+          done < <(find _refresh-output -type f | sort)
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path('_refresh-output')
+          provenance = json.loads((root / 'src/data/verified-provenance.json').read_text(encoding='utf-8'))
+          if provenance.get('schemaVersion') != 1:
+              raise SystemExit('invalid provenance schema')
+          if provenance.get('sourceCommit') != os.environ['SOURCE_COMMIT']:
+              raise SystemExit('provenance source commit mismatch')
+          if str(provenance.get('workflowRunId')) != os.environ['WORKFLOW_RUN_ID']:
+              raise SystemExit('provenance workflow run mismatch')
+          expected = {}
+          for path in sorted(item for item in root.rglob('*') if item.is_file()):
+              relative = path.relative_to(root).as_posix()
+              if relative in {'artifact.sha256', 'src/data/verified-provenance.json'}:
+                  continue
+              expected[relative] = f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
+          if provenance.get('files') != expected:
+              raise SystemExit('provenance file inventory mismatch')
+          PY
+      - name: Synchronize only generated content files
+        shell: bash
+        run: |
+          set -euo pipefail
+          find src/content/facts -maxdepth 1 -type f -name 'fact-*.json' -delete
+          mkdir -p src/content/facts
+          find _refresh-output/src/content/facts -maxdepth 1 -type f -name 'fact-*.json' -exec cp {} src/content/facts/ \;
+          cp _refresh-output/scraper/source-plan.json scraper/source-plan.json
+          cp _refresh-output/src/data/verified-import-report.json src/data/verified-import-report.json
+          cp _refresh-output/src/data/verified-provenance.json src/data/verified-provenance.json
+      - name: Create repository-scoped automation token
+        id: app-token
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        with:
+          app-id: ${{ secrets.CONTENT_REFRESH_APP_ID }}
+          private-key: ${{ secrets.CONTENT_REFRESH_APP_PRIVATE_KEY }}
+      - name: Create or update the single automation PR
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          base: main
+          branch: automation/scraper-refresh
+          delete-branch: true
+          commit-message: 'chore(data): refresh verified content'
+          title: 'chore(data): refresh verified content'
+          body: |
+            Automated `${{ env.REFRESH_MODE }}` refresh from run `${{ github.run_id }}`. Generated changes passed scraper tests, content validation, site tests, type checks, and the production build in a read-only job. The write job verified the same-run artifact digest and path allowlist without installing dependencies or executing project code.
+          add-paths: |
+            scraper/source-plan.json
+            src/content/facts/**
+            src/data/verified-import-report.json
+            src/data/verified-provenance.json

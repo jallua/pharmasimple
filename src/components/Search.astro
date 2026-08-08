@@ -37,6 +37,7 @@ const inputLabel = t(locale, 'search.label');
     class="pagefind-search"
     data-placeholder={t(locale, 'search.placeholder')}
     data-zero={t(locale, 'search.noResults')}
+    data-clear={t(locale, 'search.clear')}
     data-input-label={inputLabel}
   >
   </div>
@@ -48,7 +49,7 @@ const inputLabel = t(locale, 'search.label');
 
   const el = document.querySelector('#pagefind-search');
   if (el) {
-    new PagefindUI({
+    const ui = new PagefindUI({
       element: '#pagefind-search',
       showSubResults: true,
       // The index + runtime live at /pagefind/ in the built site (postbuild).
@@ -57,8 +58,12 @@ const inputLabel = t(locale, 'search.label');
         placeholder: el.getAttribute('data-placeholder') ?? undefined,
         // The i18n empty state — shown when a query returns nothing (需求 9.4).
         zero_results: el.getAttribute('data-zero') ?? undefined,
+        clear_search: el.getAttribute('data-clear') ?? undefined,
       },
     });
+
+    const query = new URLSearchParams(window.location.search).get('q')?.trim();
+    if (query) ui.triggerSearch(query);
 
     // Give Pagefind's runtime-generated <input> an accessible name: connect the
     // visually-hidden <label for="pagefind-search-input"> and set aria-label.

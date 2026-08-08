@@ -4,12 +4,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Disclaimer from '../components/Disclaimer.astro';
 import { getCollection } from 'astro:content';
-import { publishedOnly } from '../lib/catalog';
+import { companiesWithPublishedDrugs, publishedOnly, slugOf } from '../lib/catalog';
 import { t } from '../lib/i18n';
 
 const locale = 'zh';
-const companyCount = publishedOnly(await getCollection('companies')).length;
-const drugCount = publishedOnly(await getCollection('drugs')).length;
+const companies = publishedOnly(await getCollection('companies'));
+const drugs = publishedOnly(await getCollection('drugs'));
+const withPublishedDrugs = companiesWithPublishedDrugs(drugs);
+const companyCount = companies.filter((company) => withPublishedDrugs.has(slugOf(company))).length;
+const drugCount = drugs.length;
 
 const guide = [
   t(locale, 'about.guideAnalogy'),
@@ -24,15 +27,17 @@ const methodPoints = [
   t(locale, 'about.methodPoint1'),
   t(locale, 'about.methodPoint2'),
   t(locale, 'about.methodPoint3'),
+  t(locale, 'about.methodPoint4'),
 ];
 const sources = [
-  'FDA(美国)',
-  'NMPA(中国)',
-  'EMA(欧盟)',
-  'PMDA(日本)',
-  'NCI / NCBI(美国国立)',
-  'DailyMed(官方说明书)',
-  'MedlinePlus(NLM)',
+  'FDA（美国）',
+  'NMPA（中国）',
+  'EMA（欧盟）',
+  'PMDA（日本）',
+  '美国国家癌症研究所（NCI）',
+  '美国国家生物技术信息中心（NCBI）',
+  'DailyMed（美国官方药品标签）',
+  'MedlinePlus（美国国家医学图书馆）',
 ];
 ---
 
@@ -40,6 +45,11 @@ const sources = [
   <div class="reading">
     <h1>{t(locale, 'about.title')}</h1>
     <p class="about-lead">{t(locale, 'about.intro')}</p>
+
+    <section aria-label={t(locale, 'about.companyProfilesTitle')}>
+      <h2>{t(locale, 'about.companyProfilesTitle')}</h2>
+      <p>{t(locale, 'about.companyProfilesLead')}</p>
+    </section>
 
     <section aria-label={t(locale, 'about.guideTitle')}>
       <h2>{t(locale, 'about.guideTitle')}</h2>

@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ZEJULA(尼拉帕利)"
+    id: cite-1852f6fff9b31086
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b7f675e2-159c-490c-b6f4-3f16d9492b7d
     sourceType: regulator
   - title: "Niraparib Tosylate Monohydrate(美国国家癌症研究所 NCI)"
+    id: cite-f72b3bd39e5a4abb
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/about-cancer/treatment/drugs/niraparibtosylatemonohydrate
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

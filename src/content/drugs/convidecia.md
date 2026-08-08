@@ -34,17 +34,26 @@ media:
     status: ready
 citations:
   - title: "WHO 紧急使用清单:Convidecia(CanSino Ad5-nCoV-S)"
+    id: cite-0e33d7cd1f20a563
+    sourceId: who
     publisher: 世界卫生组织(WHO)
     url: https://extranet.who.int/prequal/vaccines/convidecia
     sourceType: regulator
   - title: "CanSino Biologics Ad5-nCoV-S 新冠疫苗:你需要知道的(WHO)"
+    id: cite-478470a92e4692c8
+    sourceId: who
     publisher: 世界卫生组织(WHO)
     url: https://www.who.int/news-room/feature-stories/detail/the--cansino-biologics-ad5-ncov-s--recombinant---covid-19-vaccine--what-you-need-to-know
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

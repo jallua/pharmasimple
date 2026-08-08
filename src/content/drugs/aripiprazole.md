@@ -45,17 +45,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ABILIFY(阿立哌唑)"
+    id: cite-e6af89a52a12e35b
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c040bd1d-45b7-49f2-93ea-aed7220b30ac
     sourceType: regulator
   - title: "Aripiprazole(NCBI Bookshelf)"
+    id: cite-bd480958c075ea04
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK547739/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

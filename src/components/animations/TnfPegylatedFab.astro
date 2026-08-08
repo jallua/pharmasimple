@@ -1,8 +1,7 @@
 ---
 // TnfPegylatedFab.astro — schematic SVG + CSS animation of how a PEGylated anti-TNF
-// Fab' fragment (e.g. 培塞利珠单抗 / certolizumab pegol) neutralises TNF-α with only
-// the antigen-binding "hand" (Fab) wrapped in a PEG coil and NO Fc stem — so it does
-// not trigger complement/ADCC and is not carried across the placenta (需求 4, 13).
+// Fab' fragment (e.g. 培塞利珠单抗 / certolizumab pegol) binds and neutralises TNF-α.
+// The molecule does not contain an Fc region; no pregnancy suitability inference is shown.
 // SCHEMATIC labelled shapes, inline SVG + scoped CSS, NO JavaScript. Five storyboard
 // steps cycle on a shared 15s timeline (3s each). Under prefers-reduced-motion all
 // motion stops.
@@ -13,16 +12,16 @@ interface Props {
 }
 
 const {
-  alt = '动画演示培塞利珠单抗(去掉 Fc、外裹 PEG 的抗体 Fab 片段)抓住并中和 TNF;因无 Fc,不经胎盘转运,炎症减轻。',
+  alt = '动画演示培塞利珠单抗的聚乙二醇化 Fab 片段结合并中和 TNF-α；该分子不含 Fc 区。',
   subject,
 } = Astro.props;
 
 const steps = [
-  'TNF 炎症信号过多,持续点燃炎症',
-  '培塞利珠单抗是“半截抗体”(Fab 片段)',
-  '只保留抓 TNF 的“手”,没有抗体的 Fc 尾巴',
-  '抓住并中和 TNF;因无 Fc,不经胎盘转运',
-  '炎症减轻,孕期也相对可用',
+  'TNF-α 可与细胞表面的 TNF 受体结合',
+  '培塞利珠单抗是聚乙二醇化的抗 TNF-α Fab 片段',
+  '该分子含抗原结合片段，不含 Fc 区',
+  'Fab 片段结合并中和可溶性和膜结合型 TNF-α',
+  'TNF-α 与受体的相互作用受到抑制',
 ];
 ---
 
@@ -57,12 +56,12 @@ const steps = [
 
     <g class="tpf__shield">
       <path d="M186 128 l22 -8 l22 8 v14 q0 16 -22 24 q-22 -8 -22 -24 z" />
-      <text class="tpf__t tpf__t--shield" x="208" y="150" text-anchor="middle">抓住中和</text>
+      <text class="tpf__t tpf__t--shield" x="208" y="150" text-anchor="middle">结合中和</text>
     </g>
 
     <g class="tpf__resolved">
       <rect x="200" y="30" width="150" height="30" rx="15" />
-      <text class="tpf__t tpf__t--resolved" x="275" y="50" text-anchor="middle">炎症减轻 · 不过胎盘</text>
+      <text class="tpf__t tpf__t--resolved" x="275" y="50" text-anchor="middle">TNF 信号受抑</text>
     </g>
   </svg>
 

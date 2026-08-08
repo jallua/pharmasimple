@@ -1,13 +1,13 @@
 ---
 // MechanismLayers.astro — layered mechanism explainer (Task 6.1 / 需求 3).
 //
-// Renders all three layers — the one-line analogy, the plain-language
-// ("simple") layer, and the advanced layer — directly and always-visible, each
-// with its own <h3> label. There is no collapse/expand: the three layers all
-// describe the same mechanism and are shown together, so nothing is hidden
-// behind an interaction (需求 3). All labels come from i18n (需求 10); the
-// advanced card carries a subtly distinct tint (see global.css) while staying
-// as accessible as the other two layers.
+// Renders the optional one-line analogy (when supplied), the plain-language
+// ("simple") layer, and the advanced layer directly and always-visible. Each
+// rendered layer has its own <h3> label. There is no collapse/expand: the
+// available layers describe the same mechanism and are shown together, so
+// nothing is hidden behind an interaction (需求 3). All labels come from i18n
+// (需求 10); the advanced card carries a subtly distinct tint (see global.css)
+// while staying as accessible as the other layers.
 import type { Mechanism } from '../lib/catalog';
 import { t } from '../lib/i18n';
 
@@ -15,19 +15,24 @@ interface Props {
   mechanism: Mechanism;
   locale?: string;
   heading?: string;
+  scopeNote?: string;
 }
 
-const { mechanism, locale = 'zh', heading } = Astro.props;
+const { mechanism, locale = 'zh', heading, scopeNote } = Astro.props;
 const headingText = heading ?? t(locale, 'mechanism.heading');
+const analogy = typeof mechanism.analogy === 'string' ? mechanism.analogy.trim() : '';
 ---
 
 <section class="mechanism" aria-label={headingText}>
   <h2 class="mechanism__heading">{headingText}</h2>
+  {scopeNote && <p class="mechanism__scope">{scopeNote}</p>}
 
-  <div class="mechanism__layer mechanism__layer--analogy">
-    <h3 class="mechanism__label">{t(locale, 'mechanism.analogy')}</h3>
-    <p class="mechanism__text">{mechanism.analogy}</p>
-  </div>
+  {analogy && (
+    <div class="mechanism__layer mechanism__layer--analogy">
+      <h3 class="mechanism__label">{t(locale, 'mechanism.analogy')}</h3>
+      <p class="mechanism__text">{analogy}</p>
+    </div>
+  )}
 
   <div class="mechanism__layer mechanism__layer--simple">
     <h3 class="mechanism__label">{t(locale, 'mechanism.simple')}</h3>

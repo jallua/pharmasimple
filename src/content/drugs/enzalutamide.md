@@ -44,17 +44,26 @@ media:
     status: ready
 citations:
   - title: "Enzalutamide 定义(美国国家癌症研究所 NCI 药物词典)"
+    id: cite-d2cf832c197ff1e0
+    sourceId: us-nci
     publisher: 美国国家癌症研究所(NCI)
     url: https://www.cancer.gov/publications/dictionaries/cancer-terms/def/enzalutamide
     sourceType: gov
   - title: "FDA 说明书:XTANDI(恩扎卢胺)"
+    id: cite-89f9b49b28297f87
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b129fdc9-1d8e-425c-a5a9-8a2ed36dfbdf
     sourceType: regulator
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

@@ -30,17 +30,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:VOXZOGO(伏索利肽)"
+    id: cite-0ffada2c4560e158
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=228e8560-04a4-4bb1-a81f-29531a9e4d27
     sourceType: regulator
   - title: "Vosoritide(美国国立卫生研究院 NCBI Bookshelf · LiverTox)"
+    id: cite-13ffd072f537a9b2
+    sourceId: us-ncbi
     publisher: 美国国立卫生研究院(NIH·NCBI Bookshelf)
     url: https://www.ncbi.nlm.nih.gov/books/NBK612206/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

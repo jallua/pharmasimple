@@ -12,10 +12,13 @@
 // design document.
 
 import {
+  citationSourceIdentityMatches,
   distinctCitationSourceCount,
   isRegisteredAuthoritativeSource,
-  resolveRegisteredSource,
 } from './source-registry.ts';
+import { hasComparativeClaim } from './content-style.ts';
+import { contentCopyHash, evidenceClaimMatches } from './trusted-content.ts';
+import type { FactRef } from './trusted-content.ts';
 
 // ---------------------------------------------------------------------------
 // Types — standalone mirrors of the content schema in `content.config.ts`.
@@ -42,47 +45,50 @@ export type TargetType =
 export type SourceType = 'regulator' | 'label' | 'gov' | 'company' | 'other';
 
 export interface Citation {
-  /** Stable ID used by field-level evidence records. */
+  /** Stable content-derived ID used by field-level evidence records. */
   id?: string;
   title: string;
   publisher?: string;
   url?: string;
   retrievedDate?: Date | string;
-  /** Optional declaration; it must agree with the URL-derived registry entry. */
+  /** Deterministic registry ID or `web:<https-host>` identity. */
   sourceId?: string;
   /** Legacy display metadata only. It is never trusted for authority decisions. */
   sourceType?: SourceType;
 }
 
 export interface EvidenceLink {
-  /** Machine-readable claim path, for example `indications.US.CLL`. */
-  claim: string;
-  /** Citation IDs supporting this claim; citations remain rendered together at page bottom. */
+  /** RFC 6901 JSON Pointer into a factual drug field. */
+  claimPath: string;
+  /** Exact value observed and supported when the evidence bundle was built. */
+  claimValue: unknown;
   citationIds: string[];
 }
 
 export type VerificationStatus = 'verified' | 'conflicted' | 'stale' | 'blocked';
 
-export interface Verification {
-  status: VerificationStatus;
+interface VerificationWindow {
   checkedAt: Date | string;
+  nextCheckAt: Date | string;
   pipelineVersion: string;
-  evidenceBundleHash: string;
-  recheckBy?: Date | string;
 }
 
-export type Confidence = 'high' | 'medium' | 'low';
+export type Verification =
+  | (VerificationWindow & {
+      status: 'verified';
+      schemaVersion: 2;
+      bundleHash: string;
+    })
+  | (VerificationWindow & {
+      status: Exclude<VerificationStatus, 'verified'>;
+      schemaVersion?: 1 | 2;
+      bundleHash?: string;
+    });
 
-/**
- * Auto-review metadata (P15 / 需求 8.7). Recorded on a published drug so the
- * build can verify it was code-reviewed with high confidence and is still within
- * its recheck window.
- */
-export interface Review {
-  reviewer?: 'auto';
-  checkedOn: Date | string;
-  confidence: Confidence;
-  recheckBy?: Date | string;
+export interface LegacyLkg {
+  snapshotId: string;
+  capturedAt: Date | string;
+  migrateBy: Date | string;
 }
 
 export interface Media {
@@ -116,7 +122,7 @@ export interface IndicationGroup {
 }
 
 export interface Mechanism {
-  analogy: string;
+  analogy?: string;
   simple: string;
   advanced: string;
 }
@@ -125,9 +131,21 @@ export interface CompanyData {
   slug: string;
   locale: 'zh';
   name: string;
+  nameEn?: string;
+  aliases?: string[];
+  identitySource?: {
+    title: string;
+    url: string;
+    retrievedDate: Date | string;
+  };
   logo?: string;
   country?: string;
   summary?: string;
+  summarySource?: {
+    title: string;
+    url: string;
+    retrievedDate: Date | string;
+  };
   order?: number;
   reviewStatus: ReviewStatus;
 }
@@ -156,12 +174,14 @@ export interface DrugData {
   /** Figures/animations are optional: a drug with no ready media shows none. */
   media?: Media[];
   citations: Citation[];
-  /** Optional field-level evidence used by the automatic verifier; not rendered inline. */
+  /** Deprecated v1 exact-value evidence; new content uses reviewed factRefs. */
   evidence?: EvidenceLink[];
-  /** New machine verification metadata. Legacy content may still carry `review` during migration. */
+  /** Reviewed links from public-facing copy to versioned atomic facts. */
+  factRefs?: FactRef[];
+  /** Machine verification state for every published drug. */
   verification?: Verification;
-  /** Auto-review metadata; required (and high-confidence) once published (P15). */
-  review?: Review;
+  /** Explicit, snapshot-bound migration exception; valid only while stale and before its deadline. */
+  legacyLkg?: LegacyLkg;
   reviewStatus: ReviewStatus;
   updatedDate?: Date | string;
 }
@@ -233,6 +253,49 @@ const companyRef = (drug: DrugEntry): string => {
   return '';
 };
 
+/** A reviewed public record represents one product/trade name, never a brand bundle. */
+export function hasSingleProductIdentity(brandName: string | undefined): boolean {
+  const value = brandName?.trim() ?? '';
+  return value.length > 0 && !/[\/;；]/.test(value);
+}
+
+/** Product/trade name is the public identity; generic name is the legacy-safe fallback. */
+export function productNameOf(data: Pick<DrugData, 'brandName' | 'genericName'>): string {
+  return data.brandName?.trim() || data.genericName;
+}
+
+export interface CompanyNameParts {
+  primary: string;
+  secondary?: string;
+}
+
+/**
+ * Legacy company records store an English name in trailing parentheses. Keep
+ * the source data intact, but expose a stable two-line presentation model.
+ * Explicit nameEn metadata takes precedence for newly verified identities.
+ */
+export function companyNameParts(
+  data: Pick<CompanyData, 'name' | 'nameEn'>,
+): CompanyNameParts {
+  const raw = data.name.trim();
+  const parenthetical = raw.match(/^(.*?)\s*[\(\uFF08]([^()\uFF08\uFF09]+)[\)\uFF09]\s*$/);
+  const primary = parenthetical?.[1]?.trim() || raw;
+  const legacySecondary = parenthetical?.[2]?.trim();
+  const candidate = data.nameEn?.trim() || legacySecondary;
+  const secondary = candidate && candidate.localeCompare(primary, undefined, { sensitivity: 'accent' }) !== 0
+    ? candidate
+    : undefined;
+  return { primary, ...(secondary ? { secondary } : {}) };
+}
+
+/** Plain-text company identity for metadata and accessible labels. */
+export function companyDisplayNameOf(
+  data: Pick<CompanyData, 'name' | 'nameEn'>,
+): string {
+  const { primary, secondary } = companyNameParts(data);
+  return secondary ? primary + ' (' + secondary + ')' : primary;
+}
+
 // ---------------------------------------------------------------------------
 // Public pure functions
 // ---------------------------------------------------------------------------
@@ -261,10 +324,11 @@ export function buildSearchRecords(
 ): SearchRecord[] {
   const companyRecords: SearchRecord[] = publishedOnly(companies).map((c) => {
     const slug = entrySlug(c);
+    const names = companyNameParts(c.data);
     return {
       type: 'company',
-      title: c.data.name,
-      name: c.data.name,
+      title: names.primary,
+      name: companyDisplayNameOf(c.data),
       slug,
       url: toCompanyUrl(slug),
     };
@@ -272,10 +336,11 @@ export function buildSearchRecords(
 
   const drugRecords: SearchRecord[] = publishedOnly(drugs).map((d) => {
     const slug = entrySlug(d);
+    const productName = productNameOf(d.data);
     return {
       type: 'drug',
-      title: d.data.genericName,
-      name: d.data.genericName,
+      title: productName,
+      name: productName,
       slug,
       url: toDrugUrl(slug),
       genericName: d.data.genericName,
@@ -381,29 +446,6 @@ export function hasScopeViolation(text: string | undefined | null): boolean {
   return DOSING_RE.test(text) || ADVICE_RE.test(text);
 }
 
-/** Add whole months to a date, returning a new Date (handles year rollover). */
-function addMonths(date: Date, months: number): Date {
-  const d = new Date(date.getTime());
-  d.setMonth(d.getMonth() + months);
-  return d;
-}
-
-/**
- * P15 recheck window. Returns the recheck deadline for a review: `recheckBy`
- * when present, otherwise `checkedOn + 12 months`. Returns `undefined` when the
- * dates are missing/invalid (which P15 reports separately).
- */
-export function recheckDeadline(review: Review | undefined): Date | undefined {
-  if (!review) return undefined;
-  if (review.recheckBy !== undefined) {
-    const by = new Date(review.recheckBy);
-    return isNaN(by.getTime()) ? undefined : by;
-  }
-  const checkedOn = review.checkedOn !== undefined ? new Date(review.checkedOn) : undefined;
-  if (!checkedOn || isNaN(checkedOn.getTime())) return undefined;
-  return addMonths(checkedOn, 12);
-}
-
 // ---------------------------------------------------------------------------
 // Drug content invariants (P2, P3, P5, P7, and — for published drugs — P13/P14/P15)
 // ---------------------------------------------------------------------------
@@ -425,6 +467,7 @@ export interface InvariantResult {
  *   - P13: >=2 citations, at least one an authoritative regulator/gov anchor.
  *   - P14: summary + the three mechanism layers carry no dosing/usage-advice text.
  *   - P15: high-confidence auto-review metadata that is within its recheck window.
+ *   - P16: one product identity and no comparative copy in text or media metadata.
  *
  * Accepts either a full entry ({ data }) or a bare data object. `today` is
  * injectable so the freshness check (P15) is deterministic in tests.
@@ -440,9 +483,11 @@ export function drugContentInvariants(
 
   const violations: string[] = [];
 
-  // P3 — three mechanism layers non-empty.
+  // P3 — plain-language and advanced layers are required; analogy is optional.
   const mechanism = data.mechanism;
-  if (!mechanism || !nonEmpty(mechanism.analogy)) violations.push('mechanism.analogy is empty');
+  if (mechanism?.analogy !== undefined && !nonEmpty(mechanism.analogy)) {
+    violations.push('mechanism.analogy must be non-empty when present');
+  }
   if (!mechanism || !nonEmpty(mechanism.simple)) violations.push('mechanism.simple is empty');
   if (!mechanism || !nonEmpty(mechanism.advanced)) violations.push('mechanism.advanced is empty');
 
@@ -478,15 +523,13 @@ export function drugContentInvariants(
     violations.push('a reviewed drug must have at least one citation');
   }
 
-  // --- Codified review checks (P13/P14/P15) — published (reviewed) drugs only.
+  // --- Codified trust checks (P13/P14/P15) — published drugs only.
   if (data.reviewStatus === 'reviewed') {
-    // P13 — source trust comes from the registry + URL, never from sourceType.
-    const mismatchedSourceIds = citations.filter(
-      (citation) => citation.sourceId && !resolveRegisteredSource(citation),
-    );
+    // P13 — every citation has a stable ID and a sourceId bound to its HTTPS URL.
+    const mismatchedSourceIds = citations.filter((citation) => !citationSourceIdentityMatches(citation));
     if (mismatchedSourceIds.length > 0) {
       violations.push(
-        `citations: ${mismatchedSourceIds.length} declared sourceId value(s) do not match their URL (P13)`,
+        `citations: ${mismatchedSourceIds.length} missing/mismatched sourceId value(s) (P13)`,
       );
     }
     const independentSourceCount = distinctCitationSourceCount(citations);
@@ -501,24 +544,37 @@ export function drugContentInvariants(
       );
     }
 
-    // Field-level evidence is backend-only. When supplied, every reference must
-    // resolve to a unique citation ID; the frontend still renders one list below.
     const citationIds = citations.map((citation) => citation.id).filter(nonEmpty);
+    if (citationIds.length !== citations.length) {
+      violations.push('citations: every citation needs a stable ID (P13)');
+    }
     if (new Set(citationIds).size !== citationIds.length) {
       violations.push('citations: citation IDs must be unique (P13)');
     }
+
+    // Field evidence binds an exact RFC 6901 claim path + value to known citations.
     if (Array.isArray(data.evidence)) {
       const knownIds = new Set(citationIds);
+      const claimPaths = new Set<string>();
       for (const evidence of data.evidence) {
-        if (!nonEmpty(evidence.claim) || !Array.isArray(evidence.citationIds) || evidence.citationIds.length < 1) {
-          violations.push('evidence: every claim needs at least one citation ID (P13)');
-        } else if (evidence.citationIds.some((id) => !knownIds.has(id))) {
-          violations.push(`evidence.${evidence.claim}: references an unknown citation ID (P13)`);
+        if (!nonEmpty(evidence.claimPath) || !Array.isArray(evidence.citationIds) || evidence.citationIds.length < 1) {
+          violations.push('evidence: every claim needs a path, value, and citation ID (P13)');
+          continue;
+        }
+        if (claimPaths.has(evidence.claimPath)) {
+          violations.push(`evidence.${evidence.claimPath}: duplicate claim path (P13)`);
+        }
+        claimPaths.add(evidence.claimPath);
+        if (new Set(evidence.citationIds).size !== evidence.citationIds.length) {
+          violations.push(`evidence.${evidence.claimPath}: duplicate citation ID (P13)`);
+        }
+        if (evidence.citationIds.some((id) => !knownIds.has(id))) {
+          violations.push(`evidence.${evidence.claimPath}: references an unknown citation ID (P13)`);
+        }
+        if (!evidenceClaimMatches(data, evidence.claimPath, evidence.claimValue)) {
+          violations.push(`evidence.${evidence.claimPath}: claimValue does not match current content (P13)`);
         }
       }
-    }
-    if (data.verification && data.verification.status !== 'verified') {
-      violations.push(`verification.status: reviewed content must be verified, got '${data.verification.status}' (P15)`);
     }
 
     // P14 — scope red-line: no dosing/usage-advice text in summary + mechanism.
@@ -534,49 +590,90 @@ export function drugContentInvariants(
       }
     }
 
-    // P15 — prefer machine verification; keep legacy review metadata during migration.
+    // P16 — every reviewed public record is product-scoped and non-comparative,
+    // including stale legacy LKG content and user-visible media metadata.
+    const productCopyFields: Array<[string, string | undefined]> = [
+      ...scopeFields,
+      ...(Array.isArray(data.media)
+        ? data.media.flatMap((item, index): Array<[string, string | undefined]> => [
+            [`media[${index}].alt`, item.alt],
+            [`media[${index}].caption`, item.caption],
+          ])
+        : []),
+    ];
+    if (!hasSingleProductIdentity(data.brandName)) {
+      violations.push('brandName: reviewed content must identify exactly one product/trade name (P16)');
+    }
+    for (const [field, text] of productCopyFields) {
+      if (hasComparativeClaim(text)) {
+        violations.push(field + ': contains a cross-product comparison, suitability, or substitution claim (P16)');
+      }
+    }
+
+    // P15 — no review-based fail-open. Verified bundles are the default. The
+    // only exception is an explicit stale legacy LKG whose catalog digest is
+    // checked by the build validator and whose migration deadline has not passed.
     const verification = data.verification;
-    if (verification) {
-      const checkedAt = new Date(verification.checkedAt);
-      if (isNaN(checkedAt.getTime())) {
-        violations.push('verification.checkedAt: must be a valid date (P15)');
-      } else {
-        const deadline = verification.recheckBy
-          ? new Date(verification.recheckBy)
-          : new Date(Date.UTC(
-              checkedAt.getUTCFullYear() + 1,
-              checkedAt.getUTCMonth(),
-              checkedAt.getUTCDate(),
-            ));
-        if (isNaN(deadline.getTime()) || today.getTime() > deadline.getTime()) {
-          violations.push('verification: evidence bundle is stale or has an invalid recheck date (P15)');
-        }
-      }
-      if (!Array.isArray(data.evidence) || data.evidence.length < 1) {
-        violations.push('verification: verified content must carry field-level evidence (P15)');
-      }
+    if (!verification) {
+      violations.push('verification: reviewed content must carry verification metadata (P15)');
     } else {
-      const review = data.review;
-      if (!review) {
-        violations.push('verification: reviewed content needs verification or legacy review metadata (P15)');
-      } else {
-        if (review.confidence !== 'high') {
-          violations.push(
-            `review.confidence: must be 'high' for a reviewed drug (got '${review.confidence}') (P15)`,
-          );
+      const checkedAt = new Date(verification.checkedAt);
+      const nextCheckAt = new Date(verification.nextCheckAt);
+      if (isNaN(checkedAt.getTime())) violations.push('verification.checkedAt: invalid date (P15)');
+      if (isNaN(nextCheckAt.getTime())) violations.push('verification.nextCheckAt: invalid date (P15)');
+      if (!isNaN(checkedAt.getTime()) && !isNaN(nextCheckAt.getTime()) && nextCheckAt < checkedAt) {
+        violations.push('verification.nextCheckAt: must not precede checkedAt (P15)');
+      }
+
+      if (verification.status === 'verified') {
+        if (!verification.bundleHash || !/^sha256:[a-f0-9]{64}$/.test(verification.bundleHash)) {
+          violations.push('verification.bundleHash: verified content requires a real SHA-256 bundle hash (P15)');
         }
-        const checkedOn =
-          review.checkedOn !== undefined ? new Date(review.checkedOn) : undefined;
-        if (!checkedOn || isNaN(checkedOn.getTime())) {
-          violations.push('review.checkedOn: a reviewed drug must record a valid check date (P15)');
-        } else {
-          const deadline = recheckDeadline(review);
-          if (deadline && today.getTime() > deadline.getTime()) {
-            violations.push(
-              `review: recheck overdue (deadline ${deadline.toISOString().slice(0, 10)}) (P15)`,
-            );
+        if (verification.schemaVersion !== 2) {
+          violations.push('verification.schemaVersion: verified content must use canonical v2 factRefs (P15)');
+        }
+        const refs = Array.isArray(data.factRefs) ? data.factRefs : [];
+        if (refs.length < 1) {
+          violations.push('verification: verified v2 content must carry reviewed factRefs (P15)');
+        }
+        for (const ref of refs) {
+          if (ref.reviewStatus !== 'reviewed') {
+            violations.push(`factRefs.${ref.contentPath}: reviewStatus must be reviewed (P15)`);
+          }
+          const copyHash = contentCopyHash(data, ref.contentPath);
+          if (!copyHash || copyHash !== ref.copyHash) {
+            violations.push(`factRefs.${ref.contentPath}: copyHash does not match current copy (P15)`);
+          }
+          const ids = [...ref.factIds].sort();
+          const bound = Object.keys(ref.boundFactHashes).sort();
+          if (JSON.stringify(ids) !== JSON.stringify(bound)) {
+            violations.push(`factRefs.${ref.contentPath}: boundFactHashes must exactly cover factIds (P15)`);
           }
         }
+        if (!isNaN(nextCheckAt.getTime()) && today.getTime() > nextCheckAt.getTime()) {
+          violations.push('verification: verified evidence bundle is stale (P15)');
+        }
+        if (data.legacyLkg) violations.push('legacyLkg: verified content must leave the legacy queue (P15)');
+      } else if (verification.status === 'stale' && data.legacyLkg) {
+        const migrateBy = new Date(data.legacyLkg.migrateBy);
+        const capturedAt = new Date(data.legacyLkg.capturedAt);
+        if (verification.bundleHash) {
+          violations.push('verification.bundleHash: legacy/stale content must not claim an evidence bundle hash (P15)');
+        }
+        if (isNaN(migrateBy.getTime()) || isNaN(capturedAt.getTime())) {
+          violations.push('legacyLkg: capturedAt and migrateBy must be valid dates (P15)');
+        } else {
+          if (today.getTime() > migrateBy.getTime()) {
+            violations.push(`legacyLkg: migration deadline ${migrateBy.toISOString().slice(0, 10)} has passed (P15)`);
+          }
+          if (!isNaN(nextCheckAt.getTime()) && nextCheckAt.getTime() !== migrateBy.getTime()) {
+            violations.push('legacyLkg: migrateBy must equal verification.nextCheckAt (P15)');
+          }
+        }
+      } else {
+        violations.push(
+          `verification.status: '${verification.status}' cannot be published without verified evidence (P15)`,
+        );
       }
     }
   }
@@ -613,7 +710,7 @@ export function sortCompanies(companies: CompanyEntry[]): CompanyEntry[] {
     const ao = a.data.order ?? Number.MAX_SAFE_INTEGER;
     const bo = b.data.order ?? Number.MAX_SAFE_INTEGER;
     if (ao !== bo) return ao - bo;
-    return (a.data.name ?? '').localeCompare(b.data.name ?? '');
+    return companyNameParts(a.data).primary.localeCompare(companyNameParts(b.data).primary);
   });
 }
 
@@ -862,32 +959,6 @@ export function areaAnchor(area: string): string {
     .replace(/[^\p{L}\p{N}]+/gu, '-')
     .replace(/^-+|-+$/g, '');
   return `area-${body}`;
-}
-
-/**
- * "同类药物" for a drug detail page: other PUBLISHED drugs that share the given
- * drug's `drugClass`; if it is the only one in its class, fall back to other
- * published drugs in the same therapeutic area. Excludes the drug itself,
- * orders by popularity, and caps the count (default 8). Pure + fixture-testable.
- */
-export function relatedDrugs(allDrugs: DrugEntry[], currentSlug: string, limit = 8): DrugEntry[] {
-  const published = publishedOnly(allDrugs);
-  const current = published.find((d) => entrySlug(d) === currentSlug);
-  if (!current) return [];
-  const currentClass = current.data.drugClass ?? '';
-  const others = published.filter((d) => entrySlug(d) !== currentSlug);
-
-  let pool =
-    currentClass.length > 0
-      ? others.filter((d) => (d.data.drugClass ?? '') === currentClass)
-      : [];
-  if (pool.length === 0 && currentClass.length > 0) {
-    const area = therapeuticArea(currentClass);
-    pool = others.filter(
-      (d) => (d.data.drugClass ?? '').length > 0 && therapeuticArea(d.data.drugClass ?? '') === area,
-    );
-  }
-  return sortByPopularity(pool).slice(0, limit);
 }
 
 /**

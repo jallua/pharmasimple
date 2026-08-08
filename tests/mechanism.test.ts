@@ -2,12 +2,14 @@ import { test, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { JSDOM } from 'jsdom';
 import MechanismLayers from '../src/components/MechanismLayers.astro';
 import MechanismMedia from '../src/components/MechanismMedia.astro';
 import BtkInhibitor from '../src/components/animations/BtkInhibitor.astro';
 import Pd1Checkpoint from '../src/components/animations/Pd1Checkpoint.astro';
 import { animations, hasAnimation, getAnimation } from '../src/components/animations';
 import { t } from '../src/lib/i18n';
+import { hasComparativeClaim } from '../src/lib/content-style';
 import type { Media, Mechanism } from '../src/lib/catalog';
 
 // ---------------------------------------------------------------------------
@@ -169,6 +171,33 @@ test('animation registry contains the two original + sixty-six new class animati
   expect(getAnimation('anything')).toBeUndefined();
 });
 
+test('P16: rendered text from every registered animation is non-comparative', async () => {
+  const container = await AstroContainer.create();
+  const violations: Array<{ key: string; location: string; text: string }> = [];
+
+  for (const [key, Animation] of Object.entries(animations)) {
+    const html = await container.renderToString(Animation, { props: { subject: '测试药物' } });
+    const dom = new JSDOM(html);
+    const { document, NodeFilter } = dom.window;
+    document.querySelectorAll('style, script').forEach((element) => element.remove());
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.textContent?.trim() ?? '';
+      if (text && hasComparativeClaim(text)) violations.push({ key, location: 'text', text });
+    }
+
+    document.querySelectorAll('[aria-label], [title]').forEach((element) => {
+      for (const attribute of ['aria-label', 'title']) {
+        const text = element.getAttribute(attribute)?.trim() ?? '';
+        if (text && hasComparativeClaim(text)) violations.push({ key, location: attribute, text });
+      }
+    });
+  }
+
+  expect(violations).toEqual([]);
+});
+
 // ---------------------------------------------------------------------------
 // MechanismLayers — all three layers (analogy, simple, advanced) render directly
 // as visible content, each with its own <h3> label; there is no collapse and no
@@ -245,8 +274,11 @@ test('P6/P5: MechanismMedia renders only ready animations + images; unrenderable
     { type: 'placeholder', status: 'ready', alt: 'ALT_PLACEHOLDER' },
   ];
 
-  const html = await container.renderToString(MechanismMedia, { props: { media } });
+  const html = await container.renderToString(MechanismMedia, {
+    props: { media, heading: '作用机制示意' },
+  });
 
+  expect(html).toContain('<h2 class="mechanism-media__heading">作用机制示意</h2>');
   // No placeholder is ever rendered.
   expect(html).not.toContain('media-placeholder');
 
@@ -351,4 +383,5 @@ test('Task 9/P6: MechanismMedia renders the registered animation when the key re
   // alt (figure aria-label + SVG title) and the figure caption are still exposed.
   expect(html).toContain('ALT_BTK_MEDIA');
   expect(html).toContain('CAPTION_BTK');
+  expect(html).toContain(t('zh', 'mechanism.mediaScope'));
 });

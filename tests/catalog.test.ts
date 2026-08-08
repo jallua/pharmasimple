@@ -2,6 +2,10 @@ import { test, expect } from 'vitest';
 import fc from 'fast-check';
 import {
   publishedOnly,
+  productNameOf,
+  companyNameParts,
+  companyDisplayNameOf,
+  hasSingleProductIdentity,
   buildSearchRecords,
   toCompanyUrl,
   toDrugUrl,
@@ -16,7 +20,6 @@ import {
   therapeuticArea,
   groupByTherapeuticArea,
   THERAPEUTIC_AREAS,
-  relatedDrugs,
   areaAnchor,
   drugsCountByCompany,
   type CompanyEntry,
@@ -27,9 +30,9 @@ import {
   type TargetType,
   type Media,
   type Citation,
-  type Review,
-  type SourceType,
 } from '../src/lib/catalog';
+import { hasComparativeClaim } from '../src/lib/content-style';
+import { contentCopyHash } from '../src/lib/trusted-content';
 
 // ---------------------------------------------------------------------------
 // Local arbitraries for companies and drugs.
@@ -49,54 +52,35 @@ const targetTypeArb: fc.Arbitrary<TargetType> = fc.constantFrom(
 // Text that never trips the P14 scope red-line (no dosing/usage-advice text).
 // Used for the mechanism layers + summary of the "valid drug" arbitrary so a
 // randomly-generated reviewed drug always passes P14.
-const safeText = nonEmptyString.filter((s) => !hasScopeViolation(s));
+const safeText = nonEmptyString.filter((s) => !hasScopeViolation(s) && !hasComparativeClaim(s));
 
-const sourceTypeArb: fc.Arbitrary<SourceType> = fc.constantFrom(
-  'regulator',
-  'label',
-  'gov',
-  'company',
-  'other',
-);
-
-// A citation guaranteed to be an authoritative anchor from the registry.
+// Citations with stable IDs and source identities (P13).
 const anchorCitationArb: fc.Arbitrary<Citation> = nonEmptyString.map((title) => ({
+  id: 'cite-aaaaaaaaaaaaaaaa',
   title,
   url: 'https://www.fda.gov/drugs/example',
   sourceId: 'us-fda',
   sourceType: 'regulator' as const,
 }));
 
-// Any citation (may or may not be an anchor).
-const citationArb: fc.Arbitrary<Citation> = fc.record({
-  title: nonEmptyString,
-  publisher: fc.option(nonEmptyString, { nil: undefined }),
-  url: fc.option(fc.webUrl(), { nil: undefined }),
-  sourceType: fc.option(sourceTypeArb, { nil: undefined }),
-});
-
 // >=2 independently identified sources including one registry anchor (P13).
 const anchoredCitationsArb: fc.Arbitrary<Citation[]> = fc
-  .tuple(anchorCitationArb, nonEmptyString, fc.array(citationArb, { maxLength: 1 }))
-  .map(([anchor, title, rest]) => [
+  .tuple(anchorCitationArb, nonEmptyString)
+  .map(([anchor, title]) => [
     anchor,
-    { title, url: 'https://dailymed.nlm.nih.gov/dailymed/example', sourceId: 'us-dailymed' },
-    ...rest,
+    {
+      id: 'cite-bbbbbbbbbbbbbbbb',
+      title,
+      url: 'https://dailymed.nlm.nih.gov/dailymed/example',
+      sourceId: 'us-dailymed',
+    },
   ]);
-
-// High-confidence, in-window auto-review (satisfies P15). `checkedOn` is "now"
-// with no `recheckBy`, so the recheck deadline is ~12 months in the future.
-const reviewArb: fc.Arbitrary<Review> = fc.record({
-  reviewer: fc.constant('auto' as const),
-  checkedOn: fc.constant(new Date()),
-  confidence: fc.constant('high' as const),
-});
 
 const mediaArb: fc.Arbitrary<Media> = fc.record({
   type: fc.constantFrom('image', 'animation', 'placeholder'),
-  alt: nonEmptyString,
+  alt: safeText,
   src: fc.option(nonEmptyString, { nil: undefined }),
-  caption: fc.option(nonEmptyString, { nil: undefined }),
+  caption: fc.option(safeText, { nil: undefined }),
   status: fc.constantFrom('ready', 'in-progress'),
 });
 
@@ -109,30 +93,46 @@ const indicationGroupArb: fc.Arbitrary<IndicationGroup> = fc.record({
   asOf: fc.option(nonEmptyString, { nil: undefined }),
 });
 
-// A fully-valid drug: satisfies every content invariant (P2/P3/P5/P7) AND the
-// codified review checks (P13/P14/P15), so it is valid whether draft or
-// reviewed. It always carries >=2 anchored citations + high-confidence review +
-// scope-safe text; media is OPTIONAL (sometimes absent).
-const validDrugDataArb: fc.Arbitrary<DrugData> = fc.record({
-  slug: nonEmptyString,
-  locale: fc.constant('zh' as const),
-  company: nonEmptyString,
-  genericName: nonEmptyString,
-  brandName: fc.option(nonEmptyString, { nil: undefined }),
-  drugClass: fc.option(nonEmptyString, { nil: undefined }),
-  summary: fc.option(safeText, { nil: undefined }),
-  indications: fc.array(indicationGroupArb, { minLength: 1, maxLength: 3 }),
-  target: fc.record({ name: nonEmptyString, type: targetTypeArb, role: nonEmptyString }),
-  mechanism: fc.record({
-    analogy: safeText,
-    simple: safeText,
-    advanced: safeText,
-  }),
-  media: fc.option(fc.array(mediaArb, { minLength: 1, maxLength: 3 }), { nil: undefined }),
-  citations: anchoredCitationsArb,
-  review: reviewArb,
-  reviewStatus: reviewStatusArb,
-});
+// A fully-valid drug satisfies base invariants plus strict P13/P14/P15. Reviewed
+// cases carry exact field evidence and a current verified bundle.
+const validDrugDataArb: fc.Arbitrary<DrugData> = fc
+  .record({
+    slug: nonEmptyString,
+    locale: fc.constant('zh' as const),
+    company: nonEmptyString,
+    genericName: nonEmptyString,
+    brandName: nonEmptyString.filter((value) => hasSingleProductIdentity(value)),
+    drugClass: fc.option(nonEmptyString, { nil: undefined }),
+    summary: fc.option(safeText, { nil: undefined }),
+    indications: fc.array(indicationGroupArb, { minLength: 1, maxLength: 3 }),
+    target: fc.record({ name: nonEmptyString, type: targetTypeArb, role: nonEmptyString }),
+    mechanism: fc.record({ analogy: safeText, simple: safeText, advanced: safeText }),
+    media: fc.option(fc.array(mediaArb, { minLength: 1, maxLength: 3 }), { nil: undefined }),
+    citations: anchoredCitationsArb,
+    reviewStatus: reviewStatusArb,
+  })
+  .map((data) => {
+    const factId = `fact-${'a'.repeat(64)}`;
+    return {
+      ...data,
+      factRefs: [{
+        contentPath: '/genericName',
+        factIds: [factId],
+        relation: 'derived-from' as const,
+        boundFactHashes: { [factId]: `sha256:${'b'.repeat(64)}` },
+        copyHash: contentCopyHash(data, '/genericName')!,
+        reviewStatus: 'reviewed' as const,
+      }],
+      verification: {
+        status: 'verified' as const,
+        schemaVersion: 2 as const,
+        checkedAt: new Date('2026-08-07T00:00:00Z'),
+        nextCheckAt: new Date('2099-01-01T00:00:00Z'),
+        pipelineVersion: 'test-v2',
+        bundleHash: `sha256:${'a'.repeat(64)}`,
+      },
+    };
+  });
 
 const companyEntryArb: fc.Arbitrary<CompanyEntry> = fc
   .record({
@@ -186,15 +186,23 @@ test('P2/P3/P5/P7: a fully-populated drug satisfies every content invariant', ()
   );
 });
 
-test('P3: emptying any mechanism layer makes the drug invalid', () => {
+test('P3: simple and advanced are required while analogy is optional', () => {
   fc.assert(
-    fc.property(validDrugDataArb, fc.constantFrom('analogy', 'simple', 'advanced'), (drug, layer) => {
+    fc.property(validDrugDataArb, fc.constantFrom('simple', 'advanced'), (drug, layer) => {
       const broken: DrugData = { ...drug, mechanism: { ...drug.mechanism, [layer]: '' } };
       const result = drugContentInvariants(broken);
       expect(result.valid).toBe(false);
       expect(result.violations.some((v) => v.includes(`mechanism.${layer}`))).toBe(true);
     }),
   );
+  const withoutAnalogy = baseReviewedDrug({
+    mechanism: { simple: '通俗解释。', advanced: '进阶解释。' },
+  });
+  expect(drugContentInvariants(withoutAnalogy).valid).toBe(true);
+  const emptyAnalogy = baseReviewedDrug({
+    mechanism: { analogy: '', simple: '通俗解释。', advanced: '进阶解释。' },
+  });
+  expect(drugContentInvariants(emptyAnalogy).valid).toBe(false);
 });
 
 test('P5: media is optional, but any media entry with an empty alt makes the drug invalid', () => {
@@ -221,51 +229,119 @@ test('P5: media is optional, but any media entry with an empty alt makes the dru
 // the "review" a deterministic build-time gate rather than a human/AI judgement.
 // ---------------------------------------------------------------------------
 
-/** A minimal, fully-valid REVIEWED drug for focused P13/P14/P15 example tests. */
-const baseReviewedDrug = (overrides: Partial<DrugData> = {}): DrugData => ({
-  slug: 'demo',
-  locale: 'zh',
-  company: 'acme',
-  genericName: 'demo',
-  summary: '一种示意药物,用于科普其作用机制。',
-  indications: [{ region: '中国', regulator: 'NMPA', items: ['示意适应症'] }],
-  target: { name: 't', type: 'protein', role: 'r' },
-  mechanism: { analogy: '像一把锁。', simple: '通俗解释。', advanced: '进阶解释。' },
-  media: [{ type: 'animation', animationKey: 'btk-inhibitor', alt: '示意动画', status: 'ready' }],
-  citations: [
-    { title: 'FDA label', url: 'https://www.fda.gov/x', sourceType: 'regulator' },
-    { title: 'NCI', url: 'https://www.cancer.gov/y', sourceType: 'gov' },
-  ],
-  review: { reviewer: 'auto', checkedOn: new Date(), confidence: 'high' },
-  reviewStatus: 'reviewed',
-  ...overrides,
+/** A minimal, fully verified reviewed drug for focused trust-gate tests. */
+const baseReviewedDrug = (overrides: Partial<DrugData> = {}): DrugData => {
+  const base: DrugData = {
+    slug: 'demo',
+    locale: 'zh',
+    company: 'acme',
+    genericName: 'demo',
+    brandName: 'DemoBrand',
+    summary: '一种示意药物,用于科普其作用机制。',
+    indications: [{ region: '中国', regulator: 'NMPA', items: ['示意适应症'] }],
+    target: { name: 't', type: 'protein', role: 'r' },
+    mechanism: { analogy: '像一把锁。', simple: '通俗解释。', advanced: '进阶解释。' },
+    media: [{ type: 'animation', animationKey: 'btk-inhibitor', alt: '示意动画', status: 'ready' }],
+    citations: [
+      { id: 'cite-aaaaaaaaaaaaaaaa', title: 'FDA label', url: 'https://www.fda.gov/x', sourceId: 'us-fda' },
+      { id: 'cite-bbbbbbbbbbbbbbbb', title: 'NCI', url: 'https://www.cancer.gov/y', sourceId: 'us-nci' },
+    ],
+    verification: {
+      status: 'verified',
+      schemaVersion: 2,
+      checkedAt: '2026-08-07',
+      nextCheckAt: '2027-02-07',
+      pipelineVersion: 'test-v2',
+      bundleHash: `sha256:${'a'.repeat(64)}`,
+    },
+    reviewStatus: 'reviewed',
+  };
+  const merged = { ...base, ...overrides } as DrugData;
+  if (!Object.hasOwn(overrides, 'factRefs')) {
+    const factId = `fact-${'a'.repeat(64)}`;
+    merged.factRefs = [{
+      contentPath: '/genericName',
+      factIds: [factId],
+      relation: 'derived-from',
+      boundFactHashes: { [factId]: `sha256:${'b'.repeat(64)}` },
+      copyHash: contentCopyHash(merged, '/genericName')!,
+      reviewStatus: 'reviewed',
+    }];
+  }
+  return merged;
+};
+
+test('company names use one primary line and one optional English line', () => {
+  expect(companyNameParts({ name: '\u683c\u4f26\u9a6c\u514b(Glenmark Pharmaceuticals)' })).toEqual({
+    primary: '\u683c\u4f26\u9a6c\u514b',
+    secondary: 'Glenmark Pharmaceuticals',
+  });
+  expect(companyNameParts({ name: 'BioNTech(BioNTech)' })).toEqual({ primary: 'BioNTech' });
+  expect(companyNameParts({ name: '\u767e\u6d4e\u795e\u5dde', nameEn: 'BeOne Medicines' })).toEqual({
+    primary: '\u767e\u6d4e\u795e\u5dde',
+    secondary: 'BeOne Medicines',
+  });
+  expect(companyDisplayNameOf({ name: '\u767e\u6d4e\u795e\u5dde', nameEn: 'BeOne Medicines' })).toBe(
+    '\u767e\u6d4e\u795e\u5dde (BeOne Medicines)',
+  );
 });
 
-test('P13: authority comes from registry URL; hand-written sourceType cannot grant trust', () => {
-  // Legacy sourceType values without a registered HTTPS URL are never anchors.
+test('P16: reviewed records identify one product and use its trade name publicly', () => {
+  expect(productNameOf({ brandName: 'DemoBrand', genericName: 'demo' })).toBe('DemoBrand');
+  expect(productNameOf({ genericName: 'demo' })).toBe('demo');
+  expect(hasSingleProductIdentity('DemoBrand')).toBe(true);
+  expect(hasSingleProductIdentity('Brand A / Brand B')).toBe(false);
+  expect(hasSingleProductIdentity('Brand A/Brand B')).toBe(false);
+  expect(hasSingleProductIdentity('Brand A;Brand B')).toBe(false);
+
+  const missing = drugContentInvariants(baseReviewedDrug({ brandName: undefined }));
+  const bundled = drugContentInvariants(baseReviewedDrug({ brandName: 'Brand A / Brand B' }));
+  expect(missing.violations.some((value) => value.includes('P16'))).toBe(true);
+  expect(bundled.violations.some((value) => value.includes('P16'))).toBe(true);
+});
+
+test('P16: stale reviewed legacy content is subject to the same product gate', () => {
+  const result = drugContentInvariants(baseReviewedDrug({
+    brandName: 'Brand A/Brand B',
+    verification: {
+      status: 'stale', checkedAt: '2026-08-08', nextCheckAt: '2027-02-07', pipelineVersion: 'legacy-lkg-v1',
+    },
+    legacyLkg: {
+      snapshotId: 'legacy-lkg-2026-08-08', capturedAt: '2026-08-08', migrateBy: '2027-02-07',
+    },
+  }));
+  expect(result.violations.some((value) => value.includes('brandName') && value.includes('P16'))).toBe(true);
+});
+
+test('P16: reviewed product copy cannot compare superiority, differences, or substitution', () => {
+  const result = drugContentInvariants(baseReviewedDrug({
+    mechanism: { analogy: 'a', simple: '\u4e0e\u53e6\u4e00\u4ea7\u54c1\u4e0d\u540c\uff0c\u672c\u4ea7\u54c1\u66f4\u5b89\u5168\u3002', advanced: 'adv' },
+  }));
+  expect(result.valid).toBe(false);
+  expect(result.violations.some((value) => value.includes('P16'))).toBe(true);
+});
+
+test('P16: comparative media alt and caption are rejected', () => {
+  const result = drugContentInvariants(baseReviewedDrug({
+    media: [{
+      type: 'animation', animationKey: 'btk-inhibitor', status: 'ready',
+      alt: '强于只激活一种的动画', caption: '孕期也相对可用',
+    }],
+  }));
+  expect(result.violations.some((value) => value.includes('media[0].alt') && value.includes('P16'))).toBe(true);
+  expect(result.violations.some((value) => value.includes('media[0].caption') && value.includes('P16'))).toBe(true);
+});
+
+test('P13: authority requires a registered HTTPS URL and matching sourceId', () => {
   expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'regulator' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'label' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'gov' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'company' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x', sourceType: 'other' })).toBe(false);
-
-  // Registry hosts (including www/subdomains) are anchors by URL.
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://accessdata.fda.gov/a' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://dailymed.nlm.nih.gov/a' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.ncbi.nlm.nih.gov/books/x' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.cancer.gov/a' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.nmpa.gov.cn/a' })).toBe(true);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.tga.gov.au/' })).toBe(true);
-
-  // A declared sourceId must agree with the URL-derived registry entry.
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a' })).toBe(false);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a', sourceId: 'eu-ema' })).toBe(false);
   expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.fda.gov/a', sourceId: 'us-fda' })).toBe(true);
-
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.nature.com/articles/x' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://example.com/x' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x', url: 'not a url' })).toBe(false);
-  expect(isAuthoritativeAnchor({ title: 'x' })).toBe(false);
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://accessdata.fda.gov/a', sourceId: 'us-fda' })).toBe(true);
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://dailymed.nlm.nih.gov/a', sourceId: 'us-dailymed' })).toBe(true);
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://www.ncbi.nlm.nih.gov/books/x', sourceId: 'us-ncbi' })).toBe(true);
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'https://example.com/x', sourceId: 'web:example.com' })).toBe(false);
+  expect(isAuthoritativeAnchor({ title: 'x', url: 'not a url', sourceId: 'web:example.com' })).toBe(false);
 });
 
 test('P13: a reviewed drug with 2 sources incl. an anchor passes', () => {
@@ -293,12 +369,12 @@ test('P13: two sources but NO authoritative anchor fails (a company site is not 
   expect(r.violations.some((v) => v.includes('anchor'))).toBe(true);
 });
 
-test('P13: a registered host counts as the anchor even without sourceType', () => {
+test('P13: a registered host counts as the anchor without legacy sourceType', () => {
   const r = drugContentInvariants(
     baseReviewedDrug({
       citations: [
-        { title: 'DailyMed', url: 'https://dailymed.nlm.nih.gov/x' },
-        { title: 'BeiGene 官网', url: 'https://www.beigene.com/x', sourceType: 'company' },
+        { id: 'cite-aaaaaaaaaaaaaaaa', title: 'DailyMed', url: 'https://dailymed.nlm.nih.gov/x', sourceId: 'us-dailymed' },
+        { id: 'cite-bbbbbbbbbbbbbbbb', title: 'BeiGene 官网', url: 'https://www.beigene.com/x', sourceId: 'web:beigene.com' },
       ],
     }),
   );
@@ -344,55 +420,124 @@ test('P14: a reviewed drug whose mechanism contains dosing text fails; a clean o
   expect(good.valid).toBe(true);
 });
 
-test('P15: a reviewed drug without review metadata fails', () => {
-  const r = drugContentInvariants(baseReviewedDrug({ review: undefined }));
-  expect(r.valid).toBe(false);
-  expect(r.violations.some((v) => v.includes('P15'))).toBe(true);
+test('P15: legacy high-review metadata cannot bypass verification', () => {
+  const reviewOnly = {
+    ...baseReviewedDrug(),
+    verification: undefined,
+    legacyLkg: undefined,
+    review: { reviewer: 'auto', checkedOn: '2026-08-07', confidence: 'high' },
+  } as DrugData;
+  const result = drugContentInvariants(reviewOnly);
+  expect(result.valid).toBe(false);
+  expect(result.violations.some((value) => value.includes('verification'))).toBe(true);
 });
 
-test('P15: a reviewed drug with non-high confidence fails', () => {
-  const r = drugContentInvariants(
-    baseReviewedDrug({ review: { reviewer: 'auto', checkedOn: new Date(), confidence: 'medium' } }),
-  );
-  expect(r.valid).toBe(false);
-  expect(r.violations.some((v) => v.includes('confidence'))).toBe(true);
-});
-
-test('P15: a reviewed drug past its recheck deadline fails; an explicit future recheckBy keeps it valid', () => {
-  const today = new Date('2026-08-04T00:00:00Z');
-
-  // Old checkedOn, no recheckBy -> deadline = checkedOn + 12 months < today.
-  const overdue = drugContentInvariants(
+test('P13/P15: verified evidence must bind the current claim value and known citation IDs', () => {
+  const changedFact = drugContentInvariants(
     baseReviewedDrug({
-      review: { reviewer: 'auto', checkedOn: new Date('2024-01-01T00:00:00Z'), confidence: 'high' },
+      summary: '事实已改变，但证据值仍是旧值。',
+      evidence: [{
+        claimPath: '/summary',
+        claimValue: '一种示意药物,用于科普其作用机制。',
+        citationIds: ['cite-aaaaaaaaaaaaaaaa'],
+      }],
     }),
-    today,
   );
-  expect(overdue.valid).toBe(false);
-  expect(overdue.violations.some((v) => v.includes('overdue'))).toBe(true);
+  expect(changedFact.valid).toBe(false);
+  expect(changedFact.violations.some((value) => value.includes('claimValue'))).toBe(true);
 
-  // An explicit future recheckBy keeps it valid even with an old checkedOn.
-  const future = drugContentInvariants(
+  const unknownCitation = drugContentInvariants(
     baseReviewedDrug({
-      review: {
-        reviewer: 'auto',
-        checkedOn: new Date('2024-01-01T00:00:00Z'),
-        confidence: 'high',
-        recheckBy: new Date('2099-01-01T00:00:00Z'),
-      },
+      evidence: [{ claimPath: '/summary', claimValue: '一种示意药物,用于科普其作用机制。', citationIds: ['cite-cccccccccccccccc'] }],
     }),
-    today,
   );
-  expect(future.valid).toBe(true);
+  expect(unknownCitation.valid).toBe(false);
+  expect(unknownCitation.violations.some((value) => value.includes('unknown citation'))).toBe(true);
 });
 
-test('P13/P14/P15: draft drugs are exempt (only reviewed drugs are gated)', () => {
+test('P15: verified content requires v2 factRefs, a bundle hash, and a current nextCheckAt', () => {
+  const noFactRefs = drugContentInvariants(baseReviewedDrug({ factRefs: [] }));
+  expect(noFactRefs.valid).toBe(false);
+  expect(noFactRefs.violations.some((value) => value.includes('reviewed factRefs'))).toBe(true);
+
+  const noHash = drugContentInvariants(
+    baseReviewedDrug({
+      verification: {
+        status: 'verified', schemaVersion: 2, checkedAt: '2026-08-07',
+        nextCheckAt: '2027-02-07', pipelineVersion: 'test-v2',
+      } as any,
+    }),
+  );
+  expect(noHash.valid).toBe(false);
+  expect(noHash.violations.some((value) => value.includes('bundleHash'))).toBe(true);
+
+  for (const schemaVersion of [1, undefined]) {
+    const downgraded = drugContentInvariants(baseReviewedDrug({
+      factRefs: undefined,
+      evidence: [{
+        claimPath: '/summary',
+        claimValue: '一种示意药物,用于科普其作用机制。',
+        citationIds: ['cite-aaaaaaaaaaaaaaaa'],
+      }],
+      verification: {
+        status: 'verified', schemaVersion, checkedAt: '2026-08-07',
+        nextCheckAt: '2027-02-07', pipelineVersion: 'forged-v1',
+        bundleHash: `sha256:${'c'.repeat(64)}`,
+      } as any,
+    }));
+    expect(downgraded.valid).toBe(false);
+    expect(downgraded.violations.some((value) => value.includes('canonical v2 factRefs'))).toBe(true);
+  }
+
+  const expired = drugContentInvariants(baseReviewedDrug(), new Date('2027-02-08T00:00:00Z'));
+  expect(expired.valid).toBe(false);
+  expect(expired.violations.some((value) => value.includes('stale'))).toBe(true);
+});
+
+test('P15: only explicit stale legacy LKG is temporarily publishable, then the deadline closes', () => {
+  const legacy: DrugData = baseReviewedDrug({
+    verification: {
+      status: 'stale',
+      checkedAt: '2026-08-03',
+      nextCheckAt: '2027-02-07',
+      pipelineVersion: 'legacy-lkg-v1',
+    },
+    legacyLkg: {
+      snapshotId: 'legacy-lkg-2026-08-07',
+      capturedAt: '2026-08-07',
+      migrateBy: '2027-02-07',
+    },
+  });
+  expect(drugContentInvariants(legacy, new Date('2026-08-07T00:00:00Z')).valid).toBe(true);
+  const expired = drugContentInvariants(legacy, new Date('2027-02-08T00:00:00Z'));
+  expect(expired.valid).toBe(false);
+  expect(expired.violations.some((value) => value.includes('deadline'))).toBe(true);
+
+  const unlistedStale = drugContentInvariants(baseReviewedDrug({
+    verification: { status: 'stale', checkedAt: '2026-08-03', nextCheckAt: '2027-02-07', pipelineVersion: 'legacy-lkg-v1' },
+    legacyLkg: undefined,
+  }));
+  expect(unlistedStale.valid).toBe(false);
+});
+
+test('P15: conflicted and blocked content cannot be published', () => {
+  for (const status of ['conflicted', 'blocked'] as const) {
+    const result = drugContentInvariants(baseReviewedDrug({
+      verification: { status, checkedAt: '2026-08-07', nextCheckAt: '2027-02-07', pipelineVersion: 'test-v1' },
+    }));
+    expect(result.valid).toBe(false);
+    expect(result.violations.some((value) => value.includes('cannot be published'))).toBe(true);
+  }
+});
+
+test('P13/P14/P15: draft drugs are exempt from publication trust gates', () => {
   const draft = drugContentInvariants(
     baseReviewedDrug({
       reviewStatus: 'draft',
-      citations: [], // <2 sources
-      review: undefined, // no review metadata
-      summary: '每日100mg', // dosing text
+      citations: [],
+      evidence: undefined,
+      verification: undefined,
+      summary: '每日100mg',
     }),
   );
   expect(draft.valid).toBe(true);
@@ -640,6 +785,17 @@ test('P8: buildSearchRecords covers exactly the published companies + drugs and 
       },
     ),
   );
+});
+
+test('P8: product search title prefers the trade name while retaining generic-name search data', () => {
+  const product = baseReviewedDrug({ brandName: 'DemoBrand', genericName: 'demo-generic' });
+  const [record] = buildSearchRecords([], [{ id: 'demo', data: product }]);
+  expect(record.type).toBe('drug');
+  if (record.type === 'drug') {
+    expect(record.title).toBe('DemoBrand');
+    expect(record.name).toBe('DemoBrand');
+    expect(record.genericName).toBe('demo-generic');
+  }
 });
 
 test('P8: a drug search record flattens every region group item into one list', () => {
@@ -969,30 +1125,31 @@ test('areaAnchor: area- prefixed, whitespace-free, deterministic', () => {
   expect(/\s/.test(areaAnchor('心血管与血液'))).toBe(false);
 });
 
-test('relatedDrugs: same class first, excludes self + drafts, capped', () => {
-  const drugs = [
-    popDrug('a', { drugClass: 'PD-1', popularity: 100 }),
-    popDrug('b', { drugClass: 'PD-1', popularity: 90 }),
-    popDrug('c', { drugClass: 'PD-1', popularity: 80, reviewStatus: 'draft' }),
-    popDrug('x', { drugClass: 'BTK', popularity: 70 }),
-  ];
-  expect(relatedDrugs(drugs, 'a').map((d) => d.data.slug)).toEqual(['b']);
-});
-
-test('relatedDrugs: falls back to same therapeutic area for a singleton class', () => {
-  const drugs = [
-    popDrug('pd1', { drugClass: '抗 PD-1 单克隆抗体(免疫检查点抑制剂)', popularity: 100 }),
-    popDrug('btk', { drugClass: 'BTK 抑制剂', popularity: 90 }),
-    popDrug('statin', { drugClass: '他汀类(HMG-CoA 还原酶抑制剂)', popularity: 80 }),
-  ];
-  expect(relatedDrugs(drugs, 'pd1').map((d) => d.data.slug)).toEqual(['btk']);
-});
-
-test('relatedDrugs: unknown slug yields empty', () => {
-  expect(relatedDrugs([popDrug('a', { drugClass: 'X' })], 'nope')).toEqual([]);
-});
-
 test('drugsCountByCompany: counts only published drugs per company', () => {
   const drugs = [popDrug('a', {}), popDrug('b', {}), popDrug('c', { reviewStatus: 'draft' })];
   expect(drugsCountByCompany(drugs).get('acme')).toBe(2);
+});
+
+
+
+test('P8: company search records use the primary Chinese name and preserve the English identity', () => {
+  const [record] = buildSearchRecords(
+    [{
+      id: 'beigene',
+      data: {
+        slug: 'beigene',
+        locale: 'zh',
+        name: '百济神州',
+        nameEn: 'BeOne Medicines',
+        reviewStatus: 'reviewed',
+      },
+    }],
+    [],
+  );
+  expect(record).toMatchObject({
+    type: 'company',
+    title: '百济神州',
+    name: '百济神州 (BeOne Medicines)',
+    url: '/companies/beigene/',
+  });
 });

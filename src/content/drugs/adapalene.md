@@ -25,7 +25,7 @@ target:
 mechanism:
   analogy: 长痘,常是因为毛孔口的"死皮"(角质)代谢紊乱、越堆越厚,把毛孔堵住,油脂和细菌闷在里面发炎。阿达帕林像给皮肤细胞的"更新程序"重新校准,让死皮正常脱落、毛孔通畅,同时给炎症降温,痘痘就少了。
   simple: 痤疮的一个关键环节是毛囊口角质细胞过度增生、堆积,堵塞毛孔,皮脂淤积、细菌繁殖并引发炎症。阿达帕林是第三代外用维 A 酸类药物,结合皮肤细胞的视黄酸受体(RAR),调节角质细胞的分化与更新、减少异常堆积,并具抗炎作用,从而疏通毛孔、减少粉刺与炎性丘疹。外用,起效需坚持数周。
-  advanced: 阿达帕林是一种萘甲酸类第三代维 A 酸,选择性激动视黄酸受体(主要为 RAR-β 与 RAR-γ),调节表皮角质形成细胞的分化与增殖,纠正毛囊漏斗部的异常角化(粉刺形成的核心环节),并抑制多种炎症介质,发挥抗粉刺与抗炎作用;其光稳定性与耐受性优于早期维 A 酸。外用于寻常痤疮,常与过氧化苯甲酰联用。高德美(Galderma)的达芙文为其代表产品。
+  advanced: 阿达帕林是一种维 A 酸样化合物，可与特定视黄酸核受体结合，并调节细胞分化、角化和炎症过程；其治疗寻常痤疮的确切作用机制尚未完全阐明。
 media:
   - type: animation
     animationKey: retinoid
@@ -34,18 +34,27 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:ADAPALENE(阿达帕林)"
+    id: cite-dd2133df928e3794
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ca37576a-09aa-4ee8-9dc4-8ad76b999fcf
     sourceType: regulator
   - title: "阿达帕林(外用)(MedlinePlus,美国国立医学图书馆)"
+    id: cite-a72c42562b2fda3a
+    sourceId: us-medlineplus
     publisher: MedlinePlus(NLM)
     url: https://medlineplus.gov/druginfo/meds/a604001.html
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
-updatedDate: 2026-08-03
+updatedDate: 2026-08-08
 ---
 阿达帕林(达芙文 / Differin)是高德美(Galderma)研发的外用维 A 酸类祛痘药,用于寻常痤疮。

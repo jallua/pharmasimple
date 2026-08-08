@@ -35,17 +35,26 @@ media:
     status: ready
 citations:
   - title: "FDA 说明书:PROPOFOL(丙泊酚)注射乳剂"
+    id: cite-d6cddeea02f7a3ee
+    sourceId: us-dailymed
     publisher: 美国 FDA(DailyMed)
     url: https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9ba70032-40c2-41c5-9f99-d1f94032d3dc
     sourceType: regulator
   - title: "Propofol(NCBI Bookshelf / StatPearls)"
+    id: cite-b78bb97b069199ac
+    sourceId: us-ncbi
     publisher: NCBI Bookshelf
     url: https://www.ncbi.nlm.nih.gov/books/NBK430884/
     sourceType: gov
-review:
-  reviewer: auto
-  checkedOn: 2026-08-03
-  confidence: high
+verification:
+  status: stale
+  checkedAt: 2026-08-03
+  nextCheckAt: 2027-02-07
+  pipelineVersion: legacy-lkg-v1
+legacyLkg:
+  snapshotId: legacy-lkg-2026-08-08
+  capturedAt: 2026-08-08
+  migrateBy: 2027-02-07
 reviewStatus: reviewed
 updatedDate: 2026-08-03
 ---

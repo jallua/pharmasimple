@@ -1,7 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CompanyName from '../../components/CompanyName.astro';
 import { getCollection } from 'astro:content';
-import { publishedCompanyDetailPaths, slugOf, toDrugUrl } from '../../lib/catalog';
+import {
+  companyDisplayNameOf,
+  companyNameParts,
+  productNameOf,
+  publishedCompanyDetailPaths,
+  slugOf,
+  toDrugUrl,
+} from '../../lib/catalog';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { t } from '../../lib/i18n';
 
@@ -14,54 +22,92 @@ export async function getStaticPaths() {
 const locale = 'zh';
 const { company, drugs } = Astro.props;
 const { data } = company;
-
+const names = companyNameParts(data);
+const displayName = companyDisplayNameOf(data);
+const sourcedSummary = data.summary && data.summarySource ? data.summary : undefined;
 const crumbs = [
   { label: t(locale, 'nav.home'), href: '/' },
   { label: t(locale, 'nav.companies'), href: '/companies/' },
-  { label: data.name },
+  { label: names.primary },
 ];
 
 const siteBase = (Astro.site?.href ?? 'https://dongyaojun.com/').replace(/\/+$/, '');
-const companyUrl = `${siteBase}/companies/${slugOf(company)}/`;
+const companyUrl = siteBase + '/companies/' + slugOf(company) + '/';
+const alternateNames = [names.secondary, ...(data.aliases ?? [])].filter(
+  (name): name is string => Boolean(name && name !== names.primary),
+);
 const jsonLd = [
   {
     '@type': 'Organization',
-    '@id': `${companyUrl}#organization`,
-    name: data.name,
-    ...(data.summary ? { description: data.summary } : {}),
+    '@id': companyUrl + '#organization',
+    name: names.primary,
+    ...(alternateNames.length ? { alternateName: alternateNames } : {}),
     ...(data.country ? { address: { '@type': 'PostalAddress', addressCountry: data.country } } : {}),
+    ...(sourcedSummary ? { description: sourcedSummary } : {}),
+    ...(data.summarySource ? { sameAs: data.summarySource.url } : {}),
     url: companyUrl,
   },
   {
     '@type': 'BreadcrumbList',
-    '@id': `${companyUrl}#breadcrumb`,
+    '@id': companyUrl + '#breadcrumb',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: `${siteBase}/` },
-      { '@type': 'ListItem', position: 2, name: t(locale, 'nav.companies'), item: `${siteBase}/companies/` },
-      { '@type': 'ListItem', position: 3, name: data.name, item: companyUrl },
+      { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: siteBase + '/' },
+      { '@type': 'ListItem', position: 2, name: t(locale, 'nav.companies'), item: siteBase + '/companies/' },
+      { '@type': 'ListItem', position: 3, name: names.primary, item: companyUrl },
     ],
   },
 ];
 ---
 
-<BaseLayout title={data.name} description={data.summary} locale={locale} jsonLd={jsonLd}>
+<BaseLayout title={displayName} description={sourcedSummary ?? t(locale, 'meta.companiesDesc')} locale={locale} jsonLd={jsonLd}>
   <Breadcrumbs items={crumbs} />
-  <h1>{data.name}</h1>
+  <h1 class="company__name"><CompanyName data={data} /></h1>
   {data.country && <p class="company__country">{data.country}</p>}
-  {data.summary && <p class="company__summary">{data.summary}</p>}
 
-  <section class="company__drugs" aria-label={t(locale, 'company.relatedDrugs')}>
-    <h2>{t(locale, 'company.relatedDrugs')}</h2>
+  {sourcedSummary && data.summarySource && (
+    <section class="company__profile" aria-labelledby="company-profile-title">
+      <h2 id="company-profile-title">{t(locale, 'company.profile')}</h2>
+      <p class="company__summary">{sourcedSummary}</p>
+      <p class="company__website">
+        <a
+          href={data.summarySource.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t(locale, 'company.website')} <span aria-hidden="true">&rarr;</span>
+        </a>
+      </p>
+    </section>
+  )}
+
+  <section class="company__drugs" aria-label={t(locale, 'company.products')}>
+    <h2>{t(locale, 'company.products')}</h2>
     <ul class="drug-list">
-      {drugs.map((drug) => (
-        <li class="drug-list__item">
-          <a href={toDrugUrl(slugOf(drug))}>
-            {drug.data.genericName}
-            {drug.data.brandName ? ` (${drug.data.brandName})` : ''}
-          </a>
-          {drug.data.genericNameEn && <p class="drug-list__en">{drug.data.genericNameEn}</p>}
-        </li>
-      ))}
+      {drugs.map((drug) => {
+        const indicationGroup = drug.data.indications[0];
+        const indication = indicationGroup?.items[0];
+        const indicationContext = indicationGroup
+          ? indicationGroup.regulator
+            ? `${indicationGroup.region} · ${indicationGroup.regulator}`
+            : indicationGroup.region
+          : undefined;
+        return (
+          <li class="drug-list__item">
+            <a href={toDrugUrl(slugOf(drug))}><span class="drug-list__product">{productNameOf(drug.data)}</span></a>
+            <p class="drug-list__generic">
+              <span class="drug-list__label">{t(locale, 'drug.genericName')}</span>
+              <strong>{drug.data.genericName}</strong>
+            </p>
+            {drug.data.genericNameEn && <p class="drug-list__en" lang="en">{drug.data.genericNameEn}</p>}
+            {indication && (
+              <p class="drug-list__indication">
+                <span class="drug-list__label">{t(locale, 'drug.indicationExample')}</span>
+                <span>{indicationContext ? `${indicationContext}：${indication}` : indication}</span>
+              </p>
+            )}
+          </li>
+        );
+      })}
     </ul>
   </section>
 </BaseLayout>
