@@ -9,7 +9,7 @@ from .base import (
     AmbiguousResultError, DrugNameMismatchError, HTTPResponse,
     MissingDocumentIdError, SafeHTTPClient, SchemaChangedError,
     clean_fact, short_list, parse_json, record_from_response,
-    require_active_moiety_match, unique_scalar,
+    require_active_moiety_match, require_name_match, unique_scalar,
 )
 
 _OPENFDA_HOST = "api.fda.gov"
